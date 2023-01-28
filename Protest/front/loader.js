@@ -1,0 +1,206 @@
+
+const LOADER = {
+    devices: [],
+    users: [],
+    devicesVersion: 0,
+    usersVersion: 0,
+
+    baseStyles: [
+        "window.css",
+        "tip.css",
+        "button.css",
+        "textbox.css",
+        "checkbox.css",
+        "range.css"
+    ],
+
+    baseScripts: [
+        "ui.js",
+        "window.js"
+    ],
+
+    primaryScripts: [
+        "keepalive.js"
+    ],
+    
+    secondaryScripts: [
+        "tabs.js",
+        "list.js",
+    ],
+
+    tertiaryScripts: [
+        "settings.js",
+        "deviceslist.js",
+        "userslist.js",
+    ],
+
+    Initialize: () => {
+        let count = 0;
+        const total = LOADER.baseStyles.length + LOADER.baseScripts.length + LOADER.primaryScripts.length + LOADER.secondaryScripts.length + LOADER.tertiaryScripts.length + 2;
+
+        const callbackHandle = (status, filename) => {
+            loadingbar.style.width = 100 * ++count / total + "%";
+
+            if (LOADER.baseStyles.length + LOADER.baseScripts.length === count) { //load primary
+                for (let i = 0; i < LOADER.primaryScripts.length; i++)
+                    LOADER.LoadScript(LOADER.primaryScripts[i], callbackHandle);
+
+            } else if (LOADER.baseStyles.length + LOADER.baseScripts.length + LOADER.primaryScripts.length === count) { //load secondary
+                UI.Initialize();
+                
+                for (let i = 0; i < LOADER.secondaryScripts.length; i++)
+                    LOADER.LoadScript(LOADER.secondaryScripts[i], callbackHandle);
+
+            } else if (LOADER.baseStyles.length + LOADER.baseScripts.length + LOADER.primaryScripts.length + LOADER.secondaryScripts.length === count) { //load tertiary
+                for (let i = 0; i < LOADER.tertiaryScripts.length; i++)
+                    LOADER.LoadScript(LOADER.tertiaryScripts[i], callbackHandle);
+
+            } else if (count === total - 2) { //js is done, load db
+                LOADER.LoadDevices(callbackHandle);
+                LOADER.LoadUsers(callbackHandle);
+
+            } else if (count === total) { //all done
+                KEEP.Initialize();
+                
+                setTimeout(() => {
+                    loadingcontainer.style.filter = "opacity(0)";
+                    setTimeout(() => { container.removeChild(loadingcontainer); }, 200);
+                    setTimeout(() => { LOADER.RestoreSession(); }, 250); //restore previous session
+                }, 200);
+            }
+        };
+
+        for (let i = 0; i < LOADER.baseStyles.length; i++)
+            LOADER.LoadStyle(LOADER.baseStyles[i], callbackHandle);
+
+        for (let i = 0; i < LOADER.baseScripts.length; i++)
+            LOADER.LoadScript(LOADER.baseScripts[i], callbackHandle);
+    },
+
+    LoadStyle: (filename, callback) => {
+        if (document.head.querySelectorAll(`link[href$='${filename}']`).length > 0) {
+            callback("exists", filename);
+            return;
+        }
+
+        const csslink = document.createElement("link");
+        csslink.rel = "stylesheet";
+        csslink.href = filename;
+        document.head.appendChild(csslink);
+
+        csslink.onload = () => callback("ok", filename);
+        csslink.onerror = () => callback("error", filename);
+    },
+
+    LoadScript: (filename, callback) => {
+        if (document.head.querySelectorAll(`script[src$='${filename}']`).length > 0) {
+            callback("exists", filename);
+            return;
+        }
+
+        const script = document.createElement("script");
+        script.setAttribute("defer", true);
+        script.src = filename;
+        document.body.appendChild(script);
+
+        script.onload = () => callback("ok", filename);
+        script.onerror = () => callback("error", filename);
+    },
+
+    LoadDevices: async callback => {
+        await fetch("/db/getdevices")
+        .then(response=>response.json())
+        .then(json => {
+            LOADER.devices = [
+                [{n:"name",    v:"Main router", i:"dev", d:0},
+                {n:"type",     v:"Router", i:"dev", d:0},
+                {n:"ip",       v:"10.0.0.1", i:"dev", d:0},
+                {n:"hostname", v:"CYTA653416", i:"dev", d:0}],
+
+                [{n:"name",    v:"Accounts workstation", i:"dev", d:0},
+                {n:"type",     v:"Workstation", i:"dev", d:0},
+                {n:"ip",       v:"10.0.0.2", i:"dev", d:0},
+                {n:"hostname", v:"", i:"dev", d:0}],
+
+                [{n:"name",    v:"Accounts printer", i:"dev", d:0},
+                {n:"type",     v:"Printer", i:"dev", d:0},
+                {n:"ip",       v:"10.0.0.10", i:"dev", d:0},
+                {n:"hostname", v:"HP45646", i:"dev", d:0}],
+                
+                [{n:"name",    v:"Active directory", i:"dev", d:0},
+                {n:"type",     v:"Server", i:"dev", d:0},
+                {n:"ip",       v:"10.0.255.5", i:"dev", d:0},
+                {n:"hostname", v:"AD-MAIN", i:"dev", d:0}]
+            ];
+
+            //LOADER.devices = json;
+            callback("ok", "devices");
+        })
+        .catch(error => {
+            callback(error, "devices");
+        });
+    },
+
+    LoadUsers: async callback => {
+        await fetch("/db/getusers")
+        .then(response=>response.json())
+        .then(json => {
+            LOADER.users = json;
+            callback("ok", "users");
+        })
+        .catch(error => {
+            callback(error, "users");
+        });
+    },
+
+    StoreSession: () => {
+        let session = [];
+
+        if (localStorage.getItem("restore_session") === "true")
+            for (let i = 0; i < WIN.array.length; i++)
+                session.push({
+                    class: WIN.array[i].constructor.name,
+                    params: WIN.array[i].params,
+                    isMaximized: WIN.array[i].isMaximized,
+                    isMinimized: WIN.array[i].isMinimized,
+                    position: WIN.array[i].position,
+                    left: WIN.array[i].win.style.left,
+                    top: WIN.array[i].win.style.top,
+                    width: WIN.array[i].win.style.width,
+                    height: WIN.array[i].win.style.height
+                });
+
+        localStorage.setItem("session", JSON.stringify(session));
+
+        return session;
+    },
+
+    RestoreSession: () => {
+        let session = localStorage.getItem("session") ? JSON.parse(localStorage.getItem("session")) : {};
+        if (localStorage.getItem("restore_session") != "true") return;
+        if (session == null || session.length == 0) return;
+
+        for (let i = 0; i < session.length; i++) {
+            let win;
+            switch (session[i].class) {
+                case "Settings": win = new Settings(session[i].params); break;
+            }
+
+            if (win) {
+                if (session[i].isMaximized) win.Toogle();
+                if (session[i].isMinimized) win.Minimize();
+                win.position = session[i].position;
+
+                if (!WIN.always_maxxed) {
+                    win.win.style.left = session[i].left;
+                    win.win.style.top = session[i].top;
+                    win.win.style.width = session[i].width;
+                    win.win.style.height = session[i].height;
+                }
+            }
+        }
+    }
+
+};
+
+LOADER.Initialize();

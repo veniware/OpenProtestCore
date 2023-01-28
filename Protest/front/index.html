@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Pro-test</title>
+    <link rel="icon" id="favicon">
+    
+    <meta name="theme-color" content="#E87600"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="description" content="A management base for System Admins."/>
+
+    <link rel="preload" href="fonts/opensans400.ttf" as="font" type="font/ttf" crossorigin/>
+    <link rel="preload" href="fonts/opensans700.ttf" as="font" type="font/ttf" crossorigin/>
+
+    <link rel="stylesheet" href="root.css"/>
+    <link rel="stylesheet" href="ui.css"/>
+
+    <script defer src="loader.js"></script>
+
+</head>
+
+<body>
+    <div id="container">
+        <svg id="analog_clock" width="96" height="96">
+            <circle cx="48" cy="48" r="44" stroke="var(--fore-color)" stroke-width="6" fill="rgba(0,0,0,0)"/>
+            <circle cx="48" cy="48" r="4" fill="var(--fore-color)"/>
+            <line id="analog_clock_h" x1="48" y1="48" x2="48" y2="24" stroke="var(--fore-color)" stroke-width="5"/>
+            <line id="analog_clock_m" x1="48" y1="48" x2="48" y2="16" stroke="var(--fore-color)" stroke-width="3"/>
+        </svg>
+
+        <svg id="date_calendar" width="96" height="96">
+            <defs>
+                <mask id="date_month_mask">
+                    <rect width="100%" height="100%" fill="#fff"/>
+                    <text id="date_month" x="50%" y="18px" font-size="16" font-weight="bold" fill="#000" text-anchor="middle"></text>
+                </mask>
+            </defs>
+            <rect x="2" y="2" width="92" height="92" fill="rgba(0,0,0,0)"/>
+            <path fill="var(--fore-color)" mask="url(#date_month_mask)" d="M93.5,0h-91C1.119,0,0,1.119,0,2.5v91C0,94.881,1.119,96,2.5,96h91c1.381,0,2.5-1.119,2.5-2.5v-91 C96,1.119,94.881,0,93.5,0z M91,88.5c0,1.381-1.117,2.5-2.495,2.5H7.495C6.117,91,5,89.881,5,88.5v-61C5,26.119,6.117,25,7.495,25 h81.01C89.883,25,91,26.119,91,27.5V88.5z"/>
+            <text fill="var(--fore-color)" id="date_date" x="50%" y="64px" font-size="40" font-weight="bold" text-anchor="middle"></text>
+            <text fill="var(--fore-color)" id="date_day" x="50%" y="80px" font-size="14" text-anchor="middle"></text>
+        </svg>
+
+        <div id="menubox">
+            <div id="searchbox">
+                <div id="searchicon"></div>
+                <input id="searchboxinput" type="text" autocomplete="off" autocorrect="off"/>
+                <div id="clearmenusearch"></div>
+            </div>
+
+            <div id="menulist"></div>
+
+            <div id="btnSettings"></div>
+            <div id="lblUsername" tabindex="0"></div>
+            <div id="btnLogout"></div>
+        </div>
+
+        <div id="cap" style="visibility:hidden"></div>
+
+        <div id="loadingcontainer">
+            <div id="loadingbar"></div>
+        </div>
+
+        <div id="menubutton">
+            <div></div>
+        </div>
+    </div>
+
+    <div id="taskbar"></div>
+
+    <noscript>
+        <div style="position:sticky;padding:16px;text-align:center;background-color:#202020;color:#c0c0c0">Javascript is either disabled or not supported by your browser.</div>
+    </noscript>
+</body></html>
