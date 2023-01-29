@@ -60,7 +60,8 @@ public sealed class Listener {
     private void ListenerCallback(IAsyncResult result) {
         HttpListenerContext ctx = listener.EndGetContext(result);
 
-        if (ctx.Request.UrlReferrer != null && ctx.Request.UrlReferrer.Host != ctx.Request.UserHostName.Split(':')[0]) { //CSRF protection
+        if (ctx.Request.UrlReferrer != null &&
+            ctx.Request.UrlReferrer.Host != ctx.Request.UserHostName.Split(':')[0]) { //CSRF protection
             ctx.Response.StatusCode = 418; //I'm a teapot
             ctx.Response.Close();
             return;
@@ -68,8 +69,8 @@ public sealed class Listener {
 
         string path = ctx.Request.Url.PathAndQuery;
 
-        if (path == "/auth") {
-            if (ctx.Request.HttpMethod != "POST") {
+        if (string.Equals(path, "/auth", StringComparison.OrdinalIgnoreCase)) {
+            if (!string.Equals(ctx.Request.HttpMethod, "POST", StringComparison.OrdinalIgnoreCase)) {
                 ctx.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 ctx.Response.Close();
                 return;
@@ -117,7 +118,7 @@ public sealed class Listener {
         if (!cache.cashe.ContainsKey(path)) return false;
 
         Cache.Entry entry;
-        if (path == "/") {
+        if (string.Equals(path, "/", StringComparison.OrdinalIgnoreCase)) {
             IPAddress remoteIp = ctx.Request.RemoteEndPoint.Address;
             bool isLoopback = IPAddress.IsLoopback(remoteIp);
             bool isAuthenticated = isLoopback || Auth.IsAuthenticated(ctx);
