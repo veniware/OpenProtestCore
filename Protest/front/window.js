@@ -498,7 +498,7 @@ class Window {
             "", "",
             `width=${this.win.clientWidth},height=${this.win.clientHeight},left=${window.screenX+this.win.offsetLeft},top=${window.screenY+this.win.offsetTop}`);
 
-        newWin.document.write(`<html><head><title>${this.lblTitle.textContent}</title>`);
+        newWin.document.write(`<title>${this.lblTitle.textContent}</title>`);
         newWin.document.write("<link rel='icon' href='mono/icon24.png'>");
         newWin.document.write("<link rel='stylesheet' href='root.css'>");
 
@@ -508,8 +508,7 @@ class Window {
         for (let i = 0; i < this.cssDependencies.length; i++)
             newWin.document.write(`<link rel='stylesheet' href='${this.cssDependencies[i]}'>`);
 
-        newWin.document.write("</head><body>");
-        newWin.document.write("</body></html>");
+
         newWin.document.close();
 
         newWin.document.body.style.backgroundColor = `rgb(${this.themeColor[0]},${this.themeColor[1]},${this.themeColor[2]})`;
