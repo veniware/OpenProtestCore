@@ -49,6 +49,14 @@ const WIN = {
                 for (let i=0; i<WIN.array.length; i++) WIN.array[i].task.style.transition = "0s";
             }, ANIM_DURATION);
         }
+    },
+
+    EscapeHtml(html) {
+        return htmlStr.replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 };
 
@@ -498,7 +506,7 @@ class Window {
             "", "",
             `width=${this.win.clientWidth},height=${this.win.clientHeight},left=${window.screenX+this.win.offsetLeft},top=${window.screenY+this.win.offsetTop}`);
 
-        newWin.document.write(`<title>${this.lblTitle.textContent}</title>`);
+        newWin.document.write(`<title>${WIN.EscapeHtml(this.lblTitle.textContent)}</title>`);
         newWin.document.write("<link rel='icon' href='mono/icon24.png'>");
         newWin.document.write("<link rel='stylesheet' href='root.css'>");
 
