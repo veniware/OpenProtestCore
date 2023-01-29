@@ -61,3 +61,28 @@
     transition: .2s;
     background-color: rgb(64,64,64);
 }
+
+
+.list-element {
+    position: relative;
+    height: 32px;
+    border-bottom: rgb(128,128,128) 1px solid;
+    content-visibility: auto;
+    contain-intrinsic-size: 33px;
+}
+
+.list-element:hover{
+    background-color: var(--highlight-color);
+}
+
+.list-element > * {
+    position: absolute;
+}
+
+.list-element-icon {
+    left: 2px;
+    top: 2px;
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+}

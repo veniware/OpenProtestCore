@@ -8,8 +8,7 @@ class DevicesList extends List {
         this.SetColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
         this.InitializeToolbar();
 
-        this.LinkArray(LOADER.devices);
+        this.LinkArray(LOADER.devices.data);
+        this.RefreshList();
     }
 }
-
-new DevicesList();

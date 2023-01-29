@@ -111,29 +111,7 @@ const LOADER = {
         await fetch("/db/getdevices")
         .then(response=>response.json())
         .then(json => {
-            LOADER.devices = [
-                [{n:"name",    v:"Main router", i:"dev", d:0},
-                {n:"type",     v:"Router", i:"dev", d:0},
-                {n:"ip",       v:"10.0.0.1", i:"dev", d:0},
-                {n:"hostname", v:"CYTA653416", i:"dev", d:0}],
-
-                [{n:"name",    v:"Accounts workstation", i:"dev", d:0},
-                {n:"type",     v:"Workstation", i:"dev", d:0},
-                {n:"ip",       v:"10.0.0.2", i:"dev", d:0},
-                {n:"hostname", v:"", i:"dev", d:0}],
-
-                [{n:"name",    v:"Accounts printer", i:"dev", d:0},
-                {n:"type",     v:"Printer", i:"dev", d:0},
-                {n:"ip",       v:"10.0.0.10", i:"dev", d:0},
-                {n:"hostname", v:"HP45646", i:"dev", d:0}],
-                
-                [{n:"name",    v:"Active directory", i:"dev", d:0},
-                {n:"type",     v:"Server", i:"dev", d:0},
-                {n:"ip",       v:"10.0.255.5", i:"dev", d:0},
-                {n:"hostname", v:"AD-MAIN", i:"dev", d:0}]
-            ];
-
-            //LOADER.devices = json;
+            LOADER.devices = json;
             callback("ok", "devices");
         })
         .catch(error => {
@@ -183,7 +161,10 @@ const LOADER = {
         for (let i = 0; i < session.length; i++) {
             let win;
             switch (session[i].class) {
+                case "DevicesList": win = new DevicesList(session[i].params); break;
+                case "UsersList": win = new UsersList(session[i].params); break;
                 case "Settings": win = new Settings(session[i].params); break;
+
             }
 
             if (win) {

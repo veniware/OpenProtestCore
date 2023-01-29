@@ -31,6 +31,7 @@ class List extends Window {
 
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+
     }
 
     List_mouseup(event) {
@@ -179,9 +180,16 @@ class List extends Window {
     }
 
     RefreshList() {
-        this.view = [];
         this.list.innerHTML = "";
 
+        for (let i = 0; i < this.array.length; i++) { //display
+            const element = document.createElement("div");
+            element.id = `id${this.array[i].f}`;
+            element.className = "list-element";
+            this.list.appendChild(element);
+        }
+
+        this.UpdateViewport();
     }
 
     CustomizeColumns() {

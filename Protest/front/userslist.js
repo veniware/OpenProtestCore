@@ -8,8 +8,7 @@ class UsersList extends List {
         this.SetColumns(["username", "email", "firstname", "lastname"]);
         this.InitializeToolbar();
 
-        this.LinkArray(LOADER.users);
+        this.LinkArray(LOADER.users.data);
+        this.RefreshList();
     }
 }
-
-new UsersList();

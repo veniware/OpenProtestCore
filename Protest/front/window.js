@@ -52,7 +52,7 @@ const WIN = {
     },
 
     EscapeHtml(html) {
-        return htmlStr.replace(/&/g, "&amp;")
+        return html.replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
@@ -133,15 +133,17 @@ document.body.onkeydown = (event)=> {
 };
 
 document.body.onbeforeunload = () => {
+    //if (localStorage.getItem("alive_after_close") != "true") {
+    //    fetch("/logout");
+    //}
+};
+
+document.body.onunload = () => {
     LOADER.StoreSession();
 
     for (let i = 0; i < WIN.array.length; i++)
         if (WIN.array[i].popoutWindow)
             WIN.array[i].popoutWindow.close();
-
-    if (localStorage.getItem("alive_after_close") != "true") {
-        fetch("/logout");
-    }
 };
 
 class Window {
@@ -543,7 +545,7 @@ class Window {
         btnUnpop.style.position = "absolute";
         btnUnpop.style.width = this.toolbar ? "24px" : "22px";
         btnUnpop.style.height = this.toolbar ? "24px" : "22px";
-        btnUnpop.style.right = "2px";
+        btnUnpop.style.right = this.toolbar ? "4px" : "2px";
         btnUnpop.style.top = this.toolbar ? "8px" : "2px";
         btnUnpop.style.backgroundColor = "rgb(224,224,224)";
         btnUnpop.style.backgroundImage = "url(controls/popout.svg)";

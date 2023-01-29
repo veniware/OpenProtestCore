@@ -49,8 +49,7 @@ internal static class KeepAlive {
             //init
             ArraySegment<byte> initSegment = new(Encoding.UTF8.GetBytes($"{{\"action\":\"init\",\"version\":\"{Strings.VersionToString()}\",\"username\":\"{username}\"}}"));
             await ws.SendAsync(initSegment, WebSocketMessageType.Text, true, CancellationToken.None);
-        Console.WriteLine(username);
-            
+    
             while (ws.State == WebSocketState.Open) {
 
                 if (Auth.IsAuthenticated(sessionId)) {
