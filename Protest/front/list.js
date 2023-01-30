@@ -1,7 +1,7 @@
 class List extends Window {
     constructor(params) {
         super();
-        this.MIN_CELL_SIZE = 20;
+        this.MIN_CELL_SIZE = 40;
         
         this.params = params ? params : { sort:"", filter:"", find:"" };
         this.AddCssDependencies("list.css");
@@ -29,9 +29,10 @@ class List extends Window {
         this.listTitle.appendChild(this.columnsOptions);
         this.columnsOptions.onclick = () => this.CustomizeColumns();
 
+        this.list.onscroll = () => this.UpdateViewport();
+
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
-
     }
 
     List_mouseup(event) {
@@ -88,6 +89,16 @@ class List extends Window {
         }
     }
 
+    AfterResize() { //override
+        this.UpdateViewport();
+    }
+
+    Popout() { //override
+        super.Popout();
+        this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
+        this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+    }
+
     LinkArray(array) {
         this.array = array;
     }
@@ -110,6 +121,8 @@ class List extends Window {
             this.columnsElements[i].style.left = `${100 * x / this.listTitle.offsetWidth}%`;
             this.columnsElements[i].style.width = `${100 * this.columnsElements[i].offsetWidth / this.listTitle.offsetWidth}%`;
         }
+
+        this.UpdateViewport(true);
     };
 
     SetColumns(columns) {
@@ -167,7 +180,7 @@ class List extends Window {
             newColumn.onmousemove = event => Column_onmousemove(event);
             newColumn.onmouseup = event => Column_onmouseup(event);
 
-            newColumn.innerHTML = `&nbsp;${columns[i]}`;
+            newColumn.textContent = columns[i];
             this.columnsElements.push(newColumn);
             this.listTitle.appendChild(newColumn);
         }
@@ -213,6 +226,28 @@ class List extends Window {
     }
 
     InflateElement(element, entry, c_type) { //overridable
+        const icon = document.createElement("div");
+        icon.className = "list-element-icon";
+        icon.style.backgroundImage = "url(/mono/user.svg)";
+        element.appendChild(icon);
+        
+        for (let i = 0; i < this.columnsElements.length; i++) {
+            if (!entry.hasOwnProperty(this.columnsElements[i].textContent)) continue;
+            
+            const newAttr = document.createElement("div");
+            newAttr.textContent = entry[this.columnsElements[i].textContent].v;
+            element.appendChild(newAttr);
+
+            if (i === 0) {
+                newAttr.style.left = "36px";
+                newAttr.style.width = `calc(${this.columnsElements[0].width} - 36px)`;
+
+            } else {
+                newAttr.style.left = this.columnsElements[i].style.left;
+                newAttr.style.width = this.columnsElements[i].width;
+            }
+        }
+
         element.onclick = () => {
             if (this.selected)
                 this.selected.style.backgroundColor = "";
@@ -222,17 +257,18 @@ class List extends Window {
         };
     }
 
-    UpdateViewport() {
+    UpdateViewport(force = false) {
+        for (let i = 0; i < this.list.childNodes.length; i++) {
+            if (force) this.list.childNodes[i].textContent = "";
 
-    }
-
-    AfterResize() { //override
-        this.UpdateViewport();
-    }
-
-    Popout() { //override
-        super.Popout();
-        this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
-        this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+            if (this.list.childNodes[i].offsetTop - this.list.scrollTop < -32 ||
+                this.list.childNodes[i].offsetTop - this.list.scrollTop > this.list.clientHeight) {
+                this.list.childNodes[i].textContent = "";
+            } else {
+                if (this.list.childNodes[i].childNodes.length > 0) continue;
+                let type = (this.array[i].hasOwnProperty("type")) ? this.array[i].a["type"].v.toLowerCase() : "";
+                this.InflateElement(this.list.childNodes[i], this.array[i].a, type);
+            }
+        }
     }
 }

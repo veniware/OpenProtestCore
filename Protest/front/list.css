@@ -1,4 +1,5 @@
 .list-listbox {
+    color: #202020;
     background-color: var(--pane-color);
 
     position: absolute;
@@ -7,8 +8,8 @@
     top: 26px;
     bottom: 0;
 
-    overflow-x: scroll;
-    overflow-y: hidden;
+    overflow-x: hidden;
+    overflow-y: scroll;
 }
 
 .list-title {
@@ -31,6 +32,9 @@
     text-transform: capitalize;
     line-height: 23px;
     border-radius: 2px;
+
+    box-sizing: border-box;
+    padding-left: 4px;
 }
 
 .list-columns-options {
@@ -66,7 +70,7 @@
 .list-element {
     position: relative;
     height: 32px;
-    border-bottom: rgb(128,128,128) 1px solid;
+    border-bottom: rgb(160,160,160) 1px solid;
     content-visibility: auto;
     contain-intrinsic-size: 33px;
 }
@@ -82,7 +86,11 @@
 .list-element-icon {
     left: 2px;
     top: 2px;
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     background-size: contain;
+}
+
+.list-element > div:not(:first-child) {
+    top: 5px;
 }

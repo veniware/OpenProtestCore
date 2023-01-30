@@ -11,4 +11,14 @@ class DevicesList extends List {
         this.LinkArray(LOADER.devices.data);
         this.RefreshList();
     }
+
+    InflateElement(element, entry, type) { //override
+        super.InflateElement(element, entry, type);
+
+        if (!element.ondblclick)
+            element.ondblclick = (event) => {
+                
+                event.stopPropagation();
+            };
+    }
 }

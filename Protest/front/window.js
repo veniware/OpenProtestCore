@@ -9,7 +9,7 @@ const WIN = {
     isMoving:         false,
     isResizing:       false,
     isIcoMoving:      false,
-    isControlPressed: false,
+    controlPressed:   null,
     x0:      0,
     y0:      0,
     offsetX: 0,
@@ -314,15 +314,15 @@ class Window {
         this.btnMinimize.onmousedown =
         this.btnPopout.onmousedown =
         (event)=> {
-            WIN.control_pressed = this;
+            WIN.controlPressed = this;
             this.BringToFront();
             event.stopPropagation();
         };
         
-        this.btnClose.onmouseup    = (event)=> { if (event.button==0 && WIN.control_pressed==this) {WIN.control_pressed=null; this.Close();} };
-        this.btnMaximize.onmouseup = (event)=> { if (event.button==0 && WIN.control_pressed==this) {WIN.control_pressed=null; this.Toogle();} };
-        this.btnMinimize.onmouseup = (event)=> { if (event.button==0 && WIN.control_pressed==this) {WIN.control_pressed=null; this.Minimize();} };
-        this.btnPopout.onmouseup   = (event)=> { if (event.button==0 && WIN.control_pressed==this) {WIN.control_pressed=null; this.Popout();} };
+        this.btnClose.onmouseup    = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Close();} };
+        this.btnMaximize.onmouseup = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Toogle();} };
+        this.btnMinimize.onmouseup = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Minimize();} };
+        this.btnPopout.onmouseup   = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Popout();} };
     
         this.SetTitle("[untitled]");
         WIN.array.push(this);
