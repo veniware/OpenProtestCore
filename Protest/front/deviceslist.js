@@ -17,7 +17,7 @@ class DevicesList extends List {
 
         if (!element.ondblclick)
             element.ondblclick = (event) => {
-                
+
                 event.stopPropagation();
             };
     }

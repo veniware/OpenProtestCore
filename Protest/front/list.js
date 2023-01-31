@@ -18,6 +18,7 @@ class List extends Window {
 
         this.list = document.createElement("div");
         this.list.className = "list-listbox";
+        this.list.onscroll = () => this.UpdateViewport();
         this.content.appendChild(this.list);
 
         this.listTitle = document.createElement("div");
@@ -26,11 +27,13 @@ class List extends Window {
 
         this.columnsOptions = document.createElement("div");
         this.columnsOptions.className = "list-columns-options";
-        this.listTitle.appendChild(this.columnsOptions);
         this.columnsOptions.onclick = () => this.CustomizeColumns();
-
-        this.list.onscroll = () => this.UpdateViewport();
-
+        this.listTitle.appendChild(this.columnsOptions);
+        
+        this.counter = document.createElement("div");
+        this.counter.className = "list-counter";
+        this.content.appendChild(this.counter);
+        
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
@@ -95,6 +98,8 @@ class List extends Window {
 
     Popout() { //override
         super.Popout();
+        this.UpdateViewport(true);
+
         this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
@@ -108,8 +113,10 @@ class List extends Window {
         this.movingColumnElement = null;
 
         this.columnsElements = this.columnsElements.sort((a,b)=> a.offsetLeft - b.offsetLeft);
+
         for (let i = 0; i < this.columnsElements.length; i++) {
             this.columnsElements[i].style.transition = ".2s";
+            this.columnsElements[i].style.opacity = "1";
             this.columnsElements[i].style.zIndex = "0";
             this.columnsElements[i].style.cursor = "inherit";
 
@@ -144,8 +151,9 @@ class List extends Window {
                 this.columnsWidth0 = this.columnsElements.map(o=> o.offsetWidth);
                 this.resizingColumnElement = event.target;
             } else {
-                event.target.style.transition = "0s";
                 event.target.style.zIndex = "1";
+                event.target.style.opacity = ".8";
+                event.target.style.transition = "0s";
                 this.left0 = event.target.offsetLeft;
                 this.movingColumnElement = event.target;
             }
@@ -205,26 +213,6 @@ class List extends Window {
         this.UpdateViewport();
     }
 
-    CustomizeColumns() {
-        const dialog = this.DialogBox("320px");
-        if (dialog === null) return;
-
-        const btnOK = dialog.btnOK;
-        const btnCancel = dialog.btnCancel;
-        const buttonBox = dialog.buttonBox;
-        const innerBox = dialog.innerBox;
-
-        const btnApplyAll = document.createElement("input");
-        btnApplyAll.type = "button";
-        btnApplyAll.value = "Apply to all";
-        buttonBox.appendChild(btnApplyAll);
-
-        btnOK.value = "Apply";
-        buttonBox.appendChild(btnOK);
-
-        buttonBox.appendChild(btnCancel);
-    }
-
     InflateElement(element, entry, c_type) { //overridable
         const icon = document.createElement("div");
         icon.className = "list-element-icon";
@@ -240,11 +228,10 @@ class List extends Window {
 
             if (i === 0) {
                 newAttr.style.left = "36px";
-                newAttr.style.width = `calc(${this.columnsElements[0].width} - 36px)`;
-
+                newAttr.style.width = `calc(${this.columnsElements[0].style.width} - 36px)`;
             } else {
                 newAttr.style.left = this.columnsElements[i].style.left;
-                newAttr.style.width = this.columnsElements[i].width;
+                newAttr.style.width = this.columnsElements[i].style.width;
             }
         }
 
@@ -270,5 +257,29 @@ class List extends Window {
                 this.InflateElement(this.list.childNodes[i], this.array[i].a, type);
             }
         }
+
+        if (this.array) {
+            this.counter.textContent = this.list.childNodes.length === this.array.length ? this.array.length : `${this.list.childNodes.length} / ${this.array.length}`;
+        }
+    }
+
+    CustomizeColumns() {
+        const dialog = this.DialogBox("320px");
+        if (dialog === null) return;
+
+        const btnOK = dialog.btnOK;
+        const btnCancel = dialog.btnCancel;
+        const buttonBox = dialog.buttonBox;
+        const innerBox = dialog.innerBox;
+
+        const btnApplyAll = document.createElement("input");
+        btnApplyAll.type = "button";
+        btnApplyAll.value = "Apply to all";
+        buttonBox.appendChild(btnApplyAll);
+
+        btnOK.value = "Apply";
+        buttonBox.appendChild(btnOK);
+
+        buttonBox.appendChild(btnCancel);
     }
 }

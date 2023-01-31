@@ -5,7 +5,7 @@ class UsersList extends List {
         this.SetTitle("Users");
         this.SetIcon("/mono/users.svg");
 
-        this.SetColumns(["title", "firstname", "lastname", "username", "email",]);
+        this.SetColumns(["title", "firstname", "lastname", "username", "email"]);
         this.InitializeToolbar();
 
         this.LinkArray(LOADER.users.data);
@@ -17,7 +17,7 @@ class UsersList extends List {
 
         if (!element.ondblclick)
             element.ondblclick = (event) => {
-                
+
                 event.stopPropagation();
             };
     }

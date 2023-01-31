@@ -5,8 +5,8 @@
     position: absolute;
     left: 0;
     right: 0;
-    top: 26px;
-    bottom: 0;
+    top: 25px;
+    bottom: 28px;
 
     overflow-x: hidden;
     overflow-y: scroll;
@@ -19,7 +19,7 @@
     top: 0px;
     height: 25px;
     
-    border-radius: 0 4px 0 0;
+    border-radius: 4px 4px 0 0;
     background: linear-gradient(rgb(96,96,96), rgb(80,80,80));
 }
 
@@ -31,7 +31,7 @@
     text-overflow: ellipsis;
     text-transform: capitalize;
     line-height: 23px;
-    border-radius: 2px;
+    border-radius: 4px;
 
     box-sizing: border-box;
     padding-left: 4px;
@@ -93,4 +93,20 @@
 
 .list-element > div:not(:first-child) {
     top: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    box-sizing: border-box;
+    padding-left: 6px;
+}
+
+.list-counter {
+    position: absolute;
+    left: 2px;
+    bottom: 2px;
+    color: var(--pane-color);
+    font-weight: 600;
+    padding: 0px 8px;
+    border: 1px solid var(--pane-color);
+    border-radius: 2px;
 }
