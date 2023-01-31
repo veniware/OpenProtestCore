@@ -81,8 +81,8 @@ const UI = {
         let root = document.documentElement;
         root.style.setProperty("--theme-color", rgbString);
         root.style.setProperty("--select-color", step2);
-        root.style.setProperty("--toolbar-bg", gradient);
-        root.style.setProperty("--toolbar-bg-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
+        root.style.setProperty("--taskbar-bg", gradient);
+        root.style.setProperty("--taskbar-bg-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
     
         let ico = "<svg version=\"1.1\" xmlns:serif=\"http://www.serif.com/\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"48px\" height=\"48px\"  viewBox=\"0 0 48 48\" enable-background=\"new 0 0 48 48\" xml:space=\"preserve\">"+
             "<g fill=\""+step2+"\">"+

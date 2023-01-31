@@ -65,9 +65,9 @@
 *[tip-below]::after {
     content: "";
     border: solid;
-    border-color: rgb(224,224,224) transparent;
+    border-color: var(--back-color) transparent;
     border-width: 0 6px 6px 6px;
-    transform: translateX(6px) !important;
+    transform: translateX(12px) !important;
     transform-origin: 50% 100%;
     top: 100%;
 }
@@ -75,8 +75,8 @@
 *[tip-below]::before {
     content: attr(tip-below);
     white-space: nowrap;
-    background-color: rgb(224,224,224);
-    color: black;
+    background-color: var(--back-color);
+    color: var(--fore-color);
     text-align: center;
     border-radius: 4px;
     min-width: 44px;

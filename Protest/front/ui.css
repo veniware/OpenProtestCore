@@ -22,7 +22,7 @@
     right: 0;
     bottom: 0;
     height: 56px;
-    background: var(--toolbar-bg);
+    background: var(--taskbar-bg);
 }
 
 #menubutton {
@@ -34,7 +34,7 @@
     z-index: 16777266;
     overflow: hidden;
     border-radius: 4px 8px 48px 8px;
-    background: var(--toolbar-bg-rev);
+    background: var(--taskbar-bg-rev);
     box-shadow: rgba(0,0,0,.2) 2px 2px 2px;
     transition: border-radius .4s, width .2s, height .2s;
 }

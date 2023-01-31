@@ -94,7 +94,8 @@
 }
 
 .win-toolbar {
-    background: linear-gradient(rgb(96,96,96), rgb(80,80,80));
+    /*background: var(--toolbar-bg);*/
+    background-color: #505050;
     border-radius: 4px;
     position: absolute;
     left: 4px;
@@ -102,6 +103,26 @@
     top: 32px;
     height: 40px;
     transition: top .2s;
+}
+
+.win-toolbar > .win-toolbar-button {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+    border-radius: 2px;
+    margin: 2px;
+
+    background-size: 30px 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.win-toolbar > .win-toolbar-button:hover {
+    transition: .2s;
+    background-color: rgb(72,72,72);
+}
+.win-toolbar > .win-toolbar-button:active {
+    transition: .2s;
+    background-color: rgb(64,64,64);
 }
 
 .win-content {
