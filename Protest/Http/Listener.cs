@@ -11,14 +11,14 @@ public sealed class Listener {
     private readonly HttpListener listener;
     private readonly Cache cache;
 
-    public Listener(in string ip, ushort port, in string path) {
+    public Listener(string ip, ushort port, string path) {
         if (!HttpListener.IsSupported) throw new NotSupportedException();
         cache = new Cache(path);
         listener = new HttpListener();
         Bind(new string[] { $"http://{ip}:{port}/" });
     }
 
-    public Listener(in string[] uriPrefixes, in string path) {
+    public Listener(string[] uriPrefixes, string path) {
         if (!HttpListener.IsSupported) throw new NotSupportedException();
         cache = new Cache(path);
         listener = new HttpListener();
@@ -29,7 +29,7 @@ public sealed class Listener {
         Stop();
     }
 
-    private void Bind(in string[] uriPrefixes) {
+    private void Bind(string[] uriPrefixes) {
         listener.IgnoreWriteExceptions = true;
 
         for (int i = 0; i < uriPrefixes.Length; i++)
@@ -115,7 +115,7 @@ public sealed class Listener {
         ctx.Response.Close();
     }
 
-    private bool CacheHandler(in HttpListenerContext ctx, in string path) {
+    private bool CacheHandler(HttpListenerContext ctx, string path) {
         if (!cache.cashe.ContainsKey(path)) return false;
 
         Cache.Entry entry;
@@ -188,7 +188,7 @@ public sealed class Listener {
         return true;
     }
 
-    private static bool DynamicHandler(in HttpListenerContext ctx) {
+    private static bool DynamicHandler(HttpListenerContext ctx) {
         string sessionId = ctx.Request.Cookies["sessionid"]?.Value ?? null;
         string username = IPAddress.IsLoopback(ctx.Request.RemoteEndPoint.Address) ? "loopback" : Auth.GetUsername(sessionId);
 
@@ -215,7 +215,7 @@ public sealed class Listener {
         return true;
     }
 
-    private static bool WebSocketHandler(in HttpListenerContext ctx, in string path) {
+    private static bool WebSocketHandler(HttpListenerContext ctx, string path) {
         if (!ctx.Request.IsWebSocketRequest) {
             return false;
         }

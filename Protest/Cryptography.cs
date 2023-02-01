@@ -20,7 +20,7 @@ internal static class Cryptography {
         return BitConverter.ToString(bytes).Replace("-", string.Empty);
     }
 
-    public static byte[] HashStringToBytes(in string key, byte length) {
+    public static byte[] HashStringToBytes(string key, byte length) {
         byte[] bytes = SHA512.HashData(Encoding.UTF8.GetBytes($"{SALT}{key}{PEPPER}{length}"));
         byte[] result = new byte[length];
         for (byte i = 0; i < length; i++)
@@ -29,7 +29,7 @@ internal static class Cryptography {
         return result;
     }
 
-    public static byte[] HashUsernameAndPassword(in string username, in string password) {
+    public static byte[] HashUsernameAndPassword(string username, string password) {
         int iterations = username.Length * password.Length * 63;
         Rfc2898DeriveBytes pbkdf2 = new Rfc2898DeriveBytes(username + password, Encoding.UTF8.GetBytes(SALT), iterations, HashAlgorithmName.SHA512);
         byte[] hash = pbkdf2.GetBytes(32);
@@ -62,7 +62,7 @@ internal static class Cryptography {
         return memoryStream.ToArray();
     }
 
-    public static string EncryptB64(in string text, in byte[] key, in byte[] iv) {
+    public static string EncryptB64(string text, byte[] key, byte[] iv) {
         if (text.Length == 0) return string.Empty;
 
         byte[] bytes = Encoding.UTF8.GetBytes(text);
@@ -70,7 +70,7 @@ internal static class Cryptography {
         return Convert.ToBase64String(cipher);
     }
 
-    public static string DecryptB64(in string encodedText, in byte[] key, in byte[] iv) {
+    public static string DecryptB64(string encodedText, byte[] key, byte[] iv) {
         if (encodedText.Length == 0) return string.Empty;
 
         byte[] bytes = Convert.FromBase64String(encodedText);

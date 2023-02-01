@@ -12,7 +12,7 @@ namespace Protest.Tools;
 [SupportedOSPlatform("windows")]
 internal static class ActiveDirectoryServices {
 
-    public static DirectoryEntry GetDirectoryEntry(in string domain) {
+    public static DirectoryEntry GetDirectoryEntry(string domain) {
         if (domain is null) return null;
 
         DirectoryEntry dir = new DirectoryEntry($"LDAP://{domain}");
@@ -21,7 +21,7 @@ internal static class ActiveDirectoryServices {
         return dir;
     }
 
-    public static string[] GetAllWorkstations(in string domain) {
+    public static string[] GetAllWorkstations(string domain) {
         SearchResultCollection result = null;
 
         try {
@@ -44,7 +44,7 @@ internal static class ActiveDirectoryServices {
         return list.ToArray();
     }
 
-    public static string[] GetAllUsers(in string domain) {
+    public static string[] GetAllUsers(string domain) {
         SearchResultCollection result = null;
         try {
             DirectoryEntry dir = GetDirectoryEntry(domain);
@@ -67,7 +67,7 @@ internal static class ActiveDirectoryServices {
         return list.ToArray();
     }
 
-    public static bool TryDirectoryAuthenticate(string username, in string password) {
+    public static bool TryDirectoryAuthenticate(string username, string password) {
         string domain = null;
 
         if (username.Contains('@')) {
@@ -137,7 +137,7 @@ internal static class ActiveDirectoryServices {
         return null;
     }
 
-    public static SearchResult GetWorkstation(in string name) {
+    public static SearchResult GetWorkstation(string name) {
         if (name is null || name.Length == 0) return null;
 
         string domain = null;
@@ -213,7 +213,7 @@ internal static class ActiveDirectoryServices {
     }
 
     private delegate string FormatMethodPtr(string value);
-    private static void ContentBuilderAddValue(in SearchResult sr, in string property, in string label, in Hashtable hash, FormatMethodPtr format = null) {
+    private static void ContentBuilderAddValue(SearchResult sr, string property, string label, Hashtable hash, FormatMethodPtr format = null) {
         for (int i = 0; i < sr.Properties[property].Count; i++) {
             string value = sr.Properties[property][i].ToString();
             if (value.Length > 0) {
@@ -225,13 +225,13 @@ internal static class ActiveDirectoryServices {
         }
     }
 
-    public static Hashtable AdFetch(in string username) {
+    public static Hashtable AdFetch(string username) {
         SearchResult sr = GetUser(username);
         if (sr is null) return null;
         return AdFetch(sr);
     }
 
-    public static Hashtable AdFetch(in SearchResult result) {
+    public static Hashtable AdFetch(SearchResult result) {
         Hashtable hash = new Hashtable();
 
         ContentBuilderAddValue(result, "title", "TITLE", hash, null);
@@ -272,7 +272,7 @@ internal static class ActiveDirectoryServices {
     }
 
     /*
-    public static byte[] UnlockUser(in string[] para) {
+    public static byte[] UnlockUser(string[] para) {
         string filename = String.Empty;
         string username = String.Empty;
         for (int i = 1; i < para.Length; i++)
@@ -297,7 +297,7 @@ internal static class ActiveDirectoryServices {
         return Strings.CODE_OK.Array;
     }
 
-    public static byte[] DisableUser(in string[] para) {
+    public static byte[] DisableUser(string[] para) {
         string filename = String.Empty;
         string username = String.Empty;
         for (int i = 1; i < para.Length; i++)
@@ -325,7 +325,7 @@ internal static class ActiveDirectoryServices {
         return Strings.CODE_OK.Array;
     }
 
-    public static byte[] EnableUser(in string[] para) {
+    public static byte[] EnableUser(string[] para) {
         string filename = String.Empty;
         string username = String.Empty;
         for (int i = 1; i < para.Length; i++)

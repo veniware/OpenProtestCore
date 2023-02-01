@@ -65,7 +65,7 @@ internal sealed class Cache {
 
     public readonly Dictionary<string, Entry> cashe = new Dictionary<string, Entry>();
 
-    public Cache(in string path) {
+    public Cache(string path) {
         birthdate = DateTime.Now.ToString(Strings.DATETIME_FORMAT);
         this.path = path;
         Load();
@@ -193,7 +193,7 @@ internal sealed class Cache {
         return true;
     }
 
-    private void LoadFile(in FileInfo f, ref Dictionary<string, byte[]> files) {
+    private void LoadFile(FileInfo f, ref Dictionary<string, byte[]> files) {
         string name = f.FullName;
         name = name.Replace(path, String.Empty);
         name = name.Replace("\\", "/");
@@ -205,7 +205,7 @@ internal sealed class Cache {
         files.Add(name, bytes);
     }
 
-    private Entry ConstractEntry(in string name, in byte[] bytes, string extention = null) {
+    private Entry ConstractEntry(string name, byte[] bytes, string extention = null) {
         extention ??= name.Split('.').Last();
 
         byte[] gzip = GZip(bytes);
@@ -245,12 +245,12 @@ internal sealed class Cache {
         return entry;
     }
 
-    public static byte[] Minify(in byte[] bytes) {
+    public static byte[] Minify(byte[] bytes) {
 
         return null;
     }
 
-    public static byte[] GZip(in byte[] bytes) {
+    public static byte[] GZip(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         MemoryStream ms = new MemoryStream();
@@ -263,7 +263,7 @@ internal sealed class Cache {
 
         return arary;
     }
-    public static byte[] UnGZip(in byte[] bytes) {
+    public static byte[] UnGZip(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         using MemoryStream zipped = new MemoryStream(bytes);
@@ -274,7 +274,7 @@ internal sealed class Cache {
     }
 
 #if DEFLATE
-    public static byte[] Deflate(in byte[] bytes) {
+    public static byte[] Deflate(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         byte[] output;
@@ -286,7 +286,7 @@ internal sealed class Cache {
         output = ms.ToArray();
         return output;
     }
-    public static byte[] UnDeflate(in byte[] bytes) {
+    public static byte[] UnDeflate(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         byte[] output;
@@ -301,7 +301,7 @@ internal sealed class Cache {
 #endif
 
 #if BROTLI
-    public static byte[] Brotli(in byte[] bytes) {
+    public static byte[] Brotli(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         byte[] output;
@@ -313,7 +313,7 @@ internal sealed class Cache {
         output = ms.ToArray();
         return output;
     }
-    public static byte[] UnBrotli(in byte[] bytes) {
+    public static byte[] UnBrotli(byte[] bytes) {
         if (bytes is null) return Array.Empty<byte>();
 
         byte[] output;

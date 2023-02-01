@@ -32,12 +32,12 @@ internal static class Auth {
         public long sessionTimeout;
     }
 
-    public static bool IsAuthenticated(in HttpListenerContext ctx) {
+    public static bool IsAuthenticated(HttpListenerContext ctx) {
         string sessionId = ctx.Request.Cookies["sessionid"]?.Value ?? null;
         if (sessionId is null) return false;
-        return IsAuthenticated(in sessionId);
+        return IsAuthenticated(sessionId);
     }
-    public static bool IsAuthenticated(in string sessionId) {
+    public static bool IsAuthenticated(string sessionId) {
         if (sessionId is null) return false;
         if (!sessions.ContainsKey(sessionId)) return false;
 
@@ -51,12 +51,12 @@ internal static class Auth {
         return true;
     }
 
-    public static bool IsAuthorized(in HttpListenerContext ctx, in string path) {
+    public static bool IsAuthorized(HttpListenerContext ctx, string path) {
         string sessionId = ctx.Request.Cookies["sessionid"]?.Value ?? null;
         if (sessionId is null) return false;
-        return IsAuthorized(in sessionId, path);
+        return IsAuthorized(sessionId, path);
     }
-    public static bool IsAuthorized(in string sessionId, string path) {
+    public static bool IsAuthorized(string sessionId, string path) {
         if (sessionId is null) return false;
         if (!sessions.ContainsKey(sessionId)) return false;
 
@@ -64,7 +64,7 @@ internal static class Auth {
         return session.access.authorization.Any(v => path.StartsWith(v));
     }
 
-    public static bool AttemptAuthenticate(in HttpListenerContext ctx, out string seesionId) {
+    public static bool AttemptAuthenticate(HttpListenerContext ctx, out string seesionId) {
         using StreamReader streamReader = new StreamReader(ctx.Request.InputStream);
         ReadOnlySpan<char> payload = streamReader.ReadToEnd().AsSpan();
 
@@ -99,7 +99,7 @@ internal static class Auth {
         return false;
     }
 
-    public static string GrandAccess(in HttpListenerContext ctx, in string username) {
+    public static string GrandAccess(HttpListenerContext ctx, string username) {
         string sessionId = Cryptography.RandomStringGenerator(64);
 
         ctx.Response.AddHeader("Set-Cookie", $"sessionid={sessionId}; Domain={ctx.Request.UserHostName.Split(':')[0]}; Max-age=604800; HttpOnly; SameSite=Strict; Secure;");
@@ -119,12 +119,12 @@ internal static class Auth {
         return null; 
     }
 
-    public static bool RevokeAccess(in HttpListenerContext ctx, in string initiator) {
+    public static bool RevokeAccess(HttpListenerContext ctx, string initiator) {
         string sessionId = ctx.Request.Cookies["sessionid"]?.Value ?? null;
         if (sessionId is null) return false;
         return RevokeAccess(sessionId, initiator);
     }
-    public static bool RevokeAccess(in string sessionId, in string initiator = null) {
+    public static bool RevokeAccess(string sessionId, string initiator = null) {
         if (sessionId is null) return false;
         if (!sessions.ContainsKey(sessionId)) return false;
 
@@ -136,7 +136,7 @@ internal static class Auth {
         return false;
     }
 
-    public static string GetUsername(in string sessionId) {
+    public static string GetUsername(string sessionId) {
         if (sessionId is null) return null;
 
         if (sessions.TryGetValue(sessionId, out Session session))

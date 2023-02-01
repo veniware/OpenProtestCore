@@ -78,11 +78,11 @@ internal static class KeepAlive {
         connections.Remove(ws, out _);
     }
 
-    public static void Broadcast(in string message) {
+    public static void Broadcast(string message) {
         Broadcast(Encoding.UTF8.GetBytes(message));
     }
 
-    public static void Broadcast(in byte[] message) {
+    public static void Broadcast(byte[] message) {
         foreach (Entry entry in connections.Values) {
             Console.WriteLine(entry.id);
             Encoding.UTF8.GetString(message);

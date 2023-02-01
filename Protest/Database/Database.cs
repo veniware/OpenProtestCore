@@ -90,7 +90,7 @@ public sealed class Database {
         }
     }
 
-    private bool Write(in Entry entry) {
+    private bool Write(Entry entry) {
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new AttributListJsonConverter());
 #if DEBUG
@@ -114,7 +114,7 @@ public sealed class Database {
         return true;
     }
 
-    public bool Delete(in string filename, in string initiator) {
+    public bool Delete(string filename, string initiator) {
         if (!dictionary.ContainsKey(filename)) {
             return false;
         }
@@ -128,16 +128,16 @@ public sealed class Database {
             return false;
         }
 
-        Logger.Action(in initiator, $"Delete equip: {filename}");
+        Logger.Action(initiator, $"Delete equip: {filename}");
 
         return true;
     }
 
-    public bool Delete(in Entry entry, in string initiator) {
+    public bool Delete(Entry entry, string initiator) {
         return Delete(entry.filename, initiator);
     }
 
-    public bool Save(string filename, SynchronizedDictionary<string, Attribute> modifications, in SaveMethod method, in string initiator) {
+    public bool Save(string filename, SynchronizedDictionary<string, Attribute> modifications, SaveMethod method, string initiator) {
         if (filename is null || filename.Length == 0) {
             filename = GenerateFilename();
         }
@@ -171,7 +171,7 @@ public sealed class Database {
         return false;
     }
 
-    private bool SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, in string initiator) {
+    private bool SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         Entry newEntry = new Entry() {
             filename = GenerateFilename(1),
             attributes = modifications,
@@ -184,10 +184,10 @@ public sealed class Database {
         //new Thread(() => { Write(newEntry); }).Start();
         Write(newEntry);
 
-        Logger.Action(in initiator, $"Create a new entry on {this.name} database: {filename}");
+        Logger.Action(initiator, $"Create a new entry on {this.name} database: {filename}");
         return true;
     }    
-    private bool SaveOverwrite(string filename, SynchronizedDictionary<string, Attribute> modifications, in string initiator) {
+    private bool SaveOverwrite(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
 
         Entry newEntry = new Entry() {
@@ -202,10 +202,10 @@ public sealed class Database {
         //new Thread(() => { Write(newEntry); }).Start();
         Write(newEntry);
 
-        Logger.Action(in initiator, $"Overwrite entry on {this.name} database: {filename}");
+        Logger.Action(initiator, $"Overwrite entry on {this.name} database: {filename}");
         return true;
     }
-    private bool SaveAppend(string filename, SynchronizedDictionary<string, Attribute> modifications, in string initiator) {
+    private bool SaveAppend(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
 
         /*foreach (Attribute newAttr in modifications.Values) {
@@ -226,10 +226,10 @@ public sealed class Database {
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
 
-        Logger.Action(in initiator, $"Append on entry {this.name} database: {filename}");
+        Logger.Action(initiator, $"Append on entry {this.name} database: {filename}");
         return true;
     }
-    private bool SaveMerge(string filename, SynchronizedDictionary<string, Attribute> modifications, in string initiator) {
+    private bool SaveMerge(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
 
         /*foreach (Attribute oldAttr in oldEntry.attributes.Values) {
@@ -251,7 +251,7 @@ public sealed class Database {
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
 
-        Logger.Action(in initiator, $"Marge with entry on {this.name} database: {filename}");
+        Logger.Action(initiator, $"Marge with entry on {this.name} database: {filename}");
         return true;
     }
 
@@ -260,7 +260,7 @@ public sealed class Database {
         return null;
     }
 
-    public byte[] SaveHandler(in HttpListenerContext ctx, in string initiator) {
+    public byte[] SaveHandler(HttpListenerContext ctx, string initiator) {
         string filename = null;
 
         ReadOnlySpan<char> querySpan = ctx.Request.Url.Query.AsSpan();
@@ -326,7 +326,7 @@ public sealed class Database {
         return lastCached;
     }
 
-    public byte[] GetAttribute(in string query) {
+    public byte[] GetAttribute(string query) {
         string filename = String.Empty;
         string attribute = String.Empty;
 
@@ -349,7 +349,7 @@ public sealed class Database {
 
         return GetAttribute(filename, attribute);
     }
-    public byte[] GetAttribute(in string filename, string attributeName) {
+    public byte[] GetAttribute(string filename, string attributeName) {
         if (filename.Length == 0) return null;
         if (attributeName.Length == 0) return null;
 
