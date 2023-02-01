@@ -1,6 +1,7 @@
 .list-listbox {
     color: #202020;
     background-color: var(--pane-color);
+    outline: 0;
 
     position: absolute;
     left: 0;

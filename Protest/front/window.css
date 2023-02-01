@@ -106,23 +106,121 @@
 }
 
 .win-toolbar > .win-toolbar-button {
-    display: inline-block;
+    float: left;
+
     width: 36px;
     height: 36px;
+    outline: 0;
+
     border-radius: 2px;
     margin: 2px;
 
     background-size: 30px 30px;
     background-position: center;
     background-repeat: no-repeat;
+    background-color: transparent;
+
+    filter: drop-shadow(rgba(32,32,32,.5)1px 1px 1px);
 }
-.win-toolbar > .win-toolbar-button:hover {
+.win-toolbar > .win-toolbar-button:hover,
+.win-toolbar > .win-toolbar-button:focus,
+.win-toolbar > .win-toolbar-button:focus-within {
     transition: .2s;
     background-color: rgb(72,72,72);
 }
 .win-toolbar > .win-toolbar-button:active {
     transition: .2s;
     background-color: rgb(64,64,64);
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu {
+    position: relative;
+
+    visibility: hidden;
+    filter: opacity(0);
+
+    left: 0;
+    top: calc(100% + 6px);
+    width: 200px;
+    height: 100px;
+    padding: 4px;
+        
+    background-color: var(--pane-color);
+    color: rgb(32,32,32);
+    font-weight: 600;
+
+    min-height: 32px;
+    border-radius: 4px;
+    box-shadow: rgba(64,64,64,.6) 0 0 4px;
+
+    transform: scaleY(.6);
+    transform-origin: 50% 0;
+    transition: .2s;
+}
+.win-toolbar > .win-toolbar-button:focus > .win-toolbar-submenu,
+.win-toolbar > .win-toolbar-button:focus-within > .win-toolbar-submenu {
+    visibility: visible;
+    filter: none;
+    transform: none;
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu::before {
+    position: relative;
+    left: 9px;
+    top: -30px;
+    content: "";
+    border: solid;
+    border-color: var(--pane-color) transparent;
+    border-width: 0 6px 6px 6px;
+    transform: translateX(6px) !important;
+    transform-origin: 50% 100%;
+    z-index: 1;
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu > input {
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: calc(100% - 16px);
+    padding: 2px 4px;
+    animation: none !important;
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 32px;
+    bottom: 0;
+    
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div {
+    border-radius: 2px;
+    padding: 2px;
+    margin: 2px;
+    height: 20px; 
+    transition: .2s;
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div:hover {
+    background-color: var(--highlight-color);
+}
+
+.win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div:active {
+    background-color: var(--select-color);
+}
+
+.win-toolbar > .win-toolbar-button > input[type="text"] {
+    width: calc(100% - 36px);
+    line-height: 24px;
+    padding-left: 32px;
+    background: transparent;
+    animation: none !important;
+    color: var(--fore-color);
+    font-weight: bold;
 }
 
 .win-content {

@@ -20,8 +20,8 @@
 *[tip]::before {
     content: attr(tip);
     white-space: nowrap;
-    background-color: var(--back-color);
-    color: var(--fore-color);
+    background-color: #202020;
+    color: #c0c0c0;
     text-align: center;
     line-height: normal;
     border-radius: 4px;
@@ -65,7 +65,7 @@
 *[tip-below]::after {
     content: "";
     border: solid;
-    border-color: var(--back-color) transparent;
+    border-color: #202020 transparent;
     border-width: 0 6px 6px 6px;
     transform: translateX(12px) !important;
     transform-origin: 50% 100%;
@@ -75,8 +75,8 @@
 *[tip-below]::before {
     content: attr(tip-below);
     white-space: nowrap;
-    background-color: var(--back-color);
-    color: var(--fore-color);
+    background-color: #202020;
+    color: #c0c0c0;
     text-align: center;
     border-radius: 4px;
     min-width: 44px;

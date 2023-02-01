@@ -6,37 +6,49 @@ class UsersList extends List {
         this.SetIcon("/mono/users.svg");
 
         this.SetColumns(["title", "firstname", "lastname", "username", "email"]);
-        this.InitializeToolbar();
+        this.SetupToolbar();
 
         this.LinkArray(LOADER.users.data);
         this.RefreshList();
 
-        const addButton = document.createElement("div");
-        addButton.className = "win-toolbar-button";
-        addButton.style.backgroundImage = "url(mono/add.svg?light)";
-        addButton.setAttribute("tip-below", "Add");
-        this.toolbar.appendChild(addButton);
+        const addButton    = this.AddToolbarButton("Add", "mono/add.svg?light");
+        const removeButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
+        const filterButton = this.SetupFilter();
+        
+        const searchButton = this.AddToolbarButton(null, "mono/search.svg?light");
+        searchButton.style.overflow = "hidden";
+        searchButton.style.backgroundPosition = "2px center";
 
-        const removeButton = document.createElement("div");
-        removeButton.className = "win-toolbar-button";
-        removeButton.style.backgroundImage = "url(mono/delete.svg?light)";
-        removeButton.setAttribute("tip-below", "Delete");
-        this.toolbar.appendChild(removeButton);
+        const searchText = document.createElement("input");
+        searchText.type = "text";
+        searchButton.appendChild(searchText);
 
-        const filterButton = document.createElement("div");
-        filterButton.className = "win-toolbar-button";
-        filterButton.style.backgroundImage = "url(mono/filter.svg?light)";
-        this.toolbar.appendChild(filterButton);
+        filterButton.onfocus = ()=>{
+            if (this.popoutWindow)
+                filterButton.firstChild.style.maxHeight = this.content.clientHeight - 24 + "px";
+            else
+                filterButton.firstChild.style.maxHeight = container.clientHeight - this.win.offsetTop - 96 + "px";
+        };
+        
+        searchButton.onfocus = ()=> {
+            searchText.focus();
+        };
+        searchText.onfocus = ()=> {
+            searchButton.style.width = "200px";
+        };
+        searchText.onblur = ()=> {
+            if (searchText.value.length === 0) searchButton.style.width = "36px";
+        };
+        searchText.onchange = searchText.oninput = () =>{
+            searchButton.style.backgroundColor = searchText.value.length === 0 ? "" : "rgb(72,72,72)";
+        };
+        searchText.onkeydown = event=> {
+            if (event.key === "Escape") {
+                searchText.value = "";
+                searchText.onchange();
+            }
+        };
 
-        const sortButton = document.createElement("div");
-        sortButton.className = "win-toolbar-button";
-        sortButton.style.backgroundImage = "url(mono/sort.svg?light)";
-        this.toolbar.appendChild(sortButton);
-
-        const searchButton = document.createElement("div");
-        searchButton.className = "win-toolbar-button";
-        searchButton.style.backgroundImage = "url(mono/search.svg?light)";
-        this.toolbar.appendChild(searchButton);
     }
 
     InflateElement(element, entry, type) { //override

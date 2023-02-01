@@ -182,7 +182,7 @@ class Window {
 
         this.task = document.createElement("div");
         this.task.setAttribute("role", "button");
-        this.task.tabIndex = "0";
+        //this.task.tabIndex = "0";
         this.task.className = "bar-icon";
         this.task.style.left = 2 + WIN.array.length * (onMobile ? 48 : 56) + "px";
         taskbar.appendChild(this.task);
@@ -333,25 +333,6 @@ class Window {
         WIN.AlignIcon(false);
 
         if (onMobile || WIN.always_maxxed) this.Toogle();
-    }
-
-    InitializeToolbar() {
-        this.toolbar = document.createElement("div");
-        this.toolbar.className = "win-toolbar";
-        this.win.appendChild(this.toolbar);
-
-        if (this.isMaximized) {
-            this.toolbar.style.top = "38px";
-            this.content.style.top = "82px";
-        } else {
-            this.toolbar.style.top = "32px";
-            this.content.style.top = "76px";
-        }
-
-        this.toolbar.onmousedown = (event)=> {
-            if (!this.popoutWindow)
-                this.BringToFront();
-            event.stopPropagation(); };
     }
 
     Close() {
@@ -797,6 +778,92 @@ class Window {
             btnCancel: btnCancel,
             Abort: Abort
         };
+    }
+
+    SetupToolbar() {
+        this.toolbar = document.createElement("div");
+        this.toolbar.className = "win-toolbar";
+        this.win.appendChild(this.toolbar);
+
+        if (this.isMaximized) {
+            this.toolbar.style.top = "38px";
+            this.content.style.top = "82px";
+        } else {
+            this.toolbar.style.top = "32px";
+            this.content.style.top = "76px";
+        }
+
+        this.toolbar.onmousedown = (event)=> {
+            if (!this.popoutWindow)
+                this.BringToFront();
+            event.stopPropagation(); };
+    }
+
+    SetupFilter() {
+        if (!this.toolbar) return;
+
+        const filterButton = this.AddToolbarButton(null, "mono/filter.svg?light");
+        
+        const filterMenu = document.createElement("div");
+        filterMenu.className = "win-toolbar-submenu";
+        filterButton.appendChild(filterMenu);
+
+        const findFilter = document.createElement("input");
+        findFilter.type = "text";
+        findFilter.placeholder = "Find";
+        filterMenu.appendChild(findFilter);
+
+        const filtersList = document.createElement("div");
+        
+        filterMenu.appendChild(filtersList);
+
+        
+        const Refresh = () => {
+            let added = ["a", "g", "c", "f" , "t", "1", "6", "2", "3", "7", "4", "5"];
+
+            for (let i = 0; i < this.array.length; i++) {
+                if (!this.array[i].a.hasOwnProperty("type")) continue;
+                if (added.includes(this.array[i].a.type)) continue;
+                added.add(this.array[i].a.type);
+            }
+            added = added.sort();
+            
+            filtersList.innerHTML = "";
+            filterMenu.style.height = `${32 + added.length * 26}px`;
+            
+            for (let i = 0; i < added.length; i++) {
+                const newFilter = document.createElement("div");
+                newFilter.textContent = added[i];
+                filtersList.appendChild(newFilter);
+            }
+        };
+
+        filterMenu.onclick = event=> {
+            event.stopPropagation();
+        };
+
+        filterButton.onclick = ()=> {
+            //findFilter.value = "";
+            Refresh();
+        };
+
+        Refresh();
+
+        return filterButton;
+    }
+
+    AddToolbarButton(tooltip, icon) {
+        if (!this.toolbar) return;
+
+        const newButton = document.createElement("div");
+        newButton.className = "win-toolbar-button";
+        newButton.style.backgroundImage = `url(${icon})`;
+        newButton.tabIndex = "0";
+        this.toolbar.appendChild(newButton);
+
+        if (tooltip) newButton.setAttribute("tip-below", tooltip);
+
+        return newButton;
     }
 
     SetTitle(title="") {

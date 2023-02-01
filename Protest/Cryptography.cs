@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
 using System.IO;
-using System;
 
 namespace Protest;
 
@@ -36,31 +36,6 @@ internal static class Cryptography {
         return hash;
     }
 
-    /*public static byte[] Encrypt(in byte[] plain, in byte[] key, in byte[] iv) {
-        if (plain is null || plain.Length == 0) return Array.Empty<byte>();
-        if (key is null || key.Length == 0) return plain; //in case of a null key, don't encrypt
-
-        using ICryptoTransform encryptor = Aes.Create().CreateEncryptor(key, iv);
-        using MemoryStream memoryStream = new MemoryStream();
-        using CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
-        cryptoStream.Write(plain, 0, plain.Length);
-        cryptoStream.FlushFinalBlock();
-        return memoryStream.ToArray();
-    }
-
-    public static byte[] Decrypt(in byte[] cipher, in byte[] key, in byte[] iv) {
-        if (cipher is null || cipher.Length == 0) return Array.Empty<byte>();
-        if (key is null || key.Length == 0) return cipher; //in case of a null key, don't decrypt
-
-        using ICryptoTransform decryptor = Aes.Create().CreateDecryptor(key, iv);
-        using MemoryStream memoryStream = new MemoryStream();
-        using CryptoStream cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Write);
-        cryptoStream.Write(cipher, 0, cipher.Length);
-        cryptoStream.FlushFinalBlock();
-        return memoryStream.ToArray();
-    }*/
-
-
     public static byte[] Encrypt(byte[] plain, byte[] key, byte[] iv) {
         if (plain is null || plain.Length == 0) return Array.Empty<byte>();
         if (key is null || key.Length == 0) return plain; //in case of a null key, don't encrypt
@@ -86,7 +61,6 @@ internal static class Cryptography {
         
         return memoryStream.ToArray();
     }
-
 
     public static string EncryptB64(in string text, in byte[] key, in byte[] iv) {
         if (text.Length == 0) return string.Empty;

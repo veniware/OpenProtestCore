@@ -6,7 +6,7 @@ class DevicesList extends List {
         this.SetIcon("/mono/devices.svg");
 
         this.SetColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
-        this.InitializeToolbar();
+        this.SetupToolbar();
 
         this.LinkArray(LOADER.devices.data);
         this.RefreshList();
