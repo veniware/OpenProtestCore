@@ -1,9 +1,7 @@
 
 const LOADER = {
-    devices: [],
-    users: [],
-    devicesVersion: 0,
-    usersVersion: 0,
+    devices: {},
+    users: {},
 
     baseStyles: [
         "window.css",

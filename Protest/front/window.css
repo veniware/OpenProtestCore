@@ -149,7 +149,7 @@
     color: rgb(32,32,32);
     font-weight: 600;
 
-    min-height: 32px;
+    min-height: 64px;
     border-radius: 4px;
     box-shadow: rgba(64,64,64,.6) 0 0 4px;
 
@@ -220,7 +220,7 @@
     background: transparent;
     animation: none !important;
     color: var(--fore-color);
-    font-weight: bold;
+    font-weight: 600;
 }
 
 .win-content {
@@ -308,37 +308,30 @@
 .no-results:empty::after {
     display: block;
     content: "no results";
-    font-size: 20px;
-    font-family: var(--global-font-family);
-    color: #C0C0C0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #202020;
     margin-top: 20px;
     height: 100px;
     text-align: center;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(mono/l_clear.svgz);
-    background-size: 64px 64px;
+    background-image: url(mono/clear.svg);
+    background-size: 56px 56px;
     background-position-y: 36px;
-    filter: drop-shadow(0px 0px 1px rgb(32,32,32));
     animation: fade-in .4s ease-in;
+    filter: brightness(400%);
 }
 
-.no-entries:empty::after {
+.no-results-small:empty::after {
     display: block;
     content: "no results";
-    font-size: 20px;
-    font-family: var(--global-font-family);
-    color: #C0C0C0;
-    margin-top: 20px;
-    height: 100px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #202020;
+    padding-top: 8px;
     text-align: center;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(mono/l_clear.svgz);
-    background-size: 64px 64px;
-    background-position-y: 36px;
-    filter: drop-shadow(0px 0px 1px rgb(32,32,32));
-    animation: fade-in .4s ease-in;
+    filter: brightness(400%);
 }
 
 .waitbox {

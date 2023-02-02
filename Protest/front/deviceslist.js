@@ -8,8 +8,13 @@ class DevicesList extends List {
         this.SetColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
         this.SetupToolbar();
 
-        this.LinkArray(LOADER.devices.data);
+        this.LinkData(LOADER.devices);
         this.RefreshList();
+
+        const addButton    = this.AddToolbarButton("Add", "mono/add.svg?light");
+        const removeButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
+        const filterButton = this.SetupFilter();
+        const searchButton = this.SetupSearch();
     }
 
     InflateElement(element, entry, type) { //override
@@ -17,8 +22,8 @@ class DevicesList extends List {
 
         if (!element.ondblclick)
             element.ondblclick = (event) => {
-
                 event.stopPropagation();
+                console(element.getAttribute(id));
             };
     }
 }

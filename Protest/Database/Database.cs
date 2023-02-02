@@ -308,8 +308,10 @@ public sealed class Database {
 
         StringBuilder payload = new StringBuilder();
         payload.Append('{');
-        payload.Append($"\"version\":\"{version}\",");
-        payload.Append($"\"data\":[");
+        payload.Append($"\"version\":{version},");
+        payload.Append($"\"length\":{dictionary.Count},");
+
+        payload.Append($"\"data\":{{");
 
         bool isFirst = true;
         foreach (KeyValuePair<string, Entry> pair in dictionary) {
@@ -318,7 +320,7 @@ public sealed class Database {
             isFirst = false;
         }
 
-        payload.Append("]}");
+        payload.Append("}}");
 
         lastCachedVersion = version;
         lastCached = Encoding.UTF8.GetBytes(payload.ToString());
@@ -372,14 +374,10 @@ internal sealed class EntryJsonConverter : JsonConverter<Database.Entry> {
     }
 
     public override void Write(Utf8JsonWriter writer, Database.Entry value, JsonSerializerOptions options) {
-        writer.WriteStartObject();
-
-        writer.WriteString("f", value.filename);
-
-        writer.WritePropertyName("a");
+        //writer.WriteStartObject();
+        writer.WritePropertyName(value.filename);
         attributListConverter.Write(writer, value.attributes, options);
-
-        writer.WriteEndObject();
+        //writer.WriteEndObject();
     }
 }
 

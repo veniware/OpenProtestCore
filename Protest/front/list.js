@@ -6,7 +6,7 @@ class List extends Window {
         this.params = params ? params : { sort:"", filter:"", find:"" };
         this.AddCssDependencies("list.css");
 
-        this.array = null;
+        this.link = null;
 
         this.columnsElements = [];
         this.resizingColumnElement = null;
@@ -17,7 +17,7 @@ class List extends Window {
         this.columnsWidth0 = [];
 
         this.list = document.createElement("div");
-        this.list.className = "list-listbox";
+        this.list.className = "list-listbox no-results";
         this.list.onscroll = () => this.UpdateViewport();
         this.content.appendChild(this.list);
 
@@ -36,6 +36,99 @@ class List extends Window {
         
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+    }
+
+    SetupFilter() {
+        if (!this.toolbar) return;
+
+        const filterButton = this.AddToolbarButton(null, "mono/filter.svg?light");
+        
+        const filterMenu = document.createElement("div");
+        filterMenu.className = "win-toolbar-submenu";
+        filterButton.appendChild(filterMenu);
+
+        const findFilter = document.createElement("input");
+        findFilter.type = "text";
+        findFilter.placeholder = "Find";
+        filterMenu.appendChild(findFilter);
+
+        const filtersList = document.createElement("div");
+        filtersList.className = "no-results-small";
+        
+        filterMenu.appendChild(filtersList);
+        
+        const Refresh = () => {
+            let added = [];
+            for (const key in this.link.data) {
+                if (!this.link.data[key].hasOwnProperty("type")) continue;
+                if (added.includes(this.array[key].type)) continue;
+                added.add(this.array[key].type);
+            }
+            added = added.sort();
+            
+            filtersList.innerHTML = "";
+            filterMenu.style.height = `${32 + added.length * 26}px`;
+            
+            for (let i = 0; i < added.length; i++) {
+                const newFilter = document.createElement("div");
+                newFilter.textContent = added[i];
+                filtersList.appendChild(newFilter);
+            }
+        };
+
+        filterButton.onfocus = ()=> {
+            if (this.popoutWindow)
+                filterButton.firstChild.style.maxHeight = this.content.clientHeight - 24 + "px";
+            else
+                filterButton.firstChild.style.maxHeight = container.clientHeight - this.win.offsetTop - 96 + "px";
+        };
+
+        filterMenu.onclick = event=> {
+            event.stopPropagation();
+        };
+
+        filterButton.onclick = ()=> {
+            //findFilter.value = "";
+            Refresh();
+        };
+
+        Refresh();
+
+        return filterButton;
+    }
+
+    SetupSearch() {
+        const searchButton = this.AddToolbarButton(null, "mono/search.svg?light");
+        searchButton.style.overflow = "hidden";
+        searchButton.style.backgroundPosition = "2px center";
+
+        const searchText = document.createElement("input");
+        searchText.type = "text";
+        searchButton.appendChild(searchText);
+
+        searchButton.onfocus = ()=> {
+            searchText.focus();
+        };
+        searchText.onfocus = ()=> {
+            searchButton.style.width = "200px";
+        };
+
+        searchText.onblur = ()=> {
+            if (searchText.value.length === 0) searchButton.style.width = "36px";
+        };
+
+        searchText.onchange = searchText.oninput = () =>{
+            searchButton.style.backgroundColor = searchText.value.length === 0 ? "" : "rgb(72,72,72)";
+        };
+
+        searchText.onkeydown = event=> {
+            if (event.key === "Escape") {
+                searchText.value = "";
+                searchText.onchange();
+            }
+        };
+
+        return searchButton;
     }
 
     List_mouseup(event) {
@@ -104,8 +197,8 @@ class List extends Window {
         this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
 
-    LinkArray(array) {
-        this.array = array;
+    LinkData(data) {
+        this.link = data;
     }
 
     FinalizeColumns() {
@@ -203,11 +296,11 @@ class List extends Window {
     RefreshList() {
         this.list.innerHTML = "";
 
-        for (let i = 0; i < this.array.length; i++) { //display
-            const element = document.createElement("div");
-            element.id = `id${this.array[i].f}`;
-            element.className = "list-element";
-            this.list.appendChild(element);
+        for (const key in this.link.data) {
+            const newElement = document.createElement("div");
+            newElement.id = key;
+            newElement.className = "list-element";
+            this.list.appendChild(newElement);
         }
 
         this.UpdateViewport();
@@ -253,13 +346,16 @@ class List extends Window {
                 this.list.childNodes[i].textContent = "";
             } else {
                 if (this.list.childNodes[i].childNodes.length > 0) continue;
-                let type = (this.array[i].hasOwnProperty("type")) ? this.array[i].a["type"].v.toLowerCase() : "";
-                this.InflateElement(this.list.childNodes[i], this.array[i].a, type);
+                const key = this.list.childNodes[i].getAttribute("id");
+                let type = (this.link.data[key].hasOwnProperty("type")) ? this.link.data[key]["type"].v.toLowerCase() : null;
+                this.InflateElement(this.list.childNodes[i], this.link.data[key], type);
             }
         }
 
-        if (this.array) {
-            this.counter.textContent = this.list.childNodes.length === this.array.length ? this.array.length : `${this.list.childNodes.length} / ${this.array.length}`;
+        if (this.link) {
+            this.counter.textContent = this.list.childNodes.length === this.link.length ?
+                this.link.length :
+                `${this.list.childNodes.length} / ${this.link.length}`;
         }
     }
 
