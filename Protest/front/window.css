@@ -214,13 +214,14 @@
 }
 
 .win-toolbar > .win-toolbar-button > input[type="text"] {
-    width: calc(100% - 36px);
+    width: calc(100% - 48px);
     line-height: 24px;
     padding-left: 32px;
     background: transparent;
     animation: none !important;
     color: var(--fore-color);
     font-weight: 600;
+    border-radius: 0;
 }
 
 .win-content {

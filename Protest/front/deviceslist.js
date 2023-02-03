@@ -5,7 +5,7 @@ class DevicesList extends List {
         this.SetTitle("Devices");
         this.SetIcon("/mono/devices.svg");
 
-        this.SetColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
+        this.SetupColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
         this.SetupToolbar();
 
         this.LinkData(LOADER.devices);
@@ -14,7 +14,14 @@ class DevicesList extends List {
         const addButton    = this.AddToolbarButton("Add", "mono/add.svg?light");
         const removeButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
         const filterButton = this.SetupFilter();
-        const searchButton = this.SetupSearch();
+        const findTextbox  = this.SetupFind();
+
+        if (params.find && params.find.length > 0) {
+            findTextbox.value = params.find;
+            findTextbox.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+            findTextbox.parentElement.style.width = "200px";
+            this.RefreshList();
+        }
     }
 
     InflateElement(element, entry, type) { //override
@@ -23,7 +30,7 @@ class DevicesList extends List {
         if (!element.ondblclick)
             element.ondblclick = (event) => {
                 event.stopPropagation();
-                console(element.getAttribute(id));
+                console.log(element.getAttribute("id"));
             };
     }
 }

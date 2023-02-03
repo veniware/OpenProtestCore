@@ -810,6 +810,10 @@ class Window {
 
         if (tooltip) newButton.setAttribute("tip-below", tooltip);
 
+        newButton.addEventListener("focus", event=>{
+            this.BringToFront();
+        });
+
         return newButton;
     }
 

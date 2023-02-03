@@ -3,12 +3,13 @@ class List extends Window {
         super();
         this.MIN_CELL_SIZE = 40;
         
-        this.params = params ? params : { sort:"", filter:"", find:"" };
+        this.params = params ? params : { select:null, sort:"", filter:"", find:"" };
         this.AddCssDependencies("list.css");
 
         this.link = null;
 
         this.columnsElements = [];
+        this.sortDescend = false;
         this.resizingColumnElement = null;
         this.movingColumnElement = null;
         this.mouseX0 = 0;
@@ -36,99 +37,7 @@ class List extends Window {
         
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
-    }
-
-    SetupFilter() {
-        if (!this.toolbar) return;
-
-        const filterButton = this.AddToolbarButton(null, "mono/filter.svg?light");
         
-        const filterMenu = document.createElement("div");
-        filterMenu.className = "win-toolbar-submenu";
-        filterButton.appendChild(filterMenu);
-
-        const findFilter = document.createElement("input");
-        findFilter.type = "text";
-        findFilter.placeholder = "Find";
-        filterMenu.appendChild(findFilter);
-
-        const filtersList = document.createElement("div");
-        filtersList.className = "no-results-small";
-        
-        filterMenu.appendChild(filtersList);
-        
-        const Refresh = () => {
-            let added = [];
-            for (const key in this.link.data) {
-                if (!this.link.data[key].hasOwnProperty("type")) continue;
-                if (added.includes(this.array[key].type)) continue;
-                added.add(this.array[key].type);
-            }
-            added = added.sort();
-            
-            filtersList.innerHTML = "";
-            filterMenu.style.height = `${32 + added.length * 26}px`;
-            
-            for (let i = 0; i < added.length; i++) {
-                const newFilter = document.createElement("div");
-                newFilter.textContent = added[i];
-                filtersList.appendChild(newFilter);
-            }
-        };
-
-        filterButton.onfocus = ()=> {
-            if (this.popoutWindow)
-                filterButton.firstChild.style.maxHeight = this.content.clientHeight - 24 + "px";
-            else
-                filterButton.firstChild.style.maxHeight = container.clientHeight - this.win.offsetTop - 96 + "px";
-        };
-
-        filterMenu.onclick = event=> {
-            event.stopPropagation();
-        };
-
-        filterButton.onclick = ()=> {
-            //findFilter.value = "";
-            Refresh();
-        };
-
-        Refresh();
-
-        return filterButton;
-    }
-
-    SetupSearch() {
-        const searchButton = this.AddToolbarButton(null, "mono/search.svg?light");
-        searchButton.style.overflow = "hidden";
-        searchButton.style.backgroundPosition = "2px center";
-
-        const searchText = document.createElement("input");
-        searchText.type = "text";
-        searchButton.appendChild(searchText);
-
-        searchButton.onfocus = ()=> {
-            searchText.focus();
-        };
-        searchText.onfocus = ()=> {
-            searchButton.style.width = "200px";
-        };
-
-        searchText.onblur = ()=> {
-            if (searchText.value.length === 0) searchButton.style.width = "36px";
-        };
-
-        searchText.onchange = searchText.oninput = () =>{
-            searchButton.style.backgroundColor = searchText.value.length === 0 ? "" : "rgb(72,72,72)";
-        };
-
-        searchText.onkeydown = event=> {
-            if (event.key === "Escape") {
-                searchText.value = "";
-                searchText.onchange();
-            }
-        };
-
-        return searchButton;
     }
 
     List_mouseup(event) {
@@ -185,47 +94,7 @@ class List extends Window {
         }
     }
 
-    AfterResize() { //override
-        this.UpdateViewport();
-    }
-
-    Popout() { //override
-        super.Popout();
-        this.UpdateViewport(true);
-
-        this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
-        this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
-    }
-
-    LinkData(data) {
-        this.link = data;
-    }
-
-    FinalizeColumns() {
-        this.resizingColumnElement = null;
-        this.movingColumnElement = null;
-
-        this.columnsElements = this.columnsElements.sort((a,b)=> a.offsetLeft - b.offsetLeft);
-
-        for (let i = 0; i < this.columnsElements.length; i++) {
-            this.columnsElements[i].style.transition = ".2s";
-            this.columnsElements[i].style.opacity = "1";
-            this.columnsElements[i].style.zIndex = "0";
-            this.columnsElements[i].style.cursor = "inherit";
-
-            let x = 0;
-            for (let j = 0; j < i; j++) {
-                x += this.columnsElements[j].offsetWidth;
-            }
-
-            this.columnsElements[i].style.left = `${100 * x / this.listTitle.offsetWidth}%`;
-            this.columnsElements[i].style.width = `${100 * this.columnsElements[i].offsetWidth / this.listTitle.offsetWidth}%`;
-        }
-
-        this.UpdateViewport(true);
-    };
-
-    SetColumns(columns) {
+    SetupColumns(columns) {
         this.columnsElements = [];
         while (this.listTitle.firstChild) this.listTitle.removeChild(this.listTitle.firstChild);
         
@@ -267,15 +136,30 @@ class List extends Window {
 
         const Column_onmouseup = event => {
             if (isLastActionMeaningful) return;
-            console.log("TODO: sort by " + event.target.textContent);
-            //TODO: sort
+            
+            const isAscend = event.target.className === "list-sort-ascend";
+
+            this.columnsElements.forEach(o=>o.className = "");
+            if (isAscend) {
+                event.target.className = "list-sort-descend";
+                this.sortDescend = true;
+            } else {
+                event.target.className = "list-sort-ascend";
+                this.sortDescend = false;
+            }
+            
+            this.params.sort = event.target.textContent;
+            this.RefreshList();
         };
 
         for (let i = 0; i < columns.length; i++) {
             const newColumn = document.createElement("div");
-
             newColumn.style.left = `${100 * i / columns.length}%`;
             newColumn.style.width = `${100 / columns.length}%`;
+
+            if (this.params.sort === columns[i]) {
+                newColumn.className = "list-sort-ascend";
+            }
 
             newColumn.onmousedown = event => Column_onmousedown(event);
             newColumn.onmousemove = event => Column_onmousemove(event);
@@ -293,17 +177,298 @@ class List extends Window {
         this.AfterResize();
     }
 
+    SetupFilter() {
+        if (!this.toolbar) return null;
+
+        const filterButton = this.AddToolbarButton(null, "mono/filter.svg?light");
+        
+        const filterMenu = document.createElement("div");
+        filterMenu.className = "win-toolbar-submenu";
+        filterButton.appendChild(filterMenu);
+
+        const findFilter = document.createElement("input");
+        findFilter.type = "text";
+        findFilter.placeholder = "Find";
+        filterMenu.appendChild(findFilter);
+
+        const filtersList = document.createElement("div");
+        filtersList.className = "no-results-small";
+        
+        filterMenu.appendChild(filtersList);
+        
+        const ClearSelection = () => filtersList.childNodes.forEach(o=>o.style.backgroundColor = "");
+        
+        const Refresh = () => {
+            let added = [];
+            for (const key in this.link.data) {
+                if (!this.link.data[key].hasOwnProperty("type")) continue;
+                if (added.includes(this.array[key].type)) continue;
+                if (this.array[key].indexOf(findFilter.value) < 0) continue;
+                added.add(this.array[key].type);
+            }
+            added = added.sort();
+            
+            filtersList.innerHTML = "";
+            filterMenu.style.height = `${32 + added.length * 26}px`;
+            
+            for (let i = 0; i < added.length; i++) {
+                const newType = document.createElement("div");
+                newType.textContent = added[i];
+                filtersList.appendChild(newType);
+
+                if (added[i] === this.params.filter) {
+                    newType.style.backgroundColor = "var(--select-color)";
+                    filterButton.style.borderBottom = "var(--theme-color) solid 2px";
+                }
+
+                newType.onclick = () => {
+                    ClearSelection();
+
+                    if (this.params.filter === added[i]) {
+                        this.params.filter = "";
+                        filterButton.style.borderBottom = "";
+                    } else {
+                        this.params.filter = added[i];
+                        filterButton.style.borderBottom = "var(--theme-color) solid 2px";
+                        newType.style.backgroundColor = "var(--select-color)";
+                    }
+
+                    this.RefreshList();
+                };
+            }
+        };
+
+        findFilter.onchange = findFilter.oninput = event => {
+            Refresh();
+        };
+
+        filterButton.ondblclick = () => {
+            this.params.filter = "";
+            filterButton.style.borderBottom = "";
+            ClearSelection();
+            this.RefreshList();
+
+        };
+
+        filterButton.onfocus = ()=> {
+            if (this.popoutWindow)
+                filterButton.firstChild.style.maxHeight = this.content.clientHeight - 24 + "px";
+            else
+                filterButton.firstChild.style.maxHeight = container.clientHeight - this.win.offsetTop - 96 + "px";
+        };
+ 
+        filterMenu.onclick = filterMenu.ondblclick = event=> {
+            event.stopPropagation();
+        };
+
+        Refresh();
+
+        return filterButton;
+    }
+
+    SetupFind() {
+        if (!this.toolbar) return null;
+
+        const findButton = this.AddToolbarButton(null, "mono/search.svg?light");
+        findButton.tabIndex = "-1";
+        findButton.style.overflow = "hidden";
+        findButton.style.backgroundPosition = "2px center";
+
+        const findTextbox = document.createElement("input");
+        findTextbox.type = "text";
+        findButton.appendChild(findTextbox);
+
+        findButton.onfocus = ()=> {
+            findTextbox.focus();
+        };
+        findTextbox.onfocus = ()=> {
+            findButton.style.width = "200px";
+        };
+
+        findTextbox.onblur = ()=> {
+            if (findTextbox.value.length === 0) findButton.style.width = "36px";
+        };
+
+        findTextbox.onchange = ()=> {
+            findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
+        
+            findTextbox.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+            this.params.find = findTextbox.value;
+            this.RefreshList();
+        };
+
+        findTextbox.ondblclick = event => {
+            if (event.layerX > 36) return;
+            findTextbox.value = "";
+            findTextbox.onchange();
+        };
+
+        findTextbox.onkeydown = event=> {
+            switch (event.key) {
+                case "Escape":
+                    findTextbox.value = "";
+                    findTextbox.onchange();
+                break;
+
+                case "Enter":
+                break;
+            }
+        };
+
+        return findTextbox;
+    }
+
+    AfterResize() { //override
+        this.UpdateViewport();
+    }
+
+    Popout() { //override
+        super.Popout();
+        this.UpdateViewport(true);
+
+        this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
+        this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+    }
+
+    LinkData(data) {
+        this.link = data;
+    }
+
+    FinalizeColumns() {
+        this.resizingColumnElement = null;
+        this.movingColumnElement = null;
+
+        this.columnsElements = this.columnsElements.sort((a,b)=> a.offsetLeft - b.offsetLeft);
+
+        for (let i = 0; i < this.columnsElements.length; i++) {
+            this.columnsElements[i].style.transition = ".2s";
+            this.columnsElements[i].style.opacity = "1";
+            this.columnsElements[i].style.zIndex = "0";
+            this.columnsElements[i].style.cursor = "inherit";
+
+            let x = 0;
+            for (let j = 0; j < i; j++) {
+                x += this.columnsElements[j].offsetWidth;
+            }
+
+            this.columnsElements[i].style.left = `${100 * x / this.listTitle.offsetWidth}%`;
+            this.columnsElements[i].style.width = `${100 * this.columnsElements[i].offsetWidth / this.listTitle.offsetWidth}%`;
+        }
+
+        this.UpdateViewport(true);
+    };
+
     RefreshList() {
         this.list.innerHTML = "";
 
-        for (const key in this.link.data) {
+        let filtered = [];
+        if (this.params.filter.length === 0) {
+            for (const key in this.link.data) {
+                filtered.push(key);
+            }
+
+        } else {
+            for (const key in this.link.data) {
+                if (!this.link.data.hasOwnProperty("type")) continue;
+                if (this.link.data.type !== this.params.filter) continue;
+                filtered.push(key);
+            }
+        }
+
+        let found;
+        if (this.params.find.length === 0) {
+            found = filtered;
+
+        } else {
+            found = [];
+            const keywords = this.params.find.toLowerCase().split(" ");
+
+            for (let i = 0; i < filtered.length; i++) {
+                let flag = false;
+    
+                for (let j = 0; j < keywords.length; j++) {
+                    if (keywords[j].length === 0) continue;
+
+                    for (const key in this.link.data[filtered[i]]) {
+                        if (this.link.data[filtered[i]][key].v.toLowerCase().indexOf(keywords[j]) > -1) {
+                            flag = true;
+                            continue;
+                        }
+                    }
+                }
+
+                if (flag) {
+                    found.push(filtered[i]);
+                    continue;
+                }
+            }
+        }
+
+        if (this.params.sort.length > 0) {
+            const attr = this.params.sort;
+
+            if (this.sortDescend) {
+                found = found.sort((a, b) => {
+                    if (this.link.data[a][attr] == undefined && this.link.data[b][attr] == undefined) return 0;
+                    if (this.link.data[a][attr] == undefined) return -1;
+                    if (this.link.data[b][attr] == undefined) return 1;
+                    if (this.link.data[a][attr].v < this.link.data[b][attr].v) return 1;
+                    if (this.link.data[a][attr].v > this.link.data[b][attr].v) return -1;
+                    return 0;
+                });
+            } else {
+                found = found.sort((a, b) => {
+                    if (this.link.data[a][attr] == undefined && this.link.data[b][attr] == undefined) return 0;
+                    if (this.link.data[a][attr] == undefined) return 1;
+                    if (this.link.data[b][attr] == undefined) return -1;
+                    if (this.link.data[a][attr].v < this.link.data[b][attr].v) return -1;
+                    if (this.link.data[a][attr].v > this.link.data[b][attr].v) return 1;
+                    return 0;
+                });
+            }
+        }
+
+        for (let i = 0; i < found.length; i++) {
             const newElement = document.createElement("div");
-            newElement.id = key;
+            newElement.id = found[i];
             newElement.className = "list-element";
             this.list.appendChild(newElement);
+
+            if (found[i] === this.params.select) {
+                this.selected = newElement;
+            }
+        }
+
+        if (this.selected) {
+            this.selected.style.backgroundColor = "var(--select-color)";
+            setTimeout(()=> {
+                this.selected.scrollIntoView({behavior: "smooth", block: "center"});
+            }, 100);
         }
 
         this.UpdateViewport();
+    }
+
+    UpdateViewport(force = false) {
+        for (let i = 0; i < this.list.childNodes.length; i++) {
+            if (force) this.list.childNodes[i].textContent = "";
+
+            if (this.list.childNodes[i].offsetTop - this.list.scrollTop < -32 ||
+                this.list.childNodes[i].offsetTop - this.list.scrollTop > this.list.clientHeight) {
+                this.list.childNodes[i].textContent = "";
+            } else {
+                if (this.list.childNodes[i].childNodes.length > 0) continue;
+                const key = this.list.childNodes[i].getAttribute("id");
+                let type = (this.link.data[key].hasOwnProperty("type")) ? this.link.data[key]["type"].v.toLowerCase() : null;
+                this.InflateElement(this.list.childNodes[i], this.link.data[key], type);
+            }
+        }
+
+        if (this.link) {
+            this.counter.textContent = this.list.childNodes.length === this.link.length ?
+                this.link.length :
+                `${this.list.childNodes.length} / ${this.link.length}`;
+        }
     }
 
     InflateElement(element, entry, c_type) { //overridable
@@ -332,31 +497,11 @@ class List extends Window {
             if (this.selected)
                 this.selected.style.backgroundColor = "";
 
+            this.params.select = element.getAttribute("id");
+            
             this.selected = element;
             element.style.backgroundColor = "var(--select-color)";
         };
-    }
-
-    UpdateViewport(force = false) {
-        for (let i = 0; i < this.list.childNodes.length; i++) {
-            if (force) this.list.childNodes[i].textContent = "";
-
-            if (this.list.childNodes[i].offsetTop - this.list.scrollTop < -32 ||
-                this.list.childNodes[i].offsetTop - this.list.scrollTop > this.list.clientHeight) {
-                this.list.childNodes[i].textContent = "";
-            } else {
-                if (this.list.childNodes[i].childNodes.length > 0) continue;
-                const key = this.list.childNodes[i].getAttribute("id");
-                let type = (this.link.data[key].hasOwnProperty("type")) ? this.link.data[key]["type"].v.toLowerCase() : null;
-                this.InflateElement(this.list.childNodes[i], this.link.data[key], type);
-            }
-        }
-
-        if (this.link) {
-            this.counter.textContent = this.list.childNodes.length === this.link.length ?
-                this.link.length :
-                `${this.list.childNodes.length} / ${this.link.length}`;
-        }
     }
 
     CustomizeColumns() {

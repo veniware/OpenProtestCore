@@ -67,6 +67,21 @@
     background-color: rgb(64,64,64);
 }
 
+.list-title > .list-sort-ascend::before,
+.list-title > .list-sort-descend::before {
+    position: absolute;
+    left: calc(100% - 16px);
+    transform: translateY(8px);
+    content: "";
+    border: solid;
+    border-color: #C0C0C0 transparent;
+}
+.list-title > .list-sort-ascend::before {
+    border-width: 6px 6px 0 6px;
+}
+.list-title > .list-sort-descend::before {
+    border-width: 0 6px 6px 6px;
+}
 
 .list-element {
     position: relative;
