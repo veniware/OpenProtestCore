@@ -88,6 +88,12 @@ a {
     }
 }
 
+/*@media (prefers-contrast: more) {
+    * {
+        outline: 2px !important;
+    }
+}*/
+
 @-moz-document url-prefix() {
     * {
         scrollbar-width: thin;

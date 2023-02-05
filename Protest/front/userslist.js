@@ -5,7 +5,7 @@ class UsersList extends List {
         this.SetTitle("Users");
         this.SetIcon("/mono/users.svg");
 
-        this.SetupColumns(["title", "firstname", "lastname", "username", "email"]);
+        this.SetupColumns(["firstname", "lastname", "username", "email"]);
         this.SetupToolbar();
 
         this.LinkData(LOADER.users);
@@ -16,9 +16,9 @@ class UsersList extends List {
         const filterButton = this.SetupFilter();
         const findTextbox  = this.SetupFind();
 
-        if (params.find && params.find.length > 0) {
-            findTextbox.value = params.find;
-            findTextbox.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+        if (this.params.find && this.params.find.length > 0) {
+            findTextbox.value = this.params.find;
+            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
             findTextbox.parentElement.style.width = "200px";
             this.RefreshList();
         }
@@ -30,7 +30,15 @@ class UsersList extends List {
         if (!element.ondblclick)
             element.ondblclick = (event) => {
                 event.stopPropagation();
-                console.log(element.getAttribute("id"));
+                
+                const file = element.getAttribute("id");
+                for (let i = 0; i < WIN.array.length; i++)
+                    if (WIN.array[i] instanceof UserView && WIN.array[i].params.file === file) {
+                        WIN.array[i].Minimize(); //minimize/restore
+                        return;
+                    }
+
+                new UserView({ file: element.getAttribute("id") });
             };
     }
 }

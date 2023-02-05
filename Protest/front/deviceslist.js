@@ -16,9 +16,9 @@ class DevicesList extends List {
         const filterButton = this.SetupFilter();
         const findTextbox  = this.SetupFind();
 
-        if (params.find && params.find.length > 0) {
-            findTextbox.value = params.find;
-            findTextbox.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+        if (this.params.find && this.params.find.length > 0) {
+            findTextbox.value = this.params.find;
+            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
             findTextbox.parentElement.style.width = "200px";
             this.RefreshList();
         }
@@ -28,9 +28,17 @@ class DevicesList extends List {
         super.InflateElement(element, entry, type);
 
         if (!element.ondblclick)
-            element.ondblclick = (event) => {
-                event.stopPropagation();
-                console.log(element.getAttribute("id"));
-            };
+        element.ondblclick = (event) => {
+            event.stopPropagation();
+            
+            const file = element.getAttribute("id");
+            for (let i = 0; i < WIN.array.length; i++)
+                if (WIN.array[i] instanceof EquipView && WIN.array[i].params.file === file) {
+                    WIN.array[i].Minimize(); //minimize/restore
+                    return;
+                }
+
+            new EquipView({ file: element.getAttribute("id") });
+        };
     }
 }

@@ -37,7 +37,6 @@ class List extends Window {
         
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
-        
     }
 
     List_mouseup(event) {
@@ -238,8 +237,15 @@ class List extends Window {
             }
         };
 
-        findFilter.onchange = findFilter.oninput = event => {
+        findFilter.onchange = event => {
             Refresh();
+        };
+        
+        findFilter.onkeydown = event=> {
+            if (event.key === "Escape") {
+                findFilter.value = "";
+                findFilter.onchange();
+            }
         };
 
         filterButton.ondblclick = () => {
@@ -270,6 +276,7 @@ class List extends Window {
         if (!this.toolbar) return null;
 
         const findButton = this.AddToolbarButton(null, "mono/search.svg?light");
+        findButton.role = "textbox";
         findButton.tabIndex = "-1";
         findButton.style.overflow = "hidden";
         findButton.style.backgroundPosition = "2px center";
@@ -292,7 +299,7 @@ class List extends Window {
         findTextbox.onchange = ()=> {
             findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
         
-            findTextbox.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
             this.params.find = findTextbox.value;
             this.RefreshList();
         };
@@ -304,14 +311,9 @@ class List extends Window {
         };
 
         findTextbox.onkeydown = event=> {
-            switch (event.key) {
-                case "Escape":
-                    findTextbox.value = "";
-                    findTextbox.onchange();
-                break;
-
-                case "Enter":
-                break;
+            if (event.key === "Escape") {
+                findTextbox.value = "";
+                findTextbox.onchange();
             }
         };
 
@@ -340,6 +342,13 @@ class List extends Window {
 
         this.columnsElements = this.columnsElements.sort((a,b)=> a.offsetLeft - b.offsetLeft);
 
+        //remove elements and append them in the correct order
+        this.listTitle.innerHTML = "";
+        for (let i = 0; i < this.columnsElements.length; i++) {
+            this.listTitle.appendChild(this.columnsElements[i]);
+        }
+        this.listTitle.appendChild(this.columnsOptions);
+
         for (let i = 0; i < this.columnsElements.length; i++) {
             this.columnsElements[i].style.transition = ".2s";
             this.columnsElements[i].style.opacity = "1";
@@ -356,7 +365,7 @@ class List extends Window {
         }
 
         this.UpdateViewport(true);
-    };
+    }
 
     RefreshList() {
         this.list.innerHTML = "";
@@ -505,22 +514,131 @@ class List extends Window {
     }
 
     CustomizeColumns() {
-        const dialog = this.DialogBox("320px");
+        const dialog = this.DialogBox("640px");
         if (dialog === null) return;
 
         const btnOK = dialog.btnOK;
         const btnCancel = dialog.btnCancel;
         const buttonBox = dialog.buttonBox;
+
         const innerBox = dialog.innerBox;
+        innerBox.style.display = "grid";
+        innerBox.style.padding = "8px";
+        innerBox.style.gridGap = "4px";
+        innerBox.style.gridTemplateColumns = "auto min(400px, 76%) min(100px, 16%) auto";
+        innerBox.style.gridTemplateRows = "32px auto";
+
+        const filter = document.createElement("input");
+        filter.type = "text";
+        filter.placeholder = "Find";
+        filter.style.gridColumn = "2";
+        filter.style.gridRow = "1";
+        innerBox.appendChild(filter);
+
+        const listbox = document.createElement("div");
+        listbox.className = "check-list";
+        listbox.style.margin = "0 4px";
+        listbox.style.gridColumn = "2";
+        listbox.style.gridRow = "2";
+        innerBox.appendChild(listbox);
+
+        const buttons = document.createElement("div");
+        buttons.style.gridColumn = "3";
+        buttons.style.gridRow = "2";
+        innerBox.appendChild(buttons);
+
+        const btnMoveUp = document.createElement("input");
+        btnMoveUp.setAttribute("disabled", true);
+        btnMoveUp.type = "button";
+        btnMoveUp.value = "Move up";
+        btnMoveUp.style.width = "100%";
+        buttons.appendChild(btnMoveUp);
+        
+        const btnMoveDown = document.createElement("input");
+        btnMoveDown.setAttribute("disabled", true);
+        btnMoveDown.type = "button";
+        btnMoveDown.value = "Move down";
+        btnMoveDown.style.width = "100%";
+        buttons.appendChild(btnMoveDown);
+
+        const btnReset = document.createElement("input");
+        btnReset.type = "button";
+        btnReset.value = "Reset";
+        btnReset.style.width = "100%";
+        btnReset.style.marginTop = "16px";
+        buttons.appendChild(btnReset);
+
+
+        let checkList = {};
+        const CreateListItem = (attr, value)=> {
+            const newAttr = document.createElement("div");
+            const newCheck = document.createElement("input");
+            newCheck.type = "checkbox";
+            newCheck.checked = checkList.hasOwnProperty(attr) ? checkList[attr] : value;
+            newAttr.appendChild(newCheck);
+
+            this.AddCheckBoxLabel(newAttr, newCheck, attr);
+            listbox.appendChild(newAttr);
+            checkList[attr, newCheck.checked];
+
+            newCheck.onchange = ()=> {
+                checkList[attr] = newCheck.checked;
+            };
+        };
+
+        const Refresh = () => {
+            let attributes = [];
+            listbox.innerHTML = "";
+            let keyword = filter.value.toLowerCase();
+            for (let i = 0; i < this.columnsElements.length; i++) {
+                let attr = this.columnsElements[i].textContent;
+                if (attributes.includes(attr)) continue;
+                if (attr.indexOf(keyword) === -1) continue;
+                CreateListItem(attr, true);
+                attributes.push(attr);
+            }
+    
+            for (const key in this.link.data) {
+                for (const attr in this.link.data[key]) {
+                    if (attributes.includes(attr)) continue;
+                    if (attr.indexOf(keyword) === -1) continue;
+                    CreateListItem(attr, false);
+                    attributes.push(attr);
+                }
+            }
+        }
+
+        filter.onchange = ()=> {
+            Refresh();
+        }
+
+        btnReset.onclick = ()=> {
+            checkList = {};
+            Refresh();
+        };
 
         const btnApplyAll = document.createElement("input");
         btnApplyAll.type = "button";
         btnApplyAll.value = "Apply to all";
-        buttonBox.appendChild(btnApplyAll);
-
+        btnApplyAll.style.width = "100px";
+        
         btnOK.value = "Apply";
-        buttonBox.appendChild(btnOK);
 
+        buttonBox.appendChild(btnApplyAll);
+        buttonBox.appendChild(btnOK);
         buttonBox.appendChild(btnCancel);
+
+        btnApplyAll.addEventListener("click", event => {
+            //TODO: apply to all
+            this.UpdateViewport(true);
+            btnCancel.onclick();
+        });
+
+        btnOK.addEventListener("click", event => {
+            //TODO: apply
+            this.UpdateViewport(true);
+        });
+
+        Refresh();
     }
 }

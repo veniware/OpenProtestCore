@@ -136,9 +136,7 @@ document.body.onbeforeunload = () => {
     //if (localStorage.getItem("alive_after_close") != "true") {
     //    fetch("/logout");
     //}
-};
 
-document.body.onunload = () => {
     LOADER.StoreSession();
 
     for (let i = 0; i < WIN.array.length; i++)
@@ -803,6 +801,7 @@ class Window {
         if (!this.toolbar) return;
 
         const newButton = document.createElement("div");
+        newButton.role = "button";
         newButton.className = "win-toolbar-button";
         newButton.style.backgroundImage = `url(${icon})`;
         newButton.tabIndex = "0";
@@ -841,7 +840,7 @@ class Window {
         let id = Date.now() + Math.random() * 1000;
         checkbox.id = "id" + id;
 
-        let newLabel = document.createElement("label");
+        const newLabel = document.createElement("label");
         newLabel.textContent = label;
         newLabel.setAttribute("for", "id" + id);
         newLabel.setAttribute("tabindex", "0");

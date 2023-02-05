@@ -48,3 +48,20 @@ input[type="checkbox"]:checked + label::after {
     transform: translateX(12px);
     background-color: var(--theme-color);
 }
+
+.check-list {
+    border: var(--control-color) solid 1.5px;
+    overflow-y: scroll;
+}
+
+.check-list > div {
+    padding: 4px 8px;
+}
+
+.check-list > div > label {
+    text-transform: capitalize;
+}
+
+.check-list > div:hover {
+    background-color: var(--highlight-color);
+}

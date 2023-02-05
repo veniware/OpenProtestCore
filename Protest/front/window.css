@@ -122,9 +122,7 @@
 
     filter: drop-shadow(rgba(32,32,32,.5)1px 1px 1px);
 }
-.win-toolbar > .win-toolbar-button:hover,
-.win-toolbar > .win-toolbar-button:focus,
-.win-toolbar > .win-toolbar-button:focus-within {
+.win-toolbar > .win-toolbar-button:is(:hover, :focus, :focus-within) {
     transition: .2s;
     background-color: rgb(72,72,72);
 }
@@ -157,8 +155,7 @@
     transform-origin: 50% 0;
     transition: .2s;
 }
-.win-toolbar > .win-toolbar-button:focus > .win-toolbar-submenu,
-.win-toolbar > .win-toolbar-button:focus-within > .win-toolbar-submenu {
+.win-toolbar > .win-toolbar-button:is(:focus, :focus-within) > .win-toolbar-submenu {
     visibility: visible;
     filter: none;
     transform: none;
@@ -194,7 +191,7 @@
     bottom: 0;
     
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div {

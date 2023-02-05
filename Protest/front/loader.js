@@ -30,6 +30,8 @@ const LOADER = {
         "settings.js",
         "deviceslist.js",
         "userslist.js",
+        "deviceview.js",
+        "userview.js"
     ],
 
     Initialize: () => {
@@ -159,10 +161,11 @@ const LOADER = {
         for (let i = 0; i < session.length; i++) {
             let win;
             switch (session[i].class) {
+                case "Settings": win = new Settings(session[i].params); break;
                 case "DevicesList": win = new DevicesList(session[i].params); break;
                 case "UsersList": win = new UsersList(session[i].params); break;
-                case "Settings": win = new Settings(session[i].params); break;
-
+                case "DeviceView": win = new DeviceView(session[i].params); break;
+                case "UserView": win = new UserView(session[i].params); break;
             }
 
             if (win) {

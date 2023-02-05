@@ -467,21 +467,32 @@ class Settings extends Tabs {
         this.subContent.appendChild(center);
 
         const opensource = document.createElement("div");
-        opensource.style.display = "inline-block";
+        opensource.style.margin = "auto";
         opensource.style.paddingTop = "32px";
         opensource.style.fontWeight = "500";
         opensource.style.textAlign = "left";
         opensource.style.maxWidth = "640px";
         opensource.style.userSelect = "text";
-        opensource.textContent = "Pro-test is a free and open-source tool developed and maintained by Andreas Venizelou. All of the source code to this product is available to you under the GNU General Public License. <br><br>The GNU General Public License is a type of open-source license that allows users to access, use, copy, modify, and distribute the source code of a product. It also requires that any derivative works (modified versions of the original source code) are also distributed under the same license, and the original author must be acknowledged. This ensures that the source code remains freely available to the public and can be used for any purpose.";
+        opensource.textContent = "Pro-test is a free and open-source tool developed and maintained by Andreas Venizelou. All of the source code to this product is available to you under the GNU General Public License.";
         center.appendChild(opensource);
+
+        const gpl = document.createElement("div");
+        gpl.style.margin = "auto";
+        gpl.style.paddingTop = "32px";
+        gpl.style.fontWeight = "500";
+        gpl.style.textAlign = "left";
+        gpl.style.maxWidth = "640px";
+        gpl.style.userSelect = "text";
+        gpl.textContent = "The GNU General Public License is a type of open-source license that allows users to access, use, copy, modify, and distribute the source code of a product. It also requires that any derivative works (modified versions of the original source code) are also distributed under the same license, and the original author must be acknowledged. This ensures that the source code remains freely available to the public and can be used for any purpose.";
+        center.appendChild(gpl);
+
 
         center.appendChild(document.createElement("br"));
         center.appendChild(document.createElement("br"));
 
         //TODO:
         /*const credits = document.createElement("div");
-        credits.style.display = "inline-block";
+        credits.style.margin = "auto";
         credits.style.paddingTop = "32px";
         credits.style.maxWidth = "640px";
         credits.style.textAlign = "left";
