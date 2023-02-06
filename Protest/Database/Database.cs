@@ -173,7 +173,7 @@ public sealed class Database {
 
     private bool SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         Entry newEntry = new Entry() {
-            filename = GenerateFilename(1),
+            filename = dictionary.ContainsKey(filename) ? GenerateFilename(1) : filename,
             attributes = modifications,
             syncWrite = new object()
         };
@@ -365,6 +365,7 @@ public sealed class Database {
         return null;
     }
 }
+
 
 internal sealed class EntryJsonConverter : JsonConverter<Database.Entry> {
     private readonly AttributListJsonConverter attributListConverter = new AttributListJsonConverter();

@@ -69,7 +69,7 @@ public class ListenerTests {
     [Test]
     public void CsrfCheck_DifferentHostInReferer_ReturnImaTeapot() {
         using HttpRequestMessage requestMessage = new HttpRequestMessage(HttpMethod.Get, "http://127.0.0.1:8080/");
-        requestMessage.Headers.Add("Referer", "http://differ.ent/");
+        requestMessage.Headers.Add("Referer", "http://127.0.0.2:8080");
 
         using HttpClient httpClient = new HttpClient();
         HttpResponseMessage result = httpClient.Send(requestMessage);

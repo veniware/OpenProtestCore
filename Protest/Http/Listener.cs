@@ -60,8 +60,19 @@ public sealed class Listener {
     private void ListenerCallback(IAsyncResult result) {
         HttpListenerContext ctx = listener.EndGetContext(result);
 
-        if (ctx.Request.UrlReferrer != null && Uri.IsWellFormedUriString(ctx.Request.UrlReferrer.Host, UriKind.Absolute) && Uri.CheckHostName(ctx.Request.UrlReferrer.Host) == UriHostNameType.Dns) {
-            if (string.Equals(ctx.Request.UrlReferrer.Host, ctx.Request.UserHostName.Split(':')[0], StringComparison.Ordinal)) {
+        if (ctx.Request.UrlReferrer != null) { //Cross Site Request Forgery protection
+            if (!string.Equals(ctx.Request.UrlReferrer.Host, ctx.Request.UserHostName.Split(':')[0], StringComparison.Ordinal)) {
+                ctx.Response.StatusCode = 418; //I'm a teapot
+                ctx.Response.Close();
+                return;
+            }
+            if (Uri.IsWellFormedUriString(ctx.Request.UrlReferrer.Host, UriKind.Absolute)) {
+                ctx.Response.StatusCode = 418; //I'm a teapot
+                ctx.Response.Close();
+                return;
+            }
+            UriHostNameType type = Uri.CheckHostName(ctx.Request.UrlReferrer.Host);
+            if (type != UriHostNameType.Dns && type != UriHostNameType.IPv4 && type != UriHostNameType.IPv6) {
                 ctx.Response.StatusCode = 418; //I'm a teapot
                 ctx.Response.Close();
                 return;

@@ -514,7 +514,7 @@ class List extends Window {
     }
 
     CustomizeColumns() {
-        const dialog = this.DialogBox("640px");
+        const dialog = this.DialogBox("500px");
         if (dialog === null) return;
 
         const btnOK = dialog.btnOK;
@@ -552,6 +552,7 @@ class List extends Window {
         btnMoveUp.type = "button";
         btnMoveUp.value = "Move up";
         btnMoveUp.style.width = "100%";
+        btnMoveUp.style.minWidth = "20px";
         buttons.appendChild(btnMoveUp);
         
         const btnMoveDown = document.createElement("input");
@@ -559,12 +560,14 @@ class List extends Window {
         btnMoveDown.type = "button";
         btnMoveDown.value = "Move down";
         btnMoveDown.style.width = "100%";
+        btnMoveDown.style.minWidth = "20px";
         buttons.appendChild(btnMoveDown);
 
         const btnReset = document.createElement("input");
         btnReset.type = "button";
         btnReset.value = "Reset";
         btnReset.style.width = "100%";
+        btnReset.style.minWidth = "20px";
         btnReset.style.marginTop = "16px";
         buttons.appendChild(btnReset);
 
@@ -629,6 +632,12 @@ class List extends Window {
         buttonBox.appendChild(btnCancel);
 
         btnApplyAll.addEventListener("click", event => {
+            if (this instanceof DevicesList) {
+
+            } else if (this instanceof UsersList) {
+
+            }
+
             //TODO: apply to all
             this.UpdateViewport(true);
             btnCancel.onclick();
