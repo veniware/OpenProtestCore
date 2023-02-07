@@ -9,7 +9,7 @@ class UsersList extends List {
 
         const columns = localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`) ?
             JSON.parse(localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`)) :
-            defaultColumns;
+            this.defaultColumns;
 
         this.SetupColumns(columns);
         this.SetupToolbar();

@@ -3,7 +3,6 @@ class DeviceView extends Window {
         super();
         this.params = params ? params : { file: null };
 
-        this.SetTitle("TODO");
         this.SetIcon("/mono/gear.svg");
 
         this.attributes = document.createElement("div");
@@ -13,7 +12,7 @@ class DeviceView extends Window {
         if (this.params.file) {
             this.InitializePreview();
         } else {
-            //TODO: new
+            this.SetTitle("New Device");
         }
     }
 
@@ -21,6 +20,9 @@ class DeviceView extends Window {
         this.attributes.innerHTML = "";
 
         const obj = LOADER.devices.data[this.params.file];
+
+        this.SetTitle(obj.name.v ? obj.title.name.v : "");
+
         for (attr in obj) {
             
         }

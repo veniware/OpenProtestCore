@@ -15,7 +15,7 @@ class UserView extends Window {
         if (this.params.file) {
             this.InitializePreview();
         } else {
-            //TODO: new
+            this.SetTitle("New user");
         }
     }
 
@@ -23,6 +23,9 @@ class UserView extends Window {
         this.attributes.innerHTML = "";
 
         const obj = LOADER.users.data[this.params.file];
+
+        this.SetTitle(obj.title.v ? obj.title.v : "");
+
         console.log(obj);
         for (const attr in obj) {
             const newAttribute = document.createElement("div");
