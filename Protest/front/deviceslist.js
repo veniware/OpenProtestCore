@@ -5,9 +5,14 @@ class DevicesList extends List {
         this.SetTitle("Devices");
         this.SetIcon("/mono/devices.svg");
 
-        this.SetupColumns(["name", "type", "ip", "hostname", "mac address", "serial no"]);
-        this.SetupToolbar();
+        this.defaultColumns = ["name", "type", "ip", "hostname", "mac address", "serial no"];
 
+        const columns = localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`) ?
+            JSON.parse(localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`)) :
+            this.defaultColumns;
+
+        this.SetupColumns(columns);
+        this.SetupToolbar();
         this.LinkData(LOADER.devices);
         this.RefreshList();
 
@@ -27,18 +32,19 @@ class DevicesList extends List {
     InflateElement(element, entry, type) { //override
         super.InflateElement(element, entry, type);
 
-        if (!element.ondblclick)
-        element.ondblclick = (event) => {
-            event.stopPropagation();
-            
-            const file = element.getAttribute("id");
-            for (let i = 0; i < WIN.array.length; i++)
-                if (WIN.array[i] instanceof EquipView && WIN.array[i].params.file === file) {
-                    WIN.array[i].Minimize(); //minimize/restore
-                    return;
-                }
+        if (!element.ondblclick) {
+            element.ondblclick = (event) => {
+                event.stopPropagation();
+                
+                const file = element.getAttribute("id");
+                for (let i = 0; i < WIN.array.length; i++)
+                    if (WIN.array[i] instanceof EquipView && WIN.array[i].params.file === file) {
+                        WIN.array[i].Minimize(); //minimize/restore
+                        return;
+                    }
 
-            new EquipView({ file: element.getAttribute("id") });
-        };
+                new EquipView({ file: element.getAttribute("id") });
+            };
+        }
     }
 }

@@ -559,7 +559,7 @@ class Window {
             this.popoutWindow = null;
 
             this.content.style.filter = "none";
-            
+
             this.content.style.left = this.isMaximized ? "0" : "4px";
             this.content.style.right = this.isMaximized ? "0" : "4px";
             this.content.style.top = this.isMaximized ? "38px" : "32px";
@@ -584,7 +584,7 @@ class Window {
         if (this.win.style.zIndex != WIN.count && !document.getSelection().isCollapsed)
             document.getSelection().removeAllRanges();
 
-        for (let i=0; i<WIN.array.length; i++) {
+        for (let i = 0; i < WIN.array.length; i++) {
             WIN.array[i].task.style.top = "2px";
             WIN.array[i].task.style.borderRadius = "8%";
             WIN.array[i].task.style.backgroundColor = "rgba(0,0,0,0)";
@@ -792,9 +792,9 @@ class Window {
         }
 
         this.toolbar.onmousedown = (event)=> {
-            if (!this.popoutWindow)
-                this.BringToFront();
-            event.stopPropagation(); };
+            if (!this.popoutWindow) this.BringToFront();
+            event.stopPropagation();
+        };
     }
 
     AddToolbarButton(tooltip, icon) {

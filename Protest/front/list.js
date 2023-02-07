@@ -8,6 +8,7 @@ class List extends Window {
 
         this.link = null;
 
+        this.defaultColumns = [];
         this.columnsElements = [];
         this.sortDescend = false;
         this.resizingColumnElement = null;
@@ -34,7 +35,7 @@ class List extends Window {
         this.counter = document.createElement("div");
         this.counter.className = "list-counter";
         this.content.appendChild(this.counter);
-        
+
         this.win.addEventListener("mouseup", event => { this.List_mouseup(event); });
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
@@ -525,7 +526,7 @@ class List extends Window {
         innerBox.style.display = "grid";
         innerBox.style.padding = "8px";
         innerBox.style.gridGap = "4px";
-        innerBox.style.gridTemplateColumns = "auto min(400px, 76%) min(100px, 16%) auto";
+        innerBox.style.gridTemplateColumns = "auto min(400px, 76%) min(108px, 16%) auto";
         innerBox.style.gridTemplateRows = "32px auto";
 
         const filter = document.createElement("input");
@@ -545,13 +546,14 @@ class List extends Window {
         const buttons = document.createElement("div");
         buttons.style.gridColumn = "3";
         buttons.style.gridRow = "2";
+        buttons.style.overflow = "hidden";
         innerBox.appendChild(buttons);
 
         const btnMoveUp = document.createElement("input");
         btnMoveUp.setAttribute("disabled", true);
         btnMoveUp.type = "button";
         btnMoveUp.value = "Move up";
-        btnMoveUp.style.width = "100%";
+        btnMoveUp.style.width = "calc(100% - 4px)";
         btnMoveUp.style.minWidth = "20px";
         buttons.appendChild(btnMoveUp);
         
@@ -559,49 +561,71 @@ class List extends Window {
         btnMoveDown.setAttribute("disabled", true);
         btnMoveDown.type = "button";
         btnMoveDown.value = "Move down";
-        btnMoveDown.style.width = "100%";
+        btnMoveDown.style.width = "calc(100% - 4px)";
         btnMoveDown.style.minWidth = "20px";
         buttons.appendChild(btnMoveDown);
+
+        const btnUndo = document.createElement("input");
+        btnUndo.type = "button";
+        btnUndo.value = "Undo";
+        btnUndo.style.width = "calc(100% - 4px)";
+        btnUndo.style.minWidth = "20px";
+        btnUndo.style.marginTop = "16px";
+        buttons.appendChild(btnUndo);
 
         const btnReset = document.createElement("input");
         btnReset.type = "button";
         btnReset.value = "Reset";
-        btnReset.style.width = "100%";
+        btnReset.style.width = "calc(100% - 4px)";
         btnReset.style.minWidth = "20px";
-        btnReset.style.marginTop = "16px";
         buttons.appendChild(btnReset);
 
 
         let checkList = {};
-        const CreateListItem = (attr, value)=> {
+        const CreateListItem =(attr, value)=> {
             const newAttr = document.createElement("div");
             const newCheck = document.createElement("input");
             newCheck.type = "checkbox";
             newCheck.checked = checkList.hasOwnProperty(attr) ? checkList[attr] : value;
             newAttr.appendChild(newCheck);
 
-            this.AddCheckBoxLabel(newAttr, newCheck, attr);
+            const newLabel = this.AddCheckBoxLabel(newAttr, newCheck, attr);
             listbox.appendChild(newAttr);
-            checkList[attr, newCheck.checked];
+            checkList[attr] = newCheck.checked;
+
+            newLabel.onmousedown = event=> event.stopPropagation();
+
+            newAttr.onmousedown = ()=> {
+                newCheck.checked = !newCheck.checked;
+                checkList[attr] = newCheck.checked;
+            };
 
             newCheck.onchange = ()=> {
                 checkList[attr] = newCheck.checked;
             };
         };
 
-        const Refresh = () => {
+        const Refresh = ()=> {
             let attributes = [];
             listbox.innerHTML = "";
             let keyword = filter.value.toLowerCase();
-            for (let i = 0; i < this.columnsElements.length; i++) {
+            for (let i = 0; i < this.columnsElements.length; i++) { //selected
                 let attr = this.columnsElements[i].textContent;
                 if (attributes.includes(attr)) continue;
                 if (attr.indexOf(keyword) === -1) continue;
                 CreateListItem(attr, true);
                 attributes.push(attr);
             }
+
+            for (let i = 0; i < this.defaultColumns.length; i++) { //default
+                let attr = this.defaultColumns[i];
+                if (attributes.includes(attr)) continue;
+                if (attr.indexOf(keyword) === -1) continue;
+                CreateListItem(attr, false);
+                attributes.push(attr);
+            }
     
-            for (const key in this.link.data) {
+            for (const key in this.link.data) { //all attributes
                 for (const attr in this.link.data[key]) {
                     if (attributes.includes(attr)) continue;
                     if (attr.indexOf(keyword) === -1) continue;
@@ -611,12 +635,32 @@ class List extends Window {
             }
         }
 
+        const Apply = ()=> {
+            this.listTitle.innerHTML = "";
+            this.columnsElements = [];
+
+            let columns = [];
+            for (let key in checkList) {
+                if (!checkList[key]) continue;
+                columns.push(key);
+            }
+
+            this.SetupColumns(columns);
+            this.UpdateViewport(true);
+        };
+
         filter.onchange = ()=> {
             Refresh();
-        }
+        };
+
+        btnUndo.onclick = ()=> {
+            checkList = {};
+            Refresh();
+        };
 
         btnReset.onclick = ()=> {
             checkList = {};
+            this.defaultColumns.forEach(o=>checkList[o] = true);
             Refresh();
         };
 
@@ -632,22 +676,17 @@ class List extends Window {
         buttonBox.appendChild(btnCancel);
 
         btnApplyAll.addEventListener("click", event => {
-            if (this instanceof DevicesList) {
-
-            } else if (this instanceof UsersList) {
-
-            }
-
-            //TODO: apply to all
-            this.UpdateViewport(true);
+            Apply();
+            
             btnCancel.onclick();
+            localStorage.setItem(`${this.constructor.name.toLowerCase()}_columns`, JSON.stringify(this.columnsElements.map(o=>o.textContent)));
         });
 
         btnOK.addEventListener("click", event => {
-            //TODO: apply
-            this.UpdateViewport(true);
+            Apply();
         });
 
         Refresh();
     }
+
 }

@@ -1,0 +1,15 @@
+.view-attributes-list {
+    overflow-y: scroll;
+}
+
+.view-attributes-list > div:hover {
+    background-color: var(--highlight-color);
+}
+
+.view-attributes-list > div > input[type="text"] {
+    all: unset;
+    box-sizing: border-box;
+    width: calc(50% - 24px);
+    margin: 4px 8px;
+    padding: 2px;
+}

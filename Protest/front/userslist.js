@@ -5,9 +5,14 @@ class UsersList extends List {
         this.SetTitle("Users");
         this.SetIcon("/mono/users.svg");
 
-        this.SetupColumns(["firstname", "lastname", "username", "email"]);
-        this.SetupToolbar();
+        this.defaultColumns = ["firstname", "lastname", "username", "email"];
 
+        const columns = localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`) ?
+            JSON.parse(localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`)) :
+            defaultColumns;
+
+        this.SetupColumns(columns);
+        this.SetupToolbar();
         this.LinkData(LOADER.users);
         this.RefreshList();
 
@@ -27,7 +32,7 @@ class UsersList extends List {
     InflateElement(element, entry, type) { //override
         super.InflateElement(element, entry, type);
 
-        if (!element.ondblclick)
+        if (!element.ondblclick) {
             element.ondblclick = (event) => {
                 event.stopPropagation();
                 
@@ -40,5 +45,6 @@ class UsersList extends List {
 
                 new UserView({ file: element.getAttribute("id") });
             };
+        }
     }
 }
