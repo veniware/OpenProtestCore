@@ -24,25 +24,25 @@ const WIN = {
         WIN.iconSize = (container.clientWidth / (WIN.array.length) > max) ? max : container.clientWidth / WIN.array.length;
     
         for (let i = 0; i < WIN.array.length; i++) {
-            WIN.array[i].task.style.width = (WIN.iconSize-4) + "px";
-            WIN.array[i].task.style.height = (WIN.iconSize-4) + "px";
+            WIN.array[i].task.style.width = `${WIN.iconSize-4}px`;
+            WIN.array[i].task.style.height = `${WIN.iconSize-4}px`;
         }
     
-        taskbar.style.height = (WIN.iconSize) + "px";
-        container.style.bottom = (WIN.iconSize) + "px";
+        taskbar.style.height = `${WIN.iconSize}px`;
+        container.style.bottom = `${WIN.iconSize}px`;
     
         WIN.array = WIN.array.sort((a,b)=> a.task.offsetLeft - b.task.offsetLeft);
     
         if (ignoreActive) {
             for (let i=0; i<WIN.array.length; i++)
                 if (WIN.array[i].task != WIN.active.task) {
-                    WIN.array[i].task.style.transition = ANIM_DURATION/1000 + "s";
-                    WIN.array[i].task.style.left = 2 + i * WIN.iconSize + "px";
+                    WIN.array[i].task.style.transition = `${ANIM_DURATION/1000}s`;
+                    WIN.array[i].task.style.left = `${2+i*WIN.iconSize}px`;
                 }
         } else {
             for (let i=0; i<WIN.array.length; i++) {
-                WIN.array[i].task.style.transition = ANIM_DURATION/1000 + "s";
-                WIN.array[i].task.style.left = 2 + i * WIN.iconSize + "px";
+                WIN.array[i].task.style.transition = `${ANIM_DURATION/1000}s`;
+                WIN.array[i].task.style.left = `${2+i*WIN.iconSize}px`;
             }
 
             setTimeout(()=> {
@@ -89,7 +89,7 @@ document.body.onmousemove = (event)=> {
 
         let y = (WIN.offsetY - (WIN.y0 - event.clientY)) * 100 / container.clientHeight;
         y = Math.min(100 - WIN.active.win.clientHeight * 100 / container.clientHeight, Math.max(0, y));
-        WIN.active.win.style.top = ((y < 0) ? 0 : y) + "%";
+        WIN.active.win.style.top = `${(y < 0) ? 0 : y}%`;
 
     } else if (WIN.isResizing) {
         let w = (WIN.offsetX - (WIN.x0 - event.clientX)) * 100 / container.clientWidth;
@@ -103,7 +103,7 @@ document.body.onmousemove = (event)=> {
         let x = WIN.offsetX - (WIN.x0 - event.clientX);
         x = Math.max(0, x);
         x = Math.min(taskbar.clientWidth - WIN.active.task.clientWidth, x);
-        WIN.active.task.style.left = x + "px";
+        WIN.active.task.style.left = `${x}px`;
         WIN.AlignIcon(true);
     }
 };
@@ -112,7 +112,7 @@ document.body.onmouseup = (event)=> {
     //if (!WIN.isMoving && !WIN.isResizing) return;
 
     if (WIN.active != null) {
-        WIN.active.task.style.transition = ANIM_DURATION/1000 + "s";
+        WIN.active.task.style.transition = `${ANIM_DURATION/1000}s`;
         WIN.active.task.style.zIndex = "3";
         WIN.AlignIcon(false);
     }
@@ -170,8 +170,8 @@ class Window {
         }
 
         this.win = document.createElement("div");
-        this.win.style.left   = WIN.startX + "%";
-        this.win.style.top    = WIN.startY + "%";
+        this.win.style.left   =  `${WIN.startX}%`;
+        this.win.style.top    =  `${WIN.startY}%`;
         this.win.style.width  = "50%";
         this.win.style.height = "60%";
         this.win.style.zIndex = ++WIN.count;
@@ -182,7 +182,7 @@ class Window {
         this.task.setAttribute("role", "button");
         //this.task.tabIndex = "0";
         this.task.className = "bar-icon";
-        this.task.style.left = 2 + WIN.array.length * (onMobile ? 48 : 56) + "px";
+        this.task.style.left = `${2 + WIN.array.length*(onMobile ? 48 : 56)}px`;
         taskbar.appendChild(this.task);
 
         this.icon = document.createElement("div");
@@ -450,7 +450,7 @@ class Window {
 
             this.win.style.opacity    = "0";
             this.win.style.visibility = "hidden";
-            this.win.style.transform  = "scale(.6) translateX(" + iconPosition + "px) translateY(" + container.clientHeight + "px)";
+            this.win.style.transform  = `scale(.6) translateX(${iconPosition}px) translateY(${container.clientHeight}px)`;
             this.isMinimized = true;
 
             this.task.style.top = "2px";
@@ -867,6 +867,6 @@ class Window {
         }
 
         if (this.cssDependencies.indexOf(filename) === -1)
-            this.cssDependencies.push(filename);        
+            this.cssDependencies.push(filename);
     }
 }

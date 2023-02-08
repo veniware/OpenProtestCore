@@ -23,6 +23,7 @@ const LOADER = {
     secondaryScripts: [
         "tabs.js",
         "list.js",
+        "view.js",
     ],
 
     tertiaryScripts: [

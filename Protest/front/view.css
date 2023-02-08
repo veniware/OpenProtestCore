@@ -1,15 +1,72 @@
 .view-attributes-list {
-    overflow-y: scroll;
+    position: absolute;
+    top: 40px;
+    max-width: 800px;
+    color: #202020;
+    background-color: var(--pane-color);
+    border-radius: 4px;
+
+    transition: .2s;
 }
 
 .view-attributes-list > div:hover {
     background-color: var(--highlight-color);
 }
 
+.view-attributes-list > div:first-child {
+    border-radius: 4px 4px 0 0;
+}
+.view-attributes-list > div:last-child {
+    border-radius: 0 0 4px 4px;
+}
+.view-attributes-list > div:only-child {
+    border-radius: 4px 4px 4px 4px;
+}
+
 .view-attributes-list > div > input[type="text"] {
     all: unset;
     box-sizing: border-box;
-    width: calc(50% - 24px);
     margin: 4px 8px;
     padding: 2px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.view-attributes-list > div > input[type="text"]:nth-child(1) {
+    width: max(100px, 25%);
+}
+.view-attributes-list > div > input[type="text"]:nth-child(2) {
+    width: calc(100% - max(100px, 25%) - 32px);
+}
+
+.view-attributes-list > div > div:nth-child(3) {
+    position: absolute;
+    right: 0px;
+    transform: translateY(-26px);
+    width: auto;
+    max-width: 30%;
+    color: #c0c0c0;
+    background-color: #202020;
+    border-radius: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0px 4px;
+
+    visibility: hidden;
+    opacity: 0;
+    transition: .2s;
+    transition-delay: .4s;
+}
+
+.view-attributes-list > div:hover > div:nth-child(3) {
+    visibility: visible;
+    opacity: 1;
+    right: 6px;
+    transition-delay: .8s;
+}
+
+.view-attributes-list > div > div:nth-child(3):hover {
+    max-width: 90%;
+    transition-delay: 0s !important;
 }

@@ -107,8 +107,8 @@ internal class Configuration {
         sb.AppendLine("ip_access   = *");
         sb.AppendLine();
 
-        sb.AppendLine("http_enable = true");
         sb.AppendLine("http_prefix = http://127.0.0.1:8080/");
+        sb.AppendLine("#http_prefix = http://[::1]:8080/");
         sb.AppendLine("#http_prefix = https://+:443/");
         sb.AppendLine();
         sb.AppendLine();

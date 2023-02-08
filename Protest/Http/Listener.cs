@@ -208,12 +208,12 @@ public sealed class Listener {
         switch (ctx.Request.Url.AbsolutePath) {
             case "/logout"  : buffer = Auth.RevokeAccess(sessionId, username) ? Strings.CODE_OK.Array : Strings.CODE_FAI.Array; break;
 
-            case "/db/getdevices"        : buffer = DatabaseInstanses.devices.Serialize(); break;
-            case "/db/getusers"          : buffer = DatabaseInstanses.users.Serialize(); break;
-            case "/db/getdeviceattribute": buffer = DatabaseInstanses.devices.GetAttribute(ctx.Request.Url.Query); break;
-            case "/db/getuserattribute"  : buffer = DatabaseInstanses.users.GetAttribute(ctx.Request.Url.Query); break;
-            case "/db/saveuser"          : buffer = DatabaseInstanses.devices.SaveHandler(ctx, username); break;
-            case "/db/deluser"           : buffer = DatabaseInstanses.users.SaveHandler(ctx, username); break;
+            case "/db/getdevices"         : buffer = DatabaseInstanses.devices.Serialize(); break;
+            case "/db/getusers"           : buffer = DatabaseInstanses.users.Serialize(); break;
+            case "/db/getdeviceattribute" : buffer = DatabaseInstanses.devices.GetAttribute(ctx.Request.Url.Query); break;
+            case "/db/getuserattribute"   : buffer = DatabaseInstanses.users.GetAttribute(ctx.Request.Url.Query); break;
+            case "/db/savedevice"         : buffer = DatabaseInstanses.devices.SaveHandler(ctx, username); break;
+            case "/db/saveuser"           : buffer = DatabaseInstanses.users.SaveHandler(ctx, username); break;
 
             default: return false;
         }
