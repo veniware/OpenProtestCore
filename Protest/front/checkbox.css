@@ -20,7 +20,7 @@ label::before {
     height: 18px;
     content: " ";
     border-radius: 4px;
-    background-color: var(--control-color);
+    background-color: var(--clr-control);
     transition: .2s;
 }
 
@@ -33,21 +33,21 @@ label::after {
     height: 14px;
     margin: 2px 2px;
     border-radius: 4px;
-    background-color: rgb(96,96,96);
+    background-color: rgb(88,88,88);
     transition: transform .2s, background-color .4s;
 }
 
 label:focus::before {
-    animation: inner-glow 2s infinite linear;
+    box-shadow: var(--clr-accent) 0 0 0 2px;
 }
 
 input[type="checkbox"]:checked + label::after {
     transform: translateX(12px);
-    background-color: var(--theme-color);
+    background-color: var(--clr-accent);
 }
 
 .check-list {
-    border: var(--control-color) solid 1.5px;
+    border: var(--clr-control) solid 1.5px;
     overflow-y: scroll;
 }
 
@@ -60,5 +60,5 @@ input[type="checkbox"]:checked + label::after {
 }
 
 .check-list > div:hover {
-    background-color: var(--highlight-color);
+    background-color: var(--clr-highlight);
 }

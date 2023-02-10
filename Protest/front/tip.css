@@ -38,7 +38,7 @@
 }
 
 *[tip]:hover::before, *[tip]:hover::after {
-    transition-delay: .1s;
+    transition-delay: .2s;
     visibility: visible;
     filter: opacity(1);
     transform: translateY(0);
@@ -91,7 +91,7 @@
 }
 
 *[tip-below]:hover::before, *[tip-below]:hover::after {
-    transition-delay: .1s;
+    transition-delay: .4s;
     visibility: visible;
     filter: opacity(1);
     transform: translateY(0);

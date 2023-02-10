@@ -23,11 +23,11 @@ class Settings extends Tabs {
         this.tabAbout   = this.AddTab("About", "mono/logo.svg");
         this.tabLegal   = this.AddTab("License", "mono/gpl.svg");
 
-        this.tabGui.onclick = () => this.ShowGui();
-        this.tabRegion.onclick = () => this.ShowRegion();
+        this.tabGui.onclick     = () => this.ShowGui();
+        this.tabRegion.onclick  = () => this.ShowRegion();
         this.tabSession.onclick = () => this.ShowSession();
-        this.tabAbout.onclick = () => this.ShowAbout();
-        this.tabLegal.onclick = () => this.ShowLegal();
+        this.tabAbout.onclick   = () => this.ShowAbout();
+        this.tabLegal.onclick   = () => this.ShowLegal();
 
         switch (this.params) {
             case "region":
@@ -54,7 +54,6 @@ class Settings extends Tabs {
                 this.tabGui.className = "v-tab-selected";
                 this.ShowGui();
         }
-        
     }
 
     ShowGui() {
@@ -95,14 +94,14 @@ class Settings extends Tabs {
         if (localStorage.getItem("accent_color"))
             selected_accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o));
 
-        const accentColors = [[255,51,34], [255,102,0], [255,186,0], [96,192,32], [36,176,244]];
+        const accentColors = [[224,56,64], [255,102,0], [255,186,0], [96,192,32], [36,176,244]];
 
         for (let i = 0; i < accentColors.length; i++) {
             let rgbString = `rgb(${accentColors[i][0]},${accentColors[i][1]},${accentColors[i][2]})`;
             let hsl = UI.RgbToHsl(accentColors[i]);
 
             let step1 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.78}%)`;
-            let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--select-color
+            let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
             let step3 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.8}%)`;
             let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
 
@@ -116,7 +115,7 @@ class Settings extends Tabs {
             gradientBox.style.height = "48px";
             gradientBox.style.borderRadius = "4px";
             gradientBox.style.background = gradient;
-            gradientBox.style.border = step1 + " 1px solid";
+            gradientBox.style.border = `${step1} 1px solid`;
             themeBox.appendChild(gradientBox);
 
             let isSelected = selected_accent[0] == accentColors[i][0] && selected_accent[1] == accentColors[i][1] && selected_accent[2] == accentColors[i][2];
@@ -128,7 +127,7 @@ class Settings extends Tabs {
             indicator.style.marginTop = "4px";
             indicator.style.marginLeft = isSelected ? "0" : "20px";
             indicator.style.backgroundColor = rgbString;
-            indicator.style.border = step1 + " 1px solid";
+            indicator.style.border = `${step1} 1px solid`;
             indicator.style.transition = ".4s";
             themeBox.appendChild(indicator);
 
@@ -152,8 +151,8 @@ class Settings extends Tabs {
                         let accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o.trim()));
                         let hsl = UI.RgbToHsl(accent);
                         let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
-                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--theme-color", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
-                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--select-color", select);
+                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
+                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--clr-select", select);
                     }
                 }
             };
@@ -161,7 +160,7 @@ class Settings extends Tabs {
 
         this.chkWinMaxxed.checked     = localStorage.getItem("w_always_maxed") === "true";
         this.chkWindowShadows.checked = localStorage.getItem("w_dropshadow") !== "false";
-        this.chkAnimations.checked  = localStorage.getItem("animations") !== "false";
+        this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
 
         const Apply = ()=> {
             WIN.always_maxxed = this.chkWinMaxxed.checked;

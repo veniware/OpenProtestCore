@@ -12,7 +12,7 @@
     margin: 4px 0 4px 4px;
     padding: 4px;
     color: rgb(16,16,16);
-    background: linear-gradient(90deg, rgba(160,160,160,0) 90%, rgba(16,16,16,.2) 100%);
+    background: linear-gradient(90deg, rgba(16,16,16,.15) 90%, rgba(16,16,16,.25) 100%);
     background-color: rgb(160,160,160);
     border-radius: 8px 0 0 8px;
     transform: scaleX(.975);
@@ -21,8 +21,8 @@
 }
 
 .v-tabs > .v-tab-selected {
-    background: linear-gradient(90deg, rgb(224,224,224) 90%, rgb(224,224,224) 100%);
-    background-color: var(--pane-color);
+    background: unset;
+    background-color: var(--clr-pane);
     transform: scaleX(1);
 }
 
@@ -69,16 +69,9 @@
     top: 8px;
     bottom: 8px;
     z-index: +1;
-    background-color: var(--pane-color);
+    background-color: var(--clr-pane);
     color: rgb(16,16,16);
     border-radius: 4px;
     padding: 4px;
     overflow: hidden;
-}
-
-@media (prefers-color-scheme: dark) {
-    .v-tabs > .v-tab-selected {
-        background: linear-gradient(90deg, rgb(192,192,192) 90%, rgb(192,192,192) 100%);
-        background-color: var(--pane-color);
-    }
 }

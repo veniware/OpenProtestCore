@@ -5,7 +5,7 @@ class UserView extends View {
 
         this.link = LOADER.users.data[this.params.file];
 
-        this.SetIcon("/mono/user.svg");
+        this.SetIcon("mono/user.svg");
 
         if (this.params.file) {
             this.InitializePreview();

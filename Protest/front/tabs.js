@@ -13,11 +13,13 @@ class Tabs extends Window {
 
         this.tabsContainer = document.createElement("div");
         this.tabsContainer.className = "v-tabs";
+        this.tabsContainer.setAttribute("role", "tabpanel");
         this.content.appendChild(this.tabsContainer);
     }
 
     AddTab(text, icon, subtext) {
         const newTab = document.createElement("div");
+        newTab.setAttribute("role", "tab");
         this.tabsContainer.appendChild(newTab);
         this.tabsList.push(newTab);
 

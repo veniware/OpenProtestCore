@@ -40,7 +40,7 @@ class List extends Window {
         this.win.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
 
-    List_mouseup(event) {
+    List_mouseup(event) { 
         if (this.resizingColumnElement || this.movingColumnElement) this.FinalizeColumns();
     }
 
@@ -174,7 +174,7 @@ class List extends Window {
         
         setTimeout(()=>{this.FinalizeColumns()}, 400);
 
-        this.AfterResize();
+        this.UpdateViewport();
     }
 
     SetupFilter() {
@@ -217,8 +217,8 @@ class List extends Window {
                 filtersList.appendChild(newType);
 
                 if (added[i] === this.params.filter) {
-                    newType.style.backgroundColor = "var(--select-color)";
-                    filterButton.style.borderBottom = "var(--theme-color) solid 2px";
+                    newType.style.backgroundColor = "var(--clr-select)";
+                    filterButton.style.borderBottom = "#c0c0c0 solid 2px";
                 }
 
                 newType.onclick = () => {
@@ -229,8 +229,8 @@ class List extends Window {
                         filterButton.style.borderBottom = "";
                     } else {
                         this.params.filter = added[i];
-                        filterButton.style.borderBottom = "var(--theme-color) solid 2px";
-                        newType.style.backgroundColor = "var(--select-color)";
+                        filterButton.style.borderBottom = "#c0c0c0 solid 2px";
+                        newType.style.backgroundColor = "var(--clr-select)";
                     }
 
                     this.RefreshList();
@@ -238,9 +238,7 @@ class List extends Window {
             }
         };
 
-        findFilter.onchange = event => {
-            Refresh();
-        };
+        findFilter.onchange = event => Refresh();
         
         findFilter.onkeydown = event=> {
             if (event.key === "Escape") {
@@ -277,7 +275,6 @@ class List extends Window {
         if (!this.toolbar) return null;
 
         const findButton = this.AddToolbarButton(null, "mono/search.svg?light");
-        findButton.role = "textbox";
         findButton.tabIndex = "-1";
         findButton.style.overflow = "hidden";
         findButton.style.backgroundPosition = "2px center";
@@ -300,7 +297,7 @@ class List extends Window {
         findTextbox.onchange = ()=> {
             findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
         
-            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
             this.params.find = findTextbox.value;
             this.RefreshList();
         };
@@ -319,10 +316,6 @@ class List extends Window {
         };
 
         return findTextbox;
-    }
-
-    AfterResize() { //override
-        this.UpdateViewport();
     }
 
     Popout() { //override
@@ -450,7 +443,7 @@ class List extends Window {
         }
 
         if (this.selected) {
-            this.selected.style.backgroundColor = "var(--select-color)";
+            this.selected.style.backgroundColor = "var(--clr-select)";
             setTimeout(()=> {
                 this.selected.scrollIntoView({behavior: "smooth", block: "center"});
             }, 100);
@@ -484,7 +477,7 @@ class List extends Window {
     InflateElement(element, entry, c_type) { //overridable
         const icon = document.createElement("div");
         icon.className = "list-element-icon";
-        icon.style.backgroundImage = "url(/mono/user.svg)";
+        icon.style.backgroundImage = "url(mono/user.svg)";
         element.appendChild(icon);
         
         for (let i = 0; i < this.columnsElements.length; i++) {
@@ -510,7 +503,7 @@ class List extends Window {
             this.params.select = element.getAttribute("id");
             
             this.selected = element;
-            element.style.backgroundColor = "var(--select-color)";
+            element.style.backgroundColor = "var(--clr-select)";
         };
     }
 
@@ -565,13 +558,13 @@ class List extends Window {
         btnMoveDown.style.minWidth = "20px";
         buttons.appendChild(btnMoveDown);
 
-        const btnUndo = document.createElement("input");
-        btnUndo.type = "button";
-        btnUndo.value = "Undo";
-        btnUndo.style.width = "calc(100% - 4px)";
-        btnUndo.style.minWidth = "20px";
-        btnUndo.style.marginTop = "16px";
-        buttons.appendChild(btnUndo);
+        const btnRevert = document.createElement("input");
+        btnRevert.type = "button";
+        btnRevert.value = "Revert";
+        btnRevert.style.width = "calc(100% - 4px)";
+        btnRevert.style.minWidth = "20px";
+        btnRevert.style.marginTop = "16px";
+        buttons.appendChild(btnRevert);
 
         const btnReset = document.createElement("input");
         btnReset.type = "button";
@@ -653,7 +646,7 @@ class List extends Window {
             Refresh();
         };
 
-        btnUndo.onclick = ()=> {
+        btnRevert.onclick = ()=> {
             checkList = {};
             Refresh();
         };

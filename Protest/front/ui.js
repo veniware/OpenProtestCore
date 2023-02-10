@@ -8,7 +8,7 @@ const UI = {
             newDot.setAttribute("r", i%3==0 ? 2.5 : 1.5);
             newDot.setAttribute("cx", 48 + Math.sin(i*30/57.29577951)*36);
             newDot.setAttribute("cy", 48 - Math.cos(i*30/57.29577951)*36);
-            newDot.setAttribute("fill", "var(--fore-color)");
+            newDot.setAttribute("fill", "var(--clr-fore)");
             analog_clock.appendChild(newDot);
         }
 
@@ -74,15 +74,15 @@ const UI = {
         let hsl = UI.RgbToHsl(accent);
     
         let step1 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.78}%)`;
-        let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--select-color
+        let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
         let step3 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.8}%)`;
         let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
     
         let root = document.documentElement;
-        root.style.setProperty("--theme-color", rgbString);
-        root.style.setProperty("--select-color", step2);
-        root.style.setProperty("--taskbar-bg", gradient);
-        root.style.setProperty("--taskbar-bg-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
+        root.style.setProperty("--clr-accent", rgbString);
+        root.style.setProperty("--clr-select", step2);
+        root.style.setProperty("--grd-taskbar", gradient);
+        root.style.setProperty("--grd-taskbar-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
     
         let ico = "<svg version=\"1.1\" xmlns:serif=\"http://www.serif.com/\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"48px\" height=\"48px\"  viewBox=\"0 0 48 48\" enable-background=\"new 0 0 48 48\" xml:space=\"preserve\">"+
             "<g fill=\""+step2+"\">"+
@@ -396,7 +396,7 @@ searchboxinput.onkeydown = event => {
                 if (MENU.index > -1) MENU.list[MENU.index].style.backgroundColor = "rgb(208,208,208)";
                 MENU.index--;
                 if (MENU.index < 0) MENU.index = MENU.list.length - 1;
-                if (MENU.index > -1) MENU.list[MENU.index].style.backgroundColor = "var(--select-color)";
+                if (MENU.index > -1) MENU.list[MENU.index].style.backgroundColor = "var(--clr-select)";
             }
             break;
 
@@ -406,7 +406,7 @@ searchboxinput.onkeydown = event => {
                 if (MENU.index > -1) MENU.list[MENU.index].style.backgroundColor = "rgb(208,208,208)";
                 MENU.index++;
                 if (MENU.index >= MENU.list.length) MENU.index = 0;
-                MENU.list[MENU.index].style.backgroundColor = "var(--select-color)";
+                MENU.list[MENU.index].style.backgroundColor = "var(--clr-select)";
             }
             break;
     }

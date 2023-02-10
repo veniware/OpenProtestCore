@@ -3,7 +3,7 @@ class UsersList extends List {
         super(params);
 
         this.SetTitle("Users");
-        this.SetIcon("/mono/users.svg");
+        this.SetIcon("mono/users.svg");
 
         this.defaultColumns = ["firstname", "lastname", "username", "email"];
 
@@ -23,7 +23,7 @@ class UsersList extends List {
 
         if (this.params.find && this.params.find.length > 0) {
             findTextbox.value = this.params.find;
-            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--theme-color) solid 2px";
+            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
             findTextbox.parentElement.style.width = "200px";
             this.RefreshList();
         }

@@ -25,21 +25,21 @@
 
 :root {
     --sidemenu-width: 480px;
-    --theme-color: rgb(255,102,0);
-    --select-color: rgb(232,118,0);
-    --pane-color: rgb(224,224,224);
-    --highlight-color: rgb(192,192,192);
-    --control-color: rgb(176,176,176);
-    --back-color: #c0c0c0;
-    --fore-color: #202020;
+    --clr-accent: rgb(255,102,0);
+    --clr-select: rgb(232,118,0);
+    --clr-pane: rgb(192,192,192);
+    --clr-highlight: rgb(188,188,188);
+    --clr-control: rgb(160,160,160);
+    --clr-back: #c0c0c0;
+    --clr-fore: #202020;
 
     --global-font-size: 15px;
     --global-font-family: "Open Sans";
 
-    --taskbar-bg: linear-gradient(to bottom, rgb(199,64,0)0%, rgb(232,118,0)92%, rgb(199,64,0)100%);
-    --taskbar-bg-rev: linear-gradient(to bottom, rgb(199,64,0)0%, rgb(232,118,0)2%, rgb(199,64,0)100%);
+    --grd-taskbar: linear-gradient(to bottom, rgb(199,64,0)0%, rgb(232,118,0)92%, rgb(199,64,0)100%);
+    --grd-taskbar-rev: linear-gradient(to bottom, rgb(199,64,0)0%, rgb(232,118,0)2%, rgb(199,64,0)100%);
 
-    --toolbar-bg: linear-gradient(rgb(96,96,96), rgb(80,80,80));
+    --grd-toolbar: linear-gradient(rgb(96,96,96), rgb(80,80,80));
  
     --bg:
     linear-gradient(158deg,rgba(84,84,84,.02) 0%,rgba(84,84,84,.02) 20%,rgba(219,219,219,.02) 20%,rgba(219,219,219,.02) 40%,rgba(54,54,54,.02) 40%,rgba(54,54,54,.02) 60%,rgba(99,99,99,.02) 60%,rgba(99,99,99,.02) 80%,rgba(92,92,92,.02) 80%,rgba(92,92,92,.02) 100%),
@@ -75,18 +75,61 @@ a {
 }
 
 @media (prefers-color-scheme: dark) {
+    :root {
+        --clr-pane: rgb(160,160,160);
+        --clr-highlight: rgb(176,176,176);
+        --clr-control: rgb(128,128,128);
+        --clr-back: #202020;
+        --clr-fore: #c0c0c0;
+    }
+
     body{
         background-color: rgb(64,64,64);
     }
+}
 
-    :root {
-        --pane-color: rgb(192,192,192);
-        --highlight-color: rgb(176,176,176);
-        --control-color: rgb(156,156,156);
-        --back-color: #202020;
-        --fore-color: #c0c0c0;
+@keyframes glow {
+    0%{ box-shadow: var(--clr-accent) 0 0 6px 1px }
+    50%{ box-shadow: var(--clr-accent) 0 0 2px 0px }
+    100%{ box-shadow: var(--clr-accent) 0 0 6px 1px }
+}
+
+@keyframes inner-glow {
+    0%   { box-shadow: var(--clr-accent) 0 0 1px 1px inset, var(--clr-accent) 0 0 2px 1px; }
+    50%  { box-shadow: var(--clr-accent) 0 0 1px 1px inset, transparent 0 0 2px 1px; }
+    100% { box-shadow: var(--clr-accent) 0 0 1px 1px inset, var(--clr-accent) 0 0 2px 1px; }
+}
+
+@keyframes underline {
+    0%   {
+        background-image: linear-gradient(to right,var(--clr-accent) 100%, var(--clr-accent) 0%);
+        background-position: bottom center;
+        background-size: 0% 4px;
+        background-repeat: no-repeat;
+    }
+    100% {
+        background-image: linear-gradient(to right, var(--clr-accent) 100%, var(--clr-accent) 0%);
+        background-position: bottom center;
+        background-size: 100% 3px;
+        background-repeat: no-repeat;
     }
 }
+
+@keyframes thin-underline {
+    0%   {
+        background-image: linear-gradient(to right,var(--clr-accent) 100%, var(--clr-accent) 0%);
+        background-position: bottom center;
+        background-size: 0% 2px;
+        background-repeat: no-repeat;
+    }
+    100% {
+        background-image: linear-gradient(to right, var(--clr-accent) 100%, var(--clr-accent) 0%);
+        background-position: bottom center;
+        background-size: 100% 2px;
+        background-repeat: no-repeat;
+    }
+}
+
 
 /*@media (prefers-contrast: more) {
     * {

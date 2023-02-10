@@ -5,7 +5,7 @@ class DeviceView extends View {
 
         this.link = LOADER.devices.data[this.params.file];
 
-        this.SetIcon("/mono/gear.svg");
+        this.SetIcon("mono/gear.svg");
 
         if (this.params.file) {
             this.InitializePreview();

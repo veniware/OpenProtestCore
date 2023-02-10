@@ -169,7 +169,7 @@ class Window {
             WIN.startX = 10;
         }
 
-        this.win = document.createElement("div");
+        this.win = document.createElement("section");
         this.win.style.left   =  `${WIN.startX}%`;
         this.win.style.top    =  `${WIN.startY}%`;
         this.win.style.width  = "50%";
@@ -193,9 +193,9 @@ class Window {
         this.content.className = "win-content";
         this.win.appendChild(this.content);
 
-        this.lblTitle = document.createElement("div");
-        this.lblTitle.className = "title";
-        this.win.appendChild(this.lblTitle);
+        this.header = document.createElement("header");
+        this.header.className = "title";
+        this.win.appendChild(this.header);
 
         this.titleicon = document.createElement("div");
         this.titleicon.className = "titleicon";
@@ -487,7 +487,7 @@ class Window {
             "", "",
             `width=${this.win.clientWidth},height=${this.win.clientHeight},left=${window.screenX+this.win.offsetLeft},top=${window.screenY+this.win.offsetTop}`);
 
-        newWin.document.write(`<title>${WIN.EscapeHtml(this.lblTitle.textContent)}</title>`);
+        newWin.document.write(`<title>${WIN.EscapeHtml(this.header.textContent)}</title>`);
         newWin.document.write("<link rel='icon' href='mono/icon24.png'>");
         newWin.document.write("<link rel='stylesheet' href='root.css'>");
 
@@ -509,8 +509,8 @@ class Window {
             let accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o.trim()));
             let hsl = UI.RgbToHsl(accent);
             let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
-            newWin.document.querySelector(":root").style.setProperty("--theme-color", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
-            newWin.document.querySelector(":root").style.setProperty("--select-color", select);
+            newWin.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
+            newWin.document.querySelector(":root").style.setProperty("--clr-select", select);
         }
 
         this.popoutWindow = newWin;
@@ -781,6 +781,7 @@ class Window {
     SetupToolbar() {
         this.toolbar = document.createElement("div");
         this.toolbar.className = "win-toolbar";
+        this.toolbar.setAttribute("role", "toolbar");
         this.win.appendChild(this.toolbar);
 
         if (this.isMaximized) {
@@ -798,16 +799,15 @@ class Window {
     }
 
     AddToolbarButton(tooltip, icon) {
-        if (!this.toolbar) return;
-
-        const newButton = document.createElement("div");
-        newButton.role = "button";
+        const newButton = document.createElement("button");
         newButton.className = "win-toolbar-button";
         newButton.style.backgroundImage = `url(${icon})`;
-        newButton.tabIndex = "0";
-        this.toolbar.appendChild(newButton);
-
-        if (tooltip) newButton.setAttribute("tip-below", tooltip);
+        if (this.toolbar) this.toolbar.appendChild(newButton);
+        
+        if (tooltip) {
+            newButton.setAttribute("tip-below", tooltip);
+            newButton.setAttribute("aria-label", tooltip);
+        }
 
         newButton.addEventListener("focus", event=>{
             this.BringToFront();
@@ -816,8 +816,15 @@ class Window {
         return newButton;
     }
 
+    AddToolbarSeparator() {
+        const newSeparator = document.createElement("div");
+        newSeparator.className = "win-toolbar-separator";
+        if (this.toolbar) this.toolbar.appendChild(newSeparator);
+        return newSeparator;
+    }
+
     SetTitle(title="") {
-        this.lblTitle.textContent = title;
+        this.header.textContent = title;
         this.task.setAttribute("tip", title);
     }
     

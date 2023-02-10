@@ -2,7 +2,7 @@ input[type="range"] {
     appearance: none;
     height: 14px;
     border-radius: 4px;
-    background-color: var(--control-color);
+    background-color: var(--clr-control);
     outline-width: 0;
 }
 
@@ -16,7 +16,7 @@ input[type="range"]::-webkit-slider-thumb {
     height: 22px;
     outline: 0;
     border-radius: 4px;
-    background-color: var(--theme-color);
+    background-color: var(--clr-accent);
     box-shadow: rgba(0,0,0,.5) -1px 0 2px;
     transition: transform .2s;
 }
@@ -26,13 +26,13 @@ input[type="range"]::-moz-range-thumb {
     height: 22px;
     outline: 0;
     border-radius: 4px;
-    background: var(--theme-color);
+    background: var(--clr-accent);
     box-shadow: rgba(0,0,0,.5) -1px 0 2px;
     transition: transform .2s;
 }
 
 input[type="range"]:focus {
-    animation: inner-glow 2s infinite linear;
+    box-shadow: var(--clr-accent) 0 0 0 2px;
 }
 
 input[type="range"]:disabled::-webkit-slider-thumb {
