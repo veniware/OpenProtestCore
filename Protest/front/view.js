@@ -1,7 +1,7 @@
 class View extends Window {
     constructor(params) {
         super();
-
+        
         this.AddCssDependencies("view.css");
 
         this.content.style.overflowY = "scroll";
@@ -42,34 +42,53 @@ class View extends Window {
         this.bar.appendChild(deleteButton);
     }
 
+    AddAttribute(name, value, initiator, editMode=false) {
+        const newAttribute = document.createElement("div");
+        this.attributes.appendChild(newAttribute);
+
+        const nameBox = document.createElement("input");
+        nameBox.type = "text";
+        nameBox.value = name;
+        nameBox.setAttribute("aria-label", "Attribute name");
+        if (!editMode) nameBox.setAttribute("readonly", "true");
+        newAttribute.appendChild(nameBox);
+
+        const valueBox = document.createElement("input");
+        valueBox.type = "text";
+        valueBox.value = value;
+        valueBox.setAttribute("aria-label", "Attribute value");
+        if (!editMode) valueBox.setAttribute("readonly", "true");
+        newAttribute.appendChild(valueBox);
+
+        const removeButton = document.createElement("input");
+        removeButton.type = "button";
+        removeButton.tabIndex = "-1";
+        removeButton.setAttribute("aria-label", "Remove attribute");
+        newAttribute.appendChild(removeButton);
+
+        const initiatorBox = document.createElement("div");
+        initiatorBox.textContent = initiator;
+        newAttribute.appendChild(initiatorBox);
+
+        removeButton.onclick = ()=> {
+            newAttribute.innerHTML = "";
+            newAttribute.style.height = "0px";
+            setTimeout(() =>{
+                this.attributes.removeChild(newAttribute);
+            }, 200);
+        };
+    }
+
     InitializePreview() {
+        this.SetTitle(this.link.title.v ? this.link.title.v : "");
+        this.InitializeAttributesList();
+    }
+
+    InitializeAttributesList() {
         this.attributes.innerHTML = "";
 
-        this.SetTitle(this.link.title.v ? this.link.title.v : "");
-
         for (const attr in this.link) {
-            const newAttribute = document.createElement("div");
-            this.attributes.appendChild(newAttribute);
-
-            const name = document.createElement("input");
-            name.type = "text";
-            name.value = attr;
-            name.setAttribute("aria-label", "Attribute name");
-            name.setAttribute("readonly", true);
-            newAttribute.appendChild(name);
-
-            const value = document.createElement("input");
-            value.type = "text";
-            value.value = this.link[attr].v;
-            value.setAttribute("aria-label", "Attribute value");
-            value.setAttribute("readonly", true);
-            newAttribute.appendChild(value);
-
-            const initiator = document.createElement("div");
-            initiator.textContent = `${this.link[attr].i} - ${this.link[attr].d}`;
-            //initiator.textContent = this.link[attr].i;
-            newAttribute.appendChild(initiator);
-
+            this.AddAttribute(attr, this.link[attr].v, `${this.link[attr].i} - ${this.link[attr].d}`)
         }
     }
 
@@ -78,16 +97,16 @@ class View extends Window {
     }
 
     Info() {
-        if (this.attributes.classList.contains("view-attributes-withinfo")) {
+        if (this.attributes.classList.contains("view-attributes-with-info")) {
             this.initiatorButton.style.borderBottom = "none";
-            this.attributes.classList.remove("view-attributes-withinfo");
+            this.attributes.classList.remove("view-attributes-with-info");
         } else {
             this.initiatorButton.style.borderBottom = "#c0c0c0 solid 2px";
-            this.attributes.classList.add("view-attributes-withinfo");
+            this.attributes.classList.add("view-attributes-with-info");
         }
     }
 
-    Edit() {
+    Edit() { //overridable
         for (let i = 0; i < this.bar.childNodes.length; i++) {
             this.bar.childNodes[i].style.display = "none";
         }
@@ -110,6 +129,19 @@ class View extends Window {
         btnCancel.style.margin = "6px";
         this.bar.appendChild(btnCancel);
 
+        const addAttribute = document.createElement("div");
+        addAttribute.style.textAlign = "center";
+        this.scroll.appendChild(addAttribute);
+
+        const addAttributeButton = document.createElement("input");
+        addAttributeButton.type = "button";
+        addAttributeButton.value = "Add attribute";
+        addAttributeButton.style.marginTop = "24px";
+        addAttributeButton.style.width = "128px";
+        addAttributeButton.style.maxWidth = "150px";
+        addAttributeButton.style.height = "38px";
+        addAttribute.appendChild(addAttributeButton);
+
         this.attributes.classList.remove("view-attributes-freeze");
 
         for (let i = 0; i < this.attributes.childNodes.length; i++) {
@@ -118,14 +150,11 @@ class View extends Window {
             this.attributes.childNodes[i].childNodes[1].removeAttribute("readonly");
         }
 
-        btnSave.onclick = () => {
-            //TODO:
-            btnCancel.onclick();
+        addAttributeButton.onclick = ()=> {
+            this.AddAttribute("", "", null, true);
         };
 
-        btnRevert.onclick = () => {};
-
-        btnCancel.onclick = () => {
+        const ExitEdit = ()=> {
             this.bar.removeChild(btnSave);
             this.bar.removeChild(btnRevert);
             this.bar.removeChild(btnCancel);
@@ -134,6 +163,8 @@ class View extends Window {
                 this.bar.childNodes[i].style.display = "initial";
             }
 
+            this.scroll.removeChild(addAttribute);
+
             this.attributes.classList.add("view-attributes-freeze");
 
             for (let i = 0; i < this.attributes.childNodes.length; i++) {
@@ -141,18 +172,36 @@ class View extends Window {
                 this.attributes.childNodes[i].childNodes[0].setAttribute("readonly", "true");
                 this.attributes.childNodes[i].childNodes[1].setAttribute("readonly", "true");
             }
-
         };
+
+        const Revert = ()=> {
+            this.InitializeAttributesList();
+            for (let i = 0; i < this.attributes.childNodes.length; i++) {
+                if (this.attributes.childNodes[i].childNodes.length < 3) continue;
+                this.attributes.childNodes[i].childNodes[0].removeAttribute("readonly");
+                this.attributes.childNodes[i].childNodes[1].removeAttribute("readonly");
+            }
+        };
+
+        btnSave.onclick = () => {
+            //TODO:
+            ExitEdit();
+        };
+
+        btnRevert.onclick = () => {
+            Revert();
+        };
+
+        btnCancel.onclick = () => {
+            Revert();
+            ExitEdit();
+        };
+
+        return btnSave;
     }
 
-    Fetch() {
+    Fetch() {} //overridable
 
-    }
-
-    Delete() {
-        this.ConfirmBox("Are you sure you want to delete this entry?").addEventListener("click", ()=> {
-            
-        });
-    }
+    Delete() {} //overridable
 
 }

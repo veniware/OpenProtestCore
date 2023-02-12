@@ -64,13 +64,13 @@ internal static class Auth {
         return session.access.authorization.Any(v => path.StartsWith(v));
     }
 
-    public static bool AttemptAuthenticate(HttpListenerContext ctx, out string seesionId) {
+    public static bool AttemptAuthenticate(HttpListenerContext ctx, out string sessionId) {
         using StreamReader streamReader = new StreamReader(ctx.Request.InputStream);
         ReadOnlySpan<char> payload = streamReader.ReadToEnd().AsSpan();
 
         int index = payload.IndexOf((char)127);
         if (index == -1) {
-            seesionId = null;
+            sessionId = null;
             return false;
         }
 
@@ -78,7 +78,7 @@ internal static class Auth {
         string password = payload[(index + 1)..].ToString();
 
         if (!acl.ContainsKey(username)) {
-            seesionId = null;
+            sessionId = null;
             return false;
         }
 
@@ -91,11 +91,11 @@ internal static class Auth {
             Cryptography.HashUsernameAndPassword(username, password).SequenceEqual(access.hash);
 
         if (successfully) {
-            seesionId = GrandAccess(ctx, username);
+            sessionId = GrandAccess(ctx, username);
             return true;
         }
 
-        seesionId = null;
+        sessionId = null;
         return false;
     }
 

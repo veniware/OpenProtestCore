@@ -60,10 +60,10 @@ class Settings extends Tabs {
         this.params = "appearance";
         this.subContent.innerHTML = "";
 
-        this.chkWinMaxxed = document.createElement("input");
-        this.chkWinMaxxed.type = "checkbox";
-        this.subContent.appendChild(this.chkWinMaxxed);
-        this.AddCheckBoxLabel(this.subContent, this.chkWinMaxxed, "Always maximize windows");
+        this.chkWinMaxed = document.createElement("input");
+        this.chkWinMaxed.type = "checkbox";
+        this.subContent.appendChild(this.chkWinMaxed);
+        this.AddCheckBoxLabel(this.subContent, this.chkWinMaxed, "Always maximize windows");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
@@ -147,39 +147,39 @@ class Settings extends Tabs {
                         WIN.array[j].accentIndicators[i].style.marginLeft = "0px";
                     }
 
-                    if (WIN.array[j].popoutWindow) {
+                    if (WIN.array[j].popOutWindow) {
                         let accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o.trim()));
                         let hsl = UI.RgbToHsl(accent);
                         let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
-                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
-                        WIN.array[j].popoutWindow.document.querySelector(":root").style.setProperty("--clr-select", select);
+                        WIN.array[j].popOutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
+                        WIN.array[j].popOutWindow.document.querySelector(":root").style.setProperty("--clr-select", select);
                     }
                 }
             };
         }
 
-        this.chkWinMaxxed.checked     = localStorage.getItem("w_always_maxed") === "true";
+        this.chkWinMaxed.checked     = localStorage.getItem("w_always_maxed") === "true";
         this.chkWindowShadows.checked = localStorage.getItem("w_dropshadow") !== "false";
         this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
 
         const Apply = ()=> {
-            WIN.always_maxxed = this.chkWinMaxxed.checked;
+            WIN.always_maxed = this.chkWinMaxed.checked;
             container.className = this.chkWindowShadows.checked ? "" : "disable-window-dropshadows";
             document.body.className = this.chkAnimations.checked ? "" : "disable-animations";
 
-            localStorage.setItem("w_always_maxed", this.chkWinMaxxed.checked);
+            localStorage.setItem("w_always_maxed", this.chkWinMaxed.checked);
             localStorage.setItem("w_dropshadow", this.chkWindowShadows.checked);
             localStorage.setItem("animations", this.chkAnimations.checked);
 
             for (let i = 0; i < WIN.array.length; i++) //update other setting windows
                 if (WIN.array[i] instanceof Settings && WIN.array[i].params === "appearance") {
-                    WIN.array[i].chkWinMaxxed.checked     = this.chkWinMaxxed.checked;
+                    WIN.array[i].chkWinMaxed.checked     = this.chkWinMaxed.checked;
                     WIN.array[i].chkAnimations.checked    = this.chkAnimations.checked;
                     WIN.array[i].chkWindowShadows.checked = this.chkWindowShadows.checked;
                 }
         };
 
-        this.chkWinMaxxed.onchange     = Apply;
+        this.chkWinMaxed.onchange     = Apply;
         this.chkAnimations.onchange    = Apply;
         this.chkWindowShadows.onchange = Apply;
 

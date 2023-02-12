@@ -17,7 +17,7 @@
 
 #taskbar {
     position: fixed;
-    z-index: 16777270;
+    z-index: 16777269;
     left: 0;
     right: 0;
     bottom: 0;
@@ -223,6 +223,38 @@
 
 #lblUsername:active, #btnSettings:active #btnLogout:active {
     background-color: rgb(56,56,56);
+}
+
+#contextmenu {
+    display: none;
+    position: absolute;
+    z-index: 16777270;
+    bottom: 8px;
+    min-width: 150px;
+    min-height: 28px;
+    overflow: hidden;
+    outline: 0;
+    background-color: var(--clr-pane);
+    /*border: 2px solid #202020;*/
+    border-radius: 4px;
+    box-shadow: #202020 0 0 4px;
+    animation: rise-in 1 .2s;
+}
+
+#contextmenu > div {
+    color: #202020;
+    padding: 4px 4px 4px 32px;
+    border-radius: 2px;
+
+    background-position: 2px center;
+    background-size: 28px 28px;
+    background-repeat: no-repeat;
+
+    transition: .2s;
+}
+
+#contextmenu > div:hover {
+    background-color: var(--clr-select);
 }
 
 #loadingcontainer {

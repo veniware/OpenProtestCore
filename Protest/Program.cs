@@ -11,7 +11,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
     Pro-test
-    Copyright (C) 2023 veniware    
+    Copyright (C) 2023 veniware
     For more information, visit https://github.com/veniware/OpenProtest
 */
 
@@ -54,11 +54,11 @@ internal class Program {
         bool loadConfig = Configuration.Load();
         Console.WriteLine(string.Format("{0, -23} {1, -10}", "Loading configuration", loadConfig ? "OK  " : "Failed"));
         if (!loadConfig) {
-            Console.WriteLine("Creating default conficuration file");
+            Console.WriteLine("Creating default configuration file");
             Configuration.CreateDefault();
         }
 
-        DatabaseInstanses.Initialize();
+        DatabaseInstances.Initialize();
 
         bool loadAcl = Http.Auth.LoadAcl();
         Console.WriteLine(string.Format("{0, -23} {1, -10}", "Loading ACL", loadAcl ? "OK  " : "Failed"));

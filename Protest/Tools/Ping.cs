@@ -148,7 +148,7 @@ internal static class Ping {
             return id + ((char)127).ToString() + "Ping error";
 
         } catch (Exception) {
-            return id + ((char)127).ToString() + "Unkown error";
+            return id + ((char)127).ToString() + "Unknown error";
 
         } finally {
             p.Dispose();

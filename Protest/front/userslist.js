@@ -19,12 +19,12 @@ class UsersList extends List {
         const addButton    = this.AddToolbarButton("Add", "mono/add.svg?light");
         const removeButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
         const filterButton = this.SetupFilter();
-        const findTextbox  = this.SetupFind();
+        const findTextBox  = this.SetupFind();
 
         if (this.params.find && this.params.find.length > 0) {
-            findTextbox.value = this.params.find;
-            findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
-            findTextbox.parentElement.style.width = "200px";
+            findTextBox.value = this.params.find;
+            findTextBox.parentElement.style.borderBottom = findTextBox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
+            findTextBox.parentElement.style.width = "200px";
             this.RefreshList();
         }
     }

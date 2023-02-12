@@ -21,18 +21,21 @@
 }
 
 .view-attributes-list {
-    position: absolute;
     top: 0px;
     width: 100%;
     color: #202020;
     background-color: var(--clr-pane);
     border-radius: 4px;
+    padding: 2px 0;
+    overflow-x: hidden;
 
     transition: .2s;
 }
 
-.view-attributes-list > div:hover {
-    background-color: var(--clr-highlight);
+.view-attributes-list > div {
+    white-space: nowrap;
+    height: 33px;
+    transition: height .2s;
 }
 
 .view-attributes-list > div:first-child {
@@ -45,7 +48,11 @@
     border-radius: 4px 4px 4px 4px;
 }
 
-.view-attributes-freeze > div > input[type="text"]{
+.view-attributes-freeze > div:hover {
+    background-color: var(--clr-highlight);
+}
+
+.view-attributes-freeze > div > input[type="text"] {
     all: unset;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -53,7 +60,7 @@
 
 .view-attributes-list > div > input[type="text"] {
     box-sizing: border-box;
-    margin: 2px 4px;
+    margin: 2px 0px 2px 4px;
     padding: 4px 8px;
 }
 
@@ -61,10 +68,26 @@
     width: max(100px, 25%);
 }
 .view-attributes-list > div > input[type="text"]:nth-child(2) {
-    width: calc(100% - max(100px, 25%) - 16px);
+    width: calc(100% - max(100px, 25%) - 44px);
+}
+.view-attributes-list > div > input[type="button"]:nth-child(3) {
+    position: absolute;
+    right: 4px;
+    
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    background-color: var(--clr-control) !important;
+    background-image: url(/mono/delete.svg);
+    background-size: 20px 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: none !important;
+    margin: 2px 0px 2px 4px;
+    transition: .2s;
 }
 
-.view-attributes-list > div > div:nth-child(3) {
+.view-attributes-list > div > div:nth-child(4) {
     position: absolute;
     right: 0px;
     transform: translateY(-26px);
@@ -84,19 +107,27 @@
     transition-delay: .4s;
 }
 
-.view-attributes-freeze > div:hover > div:nth-child(3) {
+.view-attributes-freeze > div > input[type="text"]:nth-child(2) {
+    width: calc(100% - max(100px, 25%) - 12px);
+}
+
+.view-attributes-freeze > div > input[type="button"]:nth-child(3) {
+    display: none;
+}
+
+.view-attributes-freeze > div:hover > div:nth-child(4) {
     visibility: visible;
     opacity: 1;
     right: 6px;
     transition-delay: .8s;
 }
 
-.view-attributes-freeze > div > div:nth-child(3):hover {
+.view-attributes-freeze > div > div:nth-child(4):hover {
     max-width: 90%;
     transition-delay: 0s !important;
 }
 
-.view-attributes-withinfo > div > div:nth-child(3) {
+.view-attributes-with-info > div > div:nth-child(4) {
     visibility: visible;
     opacity: 1;
     right: 6px;

@@ -256,7 +256,7 @@ class List extends Window {
         };
 
         filterButton.onfocus = ()=> {
-            if (this.popoutWindow)
+            if (this.popOutWindow)
                 filterButton.firstChild.style.maxHeight = this.content.clientHeight - 24 + "px";
             else
                 filterButton.firstChild.style.maxHeight = container.clientHeight - this.win.offsetTop - 96 + "px";
@@ -318,12 +318,12 @@ class List extends Window {
         return findTextbox;
     }
 
-    Popout() { //override
-        super.Popout();
+    PopOut() { //overrides
+        super.PopOut();
         this.UpdateViewport(true);
 
-        this.popoutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
-        this.popoutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
+        this.popOutWindow.addEventListener("mouseup", event => { this.List_mouseup(event); });
+        this.popOutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
 
     LinkData(data) {

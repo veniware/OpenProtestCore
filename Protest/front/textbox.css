@@ -30,23 +30,12 @@ input[type="number"]:focus,
 input[type="date"]:focus,
 textarea:focus,
 select:focus {
-    animation: underline .2s 1 linear;
+    animation: underline .15s 1 linear;
     
     background-image: linear-gradient(to right,var(--clr-accent) 100%, var(--clr-accent) 0%);
     background-position: bottom center;
     background-size: 100% 3px;
     background-repeat: no-repeat;
-}
-
-input[type="password"]{
-    background-image: url(mono/credencial.svgz);
-    background-repeat: no-repeat;
-    background-size: 18px 18px;
-    background-position: calc(100% + 18px) center;
-}
-
-input[type="password"]:placeholder-shown {
-    background-position: calc(100% - 4px) center;
 }
 
 input[type="text"]:disabled,

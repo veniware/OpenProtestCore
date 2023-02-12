@@ -17,7 +17,7 @@ const WIN = {
     startX:  10,
     startY:  10,
     count:   0,
-    always_maxxed: false,
+    always_maxed: false,
 
     AlignIcon: (ignoreActive)=> {
         let max = onMobile ? 48 : 56;
@@ -51,16 +51,28 @@ const WIN = {
         }
     },
 
-    EscapeHtml(html) {
+    EscapeHtml: (html) => {
         return html.replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#39;");
+    },
+
+    CreateContextMenuItem: (text, icon)=> {
+        const newItem = document.createElement("div");
+        newItem.textContent = text;
+
+        if (icon) newItem.style.backgroundImage = `url(${icon})`;
+        
+
+        contextmenu.appendChild(newItem);
+
+        return newItem;
     }
 };
 
-document.body.onresize = (event)=> {
+document.body.onresize = ()=> {
     document.getSelection().removeAllRanges();
     WIN.AlignIcon(false);
 
@@ -70,7 +82,7 @@ document.body.onresize = (event)=> {
     }
 };
 
-document.body.onmousemove = (event)=> {
+document.body.onmousemove = event=> {
     if (WIN.active === null) return;
 
     if (event.buttons != 1) document.body.onmouseup(event);
@@ -81,7 +93,7 @@ document.body.onmousemove = (event)=> {
         if (WIN.active.isMaximized && event.clientY < 64) return;
 
         if (WIN.active.isMaximized) {
-            WIN.active.Toogle();
+            WIN.active.Toggle();
         }
 
         let x = (WIN.offsetX - (WIN.x0 - event.clientX)) * 100 / container.clientWidth;
@@ -108,7 +120,7 @@ document.body.onmousemove = (event)=> {
     }
 };
 
-document.body.onmouseup = (event)=> {
+document.body.onmouseup = ()=> {
     //if (!WIN.isMoving && !WIN.isResizing) return;
 
     if (WIN.active != null) {
@@ -124,7 +136,7 @@ document.body.onmouseup = (event)=> {
     //event.stopPropagation();
 };
 
-document.body.onkeydown = (event)=> {
+document.body.onkeydown = event=> {
     if (event.keyCode == 27) { //esc
         if (WIN.focused === null) return;
         if (WIN.focused.escAction === null) return;
@@ -140,9 +152,11 @@ document.body.onbeforeunload = () => {
     LOADER.StoreSession();
 
     for (let i = 0; i < WIN.array.length; i++)
-        if (WIN.array[i].popoutWindow)
-            WIN.array[i].popoutWindow.close();
+        if (WIN.array[i].popOutWindow)
+            WIN.array[i].popOutWindow.close();
 };
+
+taskbar.oncontextmenu = event=> false;
 
 class Window {
     constructor(themeColor = [64,64,64]) {
@@ -226,16 +240,16 @@ class Window {
             this.win.appendChild(this.btnMinimize);
         }
 
-        this.btnPopout = document.createElement("div");
+        this.btnPopOut = document.createElement("div");
         if (!onMobile) {
-            this.btnPopout.className = "control popout-box";
-            this.win.appendChild(this.btnPopout);
+            this.btnPopOut.className = "control popout-box";
+            this.win.appendChild(this.btnPopOut);
         }
         
         let dblclickCheck = false;
         this.win.onmousedown = (event)=> {
 
-            if (!this.popoutWindow)
+            if (!this.popOutWindow)
                 this.BringToFront();
             
             if (event.button == 0 && event.offsetY < 32) { //left click on title bar
@@ -248,7 +262,7 @@ class Window {
                 this.win.style.transition = "0s";
 
                 if (dblclickCheck && !onMobile) {
-                    this.Toogle();
+                    this.Toggle();
                     dblclickCheck = false;
                     return;
                 }
@@ -281,27 +295,72 @@ class Window {
                 WIN.offsetX  = this.task.offsetLeft;
                 WIN.x0 = event.clientX;
                 WIN.isIcoMoving = true;
-                WIN.active = this;
+                WIN.active = this
+                ;
             }
         };
 
         this.task.onmouseup = (event)=> {
-            if (event.button == 0 && (Math.abs(icoPosition - this.task.offsetLeft) < 2)) { //clicked but not moved
-                if (this.popoutWindow) 
-                    this.popoutWindow.focus();
+            if (event.button==0 && (Math.abs(icoPosition - this.task.offsetLeft) < 2)) { //clicked but not moved
+                if (this.popOutWindow) 
+                    this.popOutWindow.focus();
                
                 this.Minimize();
                 if (!this.isMinimized) if (this.defaultElement != null) this.defaultElement.focus();
-            }
-
-            if (event.button==1) { //close on middle click
+            
+            } else if (event.button==1) { //middle click
                 this.Close();
                 event.preventDefault();
+
+            } else if (event.button==2) { //right click
+                contextmenu.style.display = "block";
+                contextmenu.style.left = `${event.x}px`;
+
+                contextmenu.focus();
+                event.stopPropagation();
+
+                contextmenu.innerHTML = "";
+
+                if (!this.popOutWindow) {
+                    const popOutItem = WIN.CreateContextMenuItem("Pop out", "controls/popout.svg");
+                    popOutItem.onclick = ()=> this.PopOut();
+
+                    if (this.isMinimized) {
+                        const restoreItem = WIN.CreateContextMenuItem("Restore", "controls/maximize.svg");
+                        restoreItem.onclick = ()=> this.Minimize();
+
+                    } else {
+                        const minimizeItem = WIN.CreateContextMenuItem("Minimize", "controls/minimize.svg");
+                        minimizeItem.onclick = ()=> this.Minimize(true);
+    
+                        const toggleItem = WIN.CreateContextMenuItem(this.isMaximized ? "Restore" : "Maximize", "controls/maximize.svg");
+                        toggleItem.onclick = ()=> this.Toggle();
+                    }
+                }
+
+                if (WIN.array.length > 1) {
+                    const closeOthersItem = WIN.CreateContextMenuItem("Close others", "controls/close.svg");
+                    closeOthersItem.onclick = ()=> {
+                        let copy = WIN.array.filter(()=>true);
+                        for (let i = 0; i < copy.length; i++) {
+                            if (copy[i] === this) continue;
+                            copy[i].Close();
+                        }
+                    };
+                }
+                
+                const closeItem = WIN.CreateContextMenuItem("Close", "controls/close.svg");
+                closeItem.onclick = ()=> this.Close();
+
+
+                if (contextmenu.offsetLeft + contextmenu.offsetWidth > container.offsetWidth) {
+                    contextmenu.style.left = `${container.offsetWidth - contextmenu.offsetWidth - 8}px`;
+                }
             }
         };
         
         this.content.onmousedown = (event)=> {
-            if (!this.popoutWindow)
+            if (!this.popOutWindow)
                 this.BringToFront();
 
             event.stopPropagation();
@@ -310,7 +369,7 @@ class Window {
         this.btnClose.onmousedown =
         this.btnMaximize.onmousedown =
         this.btnMinimize.onmousedown =
-        this.btnPopout.onmousedown =
+        this.btnPopOut.onmousedown =
         (event)=> {
             WIN.controlPressed = this;
             this.BringToFront();
@@ -318,9 +377,9 @@ class Window {
         };
         
         this.btnClose.onmouseup    = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Close();} };
-        this.btnMaximize.onmouseup = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Toogle();} };
+        this.btnMaximize.onmouseup = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Toggle();} };
         this.btnMinimize.onmouseup = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Minimize();} };
-        this.btnPopout.onmouseup   = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.Popout();} };
+        this.btnPopOut.onmouseup   = event=> { if (event.button==0 && WIN.controlPressed==this) {WIN.controlPressed=null; this.PopOut();} };
     
         this.SetTitle("[untitled]");
         WIN.array.push(this);
@@ -330,7 +389,7 @@ class Window {
 
         WIN.AlignIcon(false);
 
-        if (onMobile || WIN.always_maxxed) this.Toogle();
+        if (onMobile || WIN.always_maxed) this.Toggle();
     }
 
     Close() {
@@ -348,8 +407,8 @@ class Window {
         this.task.style.transform  = "scale(.85)";
 
         setTimeout(()=> {
-            if (this.popoutWindow)
-                this.popoutWindow.close();
+            if (this.popOutWindow)
+                this.popOutWindow.close();
             else
                 container.removeChild(this.win);
 
@@ -361,7 +420,7 @@ class Window {
         WIN.focused = null;
     }
 
-    Toogle() {
+    Toggle() {
         document.getSelection().removeAllRanges();
 
         this.win.style.transition = ANIM_DURATION/1000 + "s";
@@ -391,7 +450,7 @@ class Window {
             this.task.style.top = "2px";
             this.task.style.borderRadius = "8%";
 
-            if (this.toolbar && !this.popoutWindow) {
+            if (this.toolbar && !this.popOutWindow) {
                 this.toolbar.style.top = "32px";
             }
 
@@ -444,7 +503,7 @@ class Window {
             this.Pop();
 
         } else { //minimize
-            if (this.popoutWindow) return;
+            if (this.popOutWindow) return;
 
             let iconPosition = this.task.getBoundingClientRect().x - this.win.offsetLeft - this.win.clientWidth/2;
 
@@ -473,7 +532,7 @@ class Window {
         }
     }
 
-    Popout() {
+    PopOut() {
         document.getSelection().removeAllRanges();
 
         //close any open dialog box
@@ -513,23 +572,23 @@ class Window {
             newWin.document.querySelector(":root").style.setProperty("--clr-select", select);
         }
 
-        this.popoutWindow = newWin;
+        this.popOutWindow = newWin;
         container.removeChild(this.win);
 
-        const btnUnpop = document.createElement("input");
-        btnUnpop.type = "button";
-        btnUnpop.style.padding = "0";
-        btnUnpop.style.margin = "0";
-        btnUnpop.style.minWidth = "0";
-        btnUnpop.style.position = "absolute";
-        btnUnpop.style.width = this.toolbar ? "24px" : "22px";
-        btnUnpop.style.height = this.toolbar ? "24px" : "22px";
-        btnUnpop.style.right = this.toolbar ? "4px" : "2px";
-        btnUnpop.style.top = this.toolbar ? "8px" : "2px";
-        btnUnpop.style.backgroundColor = "rgb(224,224,224)";
-        btnUnpop.style.backgroundImage = "url(controls/popout.svg)";
-        btnUnpop.style.backgroundPosition = "center";
-        btnUnpop.style.borderRadius = "12px";
+        const btnPopIn = document.createElement("input");
+        btnPopIn.type = "button";
+        btnPopIn.style.padding = "0";
+        btnPopIn.style.margin = "0";
+        btnPopIn.style.minWidth = "0";
+        btnPopIn.style.position = "absolute";
+        btnPopIn.style.width = this.toolbar ? "24px" : "22px";
+        btnPopIn.style.height = this.toolbar ? "24px" : "22px";
+        btnPopIn.style.right = this.toolbar ? "4px" : "2px";
+        btnPopIn.style.top = this.toolbar ? "8px" : "2px";
+        btnPopIn.style.backgroundColor = "rgb(224,224,224)";
+        btnPopIn.style.backgroundImage = "url(controls/popout.svg)";
+        btnPopIn.style.backgroundPosition = "center";
+        btnPopIn.style.borderRadius = "12px";
 
         this.content.style.left = "0";
         this.content.style.right = "0";
@@ -541,22 +600,22 @@ class Window {
             toolbar = this.toolbar;
             this.toolbar.style.top = "4px";
             newWin.document.body.appendChild(this.toolbar);
-            this.toolbar.appendChild(btnUnpop);
+            this.toolbar.appendChild(btnPopIn);
         } else {
-            newWin.document.body.appendChild(btnUnpop);
+            newWin.document.body.appendChild(btnPopIn);
         }
 
         this.content.style.filter = "none";
 
         newWin.onresize = () => this.AfterResize();
 
-        btnUnpop.onclick = () => {
+        btnPopIn.onclick = () => {
             container.appendChild(this.win);
             this.win.appendChild(this.content);
             
             newWin.onbeforeunload = () => {};
             newWin.close();
-            this.popoutWindow = null;
+            this.popOutWindow = null;
 
             this.content.style.filter = "none";
 
@@ -566,7 +625,7 @@ class Window {
             this.content.style.bottom = this.isMaximized ? "0" : "4px";
 
             if (this.toolbar) {
-                this.toolbar.removeChild(btnUnpop);
+                this.toolbar.removeChild(btnPopIn);
                 this.win.appendChild(this.toolbar);
                 this.toolbar.style.top = this.isMaximized ? "38px" : "32px";
                 this.content.style.top = this.isMaximized ? "82px" : "76px";
@@ -577,7 +636,7 @@ class Window {
 
         newWin.onbeforeunload = () => this.Close();
 
-        return btnUnpop;
+        return btnPopIn;
     }
 
     BringToFront() {
@@ -597,8 +656,8 @@ class Window {
         this.task.style.backgroundColor = `rgb(${this.themeColor[0]},${this.themeColor[1]},${this.themeColor[2]})`;
         if ((this.themeColor[0] + this.themeColor[1] + this.themeColor[2]) / 3 < 128) this.icon.style.filter = "brightness(6)";
 
-        if (this.popoutWindow) {
-            this.popoutWindow.focus();
+        if (this.popOutWindow) {
+            this.popOutWindow.focus();
             return;
         }
 
@@ -614,8 +673,8 @@ class Window {
 
     ConfirmBox(message, okOnly = false) {
         //if a dialog is already opened, queue
-        if (this.popoutWindow) {
-            if (this.popoutWindow.document.body.getElementsByClassName("win-dim")[0] != null) {
+        if (this.popOutWindow) {
+            if (this.popOutWindow.document.body.getElementsByClassName("win-dim")[0] != null) {
                 this.messagesQueue.push([message, okOnly]);
                 return null;
             }
@@ -630,8 +689,8 @@ class Window {
         const dim = document.createElement("div");
         dim.className = "win-dim";
 
-        if (this.popoutWindow)
-            this.popoutWindow.document.body.appendChild(dim);
+        if (this.popOutWindow)
+            this.popOutWindow.document.body.appendChild(dim);
         else
             this.win.appendChild(dim);
 
@@ -672,8 +731,8 @@ class Window {
             confirmBox.style.transform = "scaleY(.2)";
             this.content.style.filter = "none";
             setTimeout(() => {
-                if (this.popoutWindow) 
-                    this.popoutWindow.document.body.removeChild(dim);
+                if (this.popOutWindow) 
+                    this.popOutWindow.document.body.removeChild(dim);
                 else
                     this.win.removeChild(dim);
 
@@ -690,8 +749,8 @@ class Window {
 
     DialogBox(height) {
         //if a dialog is already opened, do nothing
-        if (this.popoutWindow) {
-            if (this.popoutWindow.document.body.getElementsByClassName("win-dim")[0] != null) return null;
+        if (this.popOutWindow) {
+            if (this.popOutWindow.document.body.getElementsByClassName("win-dim")[0] != null) return null;
         } else {
             document.getSelection().removeAllRanges();
             if (this.win.getElementsByClassName("win-dim")[0] != null) return null;
@@ -700,8 +759,8 @@ class Window {
         const dim = document.createElement("div");
         dim.className = "win-dim";
 
-        if (this.popoutWindow)
-            this.popoutWindow.document.body.appendChild(dim);
+        if (this.popOutWindow)
+            this.popOutWindow.document.body.appendChild(dim);
         else
             this.win.appendChild(dim);
 
@@ -749,8 +808,8 @@ class Window {
         };
 
         const Abort = () => {
-            if (this.popoutWindow)
-                this.popoutWindow.document.body.removeChild(dim);
+            if (this.popOutWindow)
+                this.popOutWindow.document.body.removeChild(dim);
             else
                 this.win.removeChild(dim);
         };
@@ -793,7 +852,7 @@ class Window {
         }
 
         this.toolbar.onmousedown = (event)=> {
-            if (!this.popoutWindow) this.BringToFront();
+            if (!this.popOutWindow) this.BringToFront();
             event.stopPropagation();
         };
     }
@@ -867,10 +926,10 @@ class Window {
 
     AddCssDependencies(filename) {
         if (document.head.querySelectorAll(`link[href$='${filename}']`).length == 0) {
-            let csslink = document.createElement("link");
-            csslink.rel = "stylesheet";
-            csslink.href = filename;
-            document.head.appendChild(csslink);
+            const cssLink = document.createElement("link");
+            cssLink.rel = "stylesheet";
+            cssLink.href = filename;
+            document.head.appendChild(cssLink);
         }
 
         if (this.cssDependencies.indexOf(filename) === -1)

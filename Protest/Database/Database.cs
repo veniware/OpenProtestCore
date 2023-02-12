@@ -55,7 +55,7 @@ public sealed class Database {
         DirectoryInfo dir = new DirectoryInfo(location);
         if (!dir.Exists) return;
 
-        bool succesfull = false;
+        bool successful = false;
         FileInfo[] files = dir.GetFiles();
 
         for (int i = 0; i < files.Length; i++) {
@@ -64,16 +64,16 @@ public sealed class Database {
 
             dictionary.Remove(files[i].Name, out _);
             dictionary.TryAdd(files[i].Name, entry);
-            succesfull = true;
+            successful = true;
         }
 
-        if (succesfull)
+        if (successful)
             version = DateTime.Now.Ticks;
     }
 
     private static Entry Read(FileInfo file) {
         JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new AttributListJsonConverter());
+        options.Converters.Add(new AttributeListJsonConverter());
 
         try {
             byte[] bytes = File.ReadAllBytes(file.FullName);
@@ -92,7 +92,7 @@ public sealed class Database {
 
     private bool Write(Entry entry) {
         JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new AttributListJsonConverter());
+        options.Converters.Add(new AttributeListJsonConverter());
 #if DEBUG
         options.WriteIndented = true;
 #endif
@@ -288,7 +288,7 @@ public sealed class Database {
         if (payload.Length == 0) return Strings.CODE_INV.Array;
 
         JsonSerializerOptions options = new JsonSerializerOptions();
-        options.Converters.Add(new AttributListJsonConverter());
+        options.Converters.Add(new AttributeListJsonConverter());
         SynchronizedDictionary<string, Attribute> modifications = JsonSerializer.Deserialize<SynchronizedDictionary<string, Attribute>>(payload, options);
 
         if (Save(filename, modifications, SaveMethod.overwrite, initiator)) {
@@ -368,7 +368,7 @@ public sealed class Database {
 
 
 internal sealed class EntryJsonConverter : JsonConverter<Database.Entry> {
-    private readonly AttributListJsonConverter attributListConverter = new AttributListJsonConverter();
+    private readonly AttributeListJsonConverter attributeListConverter = new AttributeListJsonConverter();
 
     public override Database.Entry Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         return null;
@@ -377,13 +377,13 @@ internal sealed class EntryJsonConverter : JsonConverter<Database.Entry> {
     public override void Write(Utf8JsonWriter writer, Database.Entry value, JsonSerializerOptions options) {
         //writer.WriteStartObject();
         writer.WritePropertyName(value.filename);
-        attributListConverter.Write(writer, value.attributes, options);
+        attributeListConverter.Write(writer, value.attributes, options);
         //writer.WriteEndObject();
     }
 }
 
 
-internal sealed class AttributListJsonConverter : JsonConverter<SynchronizedDictionary<string, Database.Attribute>> {
+internal sealed class AttributeListJsonConverter : JsonConverter<SynchronizedDictionary<string, Database.Attribute>> {
 
     public override SynchronizedDictionary<string, Database.Attribute> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         SynchronizedDictionary<string, Database.Attribute> dictionary = new SynchronizedDictionary<string, Database.Attribute>();

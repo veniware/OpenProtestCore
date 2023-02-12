@@ -19,7 +19,7 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover, input[type
 }
 
 button:focus, input[type="button"]:focus, input[type="submit"]:focus, input[type="reset"]:focus, input[type="color"]:focus {
-    animation: underline .2s 1 linear;
+    animation: underline .15s 1 linear;
 
     border-bottom-left-radius: 2px;
     border-bottom-right-radius: 2px;

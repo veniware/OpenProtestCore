@@ -16,7 +16,7 @@ const UI = {
         if (window.matchMedia('(prefers-reduced-motion)').matches && localStorage.getItem("animations") === null)
             localStorage.setItem("animations", "false");
 
-        WIN.always_maxxed       = localStorage.getItem("w_always_maxed") === "true";
+        WIN.always_maxed       = localStorage.getItem("w_always_maxed") === "true";
         container.className     = localStorage.getItem("w_dropshadow") !== "false" ? "" : "disable-window-dropshadows";
         document.body.className = localStorage.getItem("animations") !== "false" ? "" : "disable-animations";
 
@@ -131,7 +131,7 @@ const MENU = {
         MENU.session = [];
     },
 
-    Toogle: ()=> {
+    Toggle: ()=> {
         MENU.isOpen = !MENU.isOpen;
         MENU.UpdatePosition();
     
@@ -348,7 +348,7 @@ document.body.addEventListener("keyup", event => {
 
         if (Date.now() - MENU.lastAltPress < 250) {
             MENU.lastAltPress = 0;
-            MENU.Toogle();
+            MENU.Toggle();
         } else {
             MENU.lastAltPress = Date.now();
         }
@@ -359,7 +359,7 @@ document.body.addEventListener("keyup", event => {
 
 menubutton.onclick = event => {
     if (MENU.isMoved) return;
-    if (event.button == 0) MENU.Toogle();
+    if (event.button == 0) MENU.Toggle();
 };
 
 menubutton.onmousedown = event => {
@@ -441,6 +441,77 @@ btnLogout.onclick = async ()=> {
 btnSettings.onclick = () => {
     MENU.Close();
     new Settings();
+};
+
+taskbar.onmouseup = event=> {
+    if (WIN.array.length === 0) return;
+
+    if (event.button !== 2) return;
+    contextmenu.style.display = "block";
+    contextmenu.style.left = `${event.x}px`;
+    contextmenu.focus();
+
+    contextmenu.innerHTML = "";
+
+    const grid = WIN.CreateContextMenuItem("Grid", "controls/grid.svg");
+    grid.onclick = ()=> {
+        if (WIN.array.length === 0) return;
+
+        let visible = WIN.array.filter(o=> !o.isMinimized && !o.popOutWindow);
+
+        if (visible.length === 1) {
+            if (!visible[0].isMaximized) visible[0].Toggle();
+            return;
+        }
+
+        let gridW = Math.ceil(Math.sqrt(visible.length));
+        let gridH = gridW;
+
+        while (gridW * gridH >= visible.length + gridW) {
+            gridH--;
+        }
+
+        for (let y = 0; y < gridH; y++) {
+            for (let x = 0; x < gridW; x++) {
+                let i = y*gridW + x;
+                if (i >= visible.length) continue;
+                if (visible[i].isMaximized) visible[i].Toggle();
+                visible[i].win.style.left = `${100*x/gridW}%`;
+                visible[i].win.style.top = `${100*y/gridH}%`;
+                visible[i].win.style.width = `${100/gridW}%`;
+                visible[i].win.style.height = `${100/gridH}%`;
+            }
+        }
+
+    };
+    
+    const minimizeAll = WIN.CreateContextMenuItem("Minimize all", "controls/minimize.svg");
+    minimizeAll.onclick = ()=> {
+        for (let i = 0; i < WIN.array.length; i++) {
+            if (WIN.array[i].isMinimized) continue;
+            WIN.array[i].Minimize(true);
+        }
+    };
+    
+    const closeAll = WIN.CreateContextMenuItem("Close all", "controls/close.svg");
+    closeAll.onclick = ()=> {
+        let copy = WIN.array.filter(()=>true);
+        for (let i = 0; i < copy.length; i++) {
+            copy[i].Close();
+        }
+    };
+
+    if (contextmenu.offsetLeft + contextmenu.offsetWidth > container.offsetWidth) {
+        contextmenu.style.left = `${container.offsetWidth - contextmenu.offsetWidth - 8}px`;
+    }
+};
+
+contextmenu.onclick = ()=>{
+    contextmenu.style.display = "none";
+};
+
+contextmenu.onblur = ()=>{
+    contextmenu.style.display = "none";
 };
 
 (function minuteLoop() {

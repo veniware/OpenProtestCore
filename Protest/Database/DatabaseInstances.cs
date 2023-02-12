@@ -1,6 +1,6 @@
 ﻿namespace Protest;
 
-internal static class DatabaseInstanses {
+internal static class DatabaseInstances {
     internal static Database devices;
     internal static Database users;
 

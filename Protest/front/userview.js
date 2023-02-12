@@ -13,4 +13,21 @@ class UserView extends View {
             this.SetTitle("New user");
         }
     }
+
+    Edit() { //overrides
+        const btnSave = super.Edit();
+        btnSave.addEventListener("click", ()=>{
+            console.log("TODO: save user");
+        });
+    }
+
+    Fetch() { //overrides
+
+    }
+
+    Delete() { //overridable
+        this.ConfirmBox("Are you sure you want to delete this user?").addEventListener("click", ()=> {
+            
+        });
+    }
 }

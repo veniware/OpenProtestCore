@@ -127,7 +127,7 @@ public sealed class Listener {
     }
 
     private bool CacheHandler(HttpListenerContext ctx, string path) {
-        if (!cache.cashe.ContainsKey(path)) return false;
+        if (!cache.cache.ContainsKey(path)) return false;
 
         Cache.Entry entry;
         if (string.Equals(path, "/", StringComparison.Ordinal)) {
@@ -137,13 +137,13 @@ public sealed class Listener {
             //bool isAuthenticated = Auth.IsAuthenticated(ctx);
 
             if (!isAuthenticated) {
-                entry = cache.cashe.TryGetValue("/login", out Cache.Entry value) ? value : default;
+                entry = cache.cache.TryGetValue("/login", out Cache.Entry value) ? value : default;
             } else {
-                entry = cache.cashe["/"];
+                entry = cache.cache["/"];
             }
 
         } else {
-            entry = cache.cashe[path];
+            entry = cache.cache[path];
         }
 
         string acceptEncoding = ctx.Request.Headers.Get("Accept-Encoding")?.ToLower() ?? String.Empty;
@@ -208,12 +208,12 @@ public sealed class Listener {
         switch (ctx.Request.Url.AbsolutePath) {
             case "/logout"  : buffer = Auth.RevokeAccess(sessionId, username) ? Strings.CODE_OK.Array : Strings.CODE_FAI.Array; break;
 
-            case "/db/getdevices"         : buffer = DatabaseInstanses.devices.Serialize(); break;
-            case "/db/getusers"           : buffer = DatabaseInstanses.users.Serialize(); break;
-            case "/db/getdeviceattribute" : buffer = DatabaseInstanses.devices.GetAttribute(ctx.Request.Url.Query); break;
-            case "/db/getuserattribute"   : buffer = DatabaseInstanses.users.GetAttribute(ctx.Request.Url.Query); break;
-            case "/db/savedevice"         : buffer = DatabaseInstanses.devices.SaveHandler(ctx, username); break;
-            case "/db/saveuser"           : buffer = DatabaseInstanses.users.SaveHandler(ctx, username); break;
+            case "/db/getdevices"         : buffer = DatabaseInstances.devices.Serialize(); break;
+            case "/db/getusers"           : buffer = DatabaseInstances.users.Serialize(); break;
+            case "/db/getdeviceattribute" : buffer = DatabaseInstances.devices.GetAttribute(ctx.Request.Url.Query); break;
+            case "/db/getuserattribute"   : buffer = DatabaseInstances.users.GetAttribute(ctx.Request.Url.Query); break;
+            case "/db/savedevice"         : buffer = DatabaseInstances.devices.SaveHandler(ctx, username); break;
+            case "/db/saveuser"           : buffer = DatabaseInstances.users.SaveHandler(ctx, username); break;
 
             default: return false;
         }

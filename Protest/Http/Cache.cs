@@ -63,7 +63,7 @@ internal sealed class Cache {
     private string birthdate;
     private readonly string path;
 
-    public readonly Dictionary<string, Entry> cashe = new Dictionary<string, Entry>();
+    public readonly Dictionary<string, Entry> cache = new Dictionary<string, Entry>();
 
     public Cache(string path) {
         birthdate = DateTime.Now.ToString(Strings.DATETIME_FORMAT);
@@ -72,7 +72,7 @@ internal sealed class Cache {
     }
 
     public void Reload() {
-        cashe.Clear();
+        cache.Clear();
         Load();
     }
 
@@ -107,8 +107,8 @@ internal sealed class Cache {
             if (name == "/index") name = "/";
 
             byte[] bytes = pair.Value;
-            Entry entry = ConstractEntry(name, bytes);
-            cashe.Add(name, entry);
+            Entry entry = ConstructEntry(name, bytes);
+            cache.Add(name, entry);
 
 #if DEBUG
             _raw += bytes.LongLength;
@@ -134,8 +134,8 @@ internal sealed class Cache {
                     content = content.Replace("\"#202020\"", "\"#c0c0c0\"");
                     byte[] lightBytes = Encoding.UTF8.GetBytes(content);
                     string lightName = $"{name}?light";
-                    Entry lightEntry = ConstractEntry(lightName, lightBytes, "svg");
-                    cashe.Add(lightName, lightEntry);
+                    Entry lightEntry = ConstructEntry(lightName, lightBytes, "svg");
+                    cache.Add(lightName, lightEntry);
 #if SVG_TO_SVGZ //svgz
                     if (!files.ContainsKey($"{name}z?light"))
                         toSvg.Add($"{name}z?light", lightEntry.gzip);
@@ -157,7 +157,7 @@ internal sealed class Cache {
                 headers = new KeyValuePair<string, string>[] { new KeyValuePair<string, string>("Content-Encoding", "gzip") },
             };
 
-            cashe.Add(name, entry);
+            cache.Add(name, entry);
         }
 #endif
 
@@ -174,7 +174,7 @@ internal sealed class Cache {
             Console.WriteLine($" Brotli  : {100 * _brotli / (_raw + 1),5}% {_raw,10} -> {_brotli,8}");
 
 /*      long memory = 0;
-        foreach (KeyValuePair<string, Entry> pair in cashe) {
+        foreach (KeyValuePair<string, Entry> pair in cache) {
             memory += pair.Value.bytes?.Length ?? 0;
             memory += pair.Value.gzip?.Length ?? 0;
 #if DEFLATE
@@ -205,8 +205,8 @@ internal sealed class Cache {
         files.Add(name, bytes);
     }
 
-    private Entry ConstractEntry(string name, byte[] bytes, string extention = null) {
-        extention ??= name.Split('.').Last();
+    private Entry ConstructEntry(string name, byte[] bytes, string extension = null) {
+        extension ??= name.Split('.').Last();
 
         byte[] gzip = GZip(bytes);
 #if DEFLATE
@@ -238,7 +238,7 @@ internal sealed class Cache {
 #if BROTLI
             brotli = brotli,
 #endif
-            contentType = CONTENT_TYPE.TryGetValue(extention, out string value) ? value : "text/html; charset=utf-8",
+            contentType = CONTENT_TYPE.TryGetValue(extension, out string value) ? value : "text/html; charset=utf-8",
             headers = headers.ToArray()
         };
 

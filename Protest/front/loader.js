@@ -83,13 +83,13 @@ const LOADER = {
             return;
         }
 
-        const csslink = document.createElement("link");
-        csslink.rel = "stylesheet";
-        csslink.href = filename;
-        document.head.appendChild(csslink);
+        const cssLink = document.createElement("link");
+        cssLink.rel = "stylesheet";
+        cssLink.href = filename;
+        document.head.appendChild(cssLink);
 
-        csslink.onload = () => callback("ok", filename);
-        csslink.onerror = () => callback("error", filename);
+        cssLink.onload = () => callback("ok", filename);
+        cssLink.onerror = () => callback("error", filename);
     },
 
     LoadScript: (filename, callback) => {
@@ -169,11 +169,11 @@ const LOADER = {
             }
 
             if (win) {
-                if (session[i].isMaximized) win.Toogle();
+                if (session[i].isMaximized) win.Toggle();
                 if (session[i].isMinimized) win.Minimize();
                 win.position = session[i].position;
 
-                if (!WIN.always_maxxed) {
+                if (!WIN.always_maxed) {
                     win.win.style.left = session[i].left;
                     win.win.style.top = session[i].top;
                     win.win.style.width = session[i].width;

@@ -13,4 +13,21 @@ class DeviceView extends View {
             this.SetTitle("New Device");
         }
     }
+
+    Edit() { //overrides
+        const btnSave = super.Edit();
+        btnSave.addEventListener("click", ()=>{
+            console.log("TODO: save device");
+        });
+    }
+
+    Fetch() { //overrides
+
+    }
+
+    Delete() { //overrides
+        this.ConfirmBox("Are you sure you want to delete this device?").addEventListener("click", ()=> {
+            
+        });
+    }
 }
