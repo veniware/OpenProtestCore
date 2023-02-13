@@ -165,6 +165,7 @@
     white-space: nowrap;
     padding: 0 8px 0 36px;
     line-height: 36px;
+    background-color: transparent;
     background-image: url(mono/user.svg?light);
     background-position: 2px 1px;
     background-size: 32px 32px;
@@ -194,6 +195,7 @@
     bottom: 8px;
 
     color: #c0c0c0;
+    background-color: transparent;
     background-repeat: no-repeat;
     background-size: 32px 32px;
     background-position: 4px 2px;
@@ -294,6 +296,26 @@
 #analog_clock_m {
     transform-origin: 50% 50%;
     transition-duration: transform .8s;
+}
+
+.glass > #menubox {
+    background-color: #202020C0 !important;
+    backdrop-filter: blur(16px);
+    box-shadow: black 0 0 4px;
+}
+
+.glass > #contextmenu {
+    background-color: #C0C0C080 !important;
+    backdrop-filter: blur(12px);
+}
+
+.glass > .window {
+    background-color: #20202080 !important;
+    backdrop-filter: blur(16px);
+}
+
+.glass > .window > .win-content > .list-listbox {
+    background-color: #c0c0c080 !important;
 }
 
 @media only screen and (max-width: 540px) {

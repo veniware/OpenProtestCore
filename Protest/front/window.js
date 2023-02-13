@@ -1,4 +1,4 @@
-const ANIM_DURATION = 200;
+const ANIME_DURATION = 200;
 const onMobile = (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent));
 
 const WIN = {
@@ -36,18 +36,18 @@ const WIN = {
         if (ignoreActive) {
             for (let i=0; i<WIN.array.length; i++)
                 if (WIN.array[i].task != WIN.active.task) {
-                    WIN.array[i].task.style.transition = `${ANIM_DURATION/1000}s`;
+                    WIN.array[i].task.style.transition = `${ANIME_DURATION/1000}s`;
                     WIN.array[i].task.style.left = `${2+i*WIN.iconSize}px`;
                 }
         } else {
             for (let i=0; i<WIN.array.length; i++) {
-                WIN.array[i].task.style.transition = `${ANIM_DURATION/1000}s`;
+                WIN.array[i].task.style.transition = `${ANIME_DURATION/1000}s`;
                 WIN.array[i].task.style.left = `${2+i*WIN.iconSize}px`;
             }
 
             setTimeout(()=> {
                 for (let i=0; i<WIN.array.length; i++) WIN.array[i].task.style.transition = "0s";
-            }, ANIM_DURATION);
+            }, ANIME_DURATION);
         }
     },
 
@@ -124,7 +124,7 @@ document.body.onmouseup = ()=> {
     //if (!WIN.isMoving && !WIN.isResizing) return;
 
     if (WIN.active != null) {
-        WIN.active.task.style.transition = `${ANIM_DURATION/1000}s`;
+        WIN.active.task.style.transition = `${ANIME_DURATION/1000}s`;
         WIN.active.task.style.zIndex = "3";
         WIN.AlignIcon(false);
     }
@@ -398,11 +398,11 @@ class Window {
 
         document.getSelection().removeAllRanges();
 
-        this.win.style.transition = ANIM_DURATION/1333 + "s";
+        this.win.style.transition = ANIME_DURATION/1333 + "s";
         this.win.style.opacity    = "0";
         this.win.style.transform  = "scale(.85)";
 
-        this.task.style.transition = ANIM_DURATION/2000 + "s";
+        this.task.style.transition = ANIME_DURATION/2000 + "s";
         this.task.style.opacity    = "0";
         this.task.style.transform  = "scale(.85)";
 
@@ -415,7 +415,7 @@ class Window {
                 taskbar.removeChild(this.task);
             WIN.array.splice(WIN.array.indexOf(this), 1);
             WIN.AlignIcon(false);
-        }, ANIM_DURATION/2);
+        }, ANIME_DURATION/2);
 
         WIN.focused = null;
     }
@@ -423,7 +423,7 @@ class Window {
     Toggle() {
         document.getSelection().removeAllRanges();
 
-        this.win.style.transition = ANIM_DURATION/1000 + "s";
+        this.win.style.transition = ANIME_DURATION/1000 + "s";
 
         if (this.isMaximized) {
             if (this.position==null) {
@@ -481,7 +481,7 @@ class Window {
         setTimeout(()=> {
             this.win.style.transition = "0s";
             this.AfterResize();
-        }, ANIM_DURATION);
+        }, ANIME_DURATION);
     }
 
     Minimize(force) {
@@ -495,7 +495,7 @@ class Window {
             this.win.style.visibility = "visible";
             this.win.style.transform  = "none";
             this.isMinimized = false;
-            setTimeout(()=> { this.BringToFront(); }, ANIM_DURATION/2);
+            setTimeout(()=> { this.BringToFront(); }, ANIME_DURATION/2);
 
             WIN.focused = this;
 
@@ -519,7 +519,7 @@ class Window {
             WIN.focused = null;
         }
 
-        setTimeout(()=> { this.win.style.transition = "0s"; }, ANIM_DURATION);
+        setTimeout(()=> { this.win.style.transition = "0s"; }, ANIME_DURATION);
     }
 
     Pop() {
@@ -738,7 +738,7 @@ class Window {
 
                 let next = this.messagesQueue.shift();
                 if (next) this.ConfirmBox(next[0], next[1]);
-            }, ANIM_DURATION);
+            }, ANIME_DURATION);
         };
 
         btnOK.onclick = event => btnCancel.onclick(event);
@@ -823,7 +823,7 @@ class Window {
             this.content.style.filter = "none";
             setTimeout(() => {
                 Abort();
-            }, ANIM_DURATION);
+            }, ANIME_DURATION);
         };
 
         btnOK.onclick = event => btnCancel.onclick(event);

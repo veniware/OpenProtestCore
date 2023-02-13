@@ -23,13 +23,15 @@ const UI = {
         container.className = "";
         if (localStorage.getItem("w_popout") === "false") container.classList.add("no-popout");
         if (localStorage.getItem("w_dropshadow") === "false") container.classList.add("disable-window-dropshadows");
+        if (localStorage.getItem("glass") === "true") container.classList.add("glass");
 
-        //TODO:Glass
+        let accentColor = localStorage.getItem("accent_color") ?
+        JSON.parse(localStorage.getItem("accent_color")) : [255,102,0];
 
-        if (localStorage.getItem("accent_color"))
-            UI.SetAccentColor(JSON.parse(localStorage.getItem("accent_color")));
-        else
-            UI.SetAccentColor([255, 102, 0]);
+        let accentSaturation = localStorage.getItem("accent_saturation") ?
+        localStorage.getItem("accent_saturation") : 100;
+
+        UI.SetAccentColor(accentColor, accentSaturation);
 
         const pos = JSON.parse(localStorage.getItem("menu_button_pos"));
         if (pos) {
@@ -75,7 +77,7 @@ const UI = {
         return [h, s, l];
     },
 
-    SetAccentColor : (accent, saturation=1)=> {
+    SetAccentColor : (accent, saturation)=> {
         let hsl = UI.RgbToHsl(accent);
     
         let step1 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.78}%)`;
@@ -464,6 +466,8 @@ taskbar.onmouseup = event=> {
 
         let visible = WIN.array.filter(o=> !o.isMinimized && !o.popOutWindow);
 
+        if (visible.length === 0) return;
+
         if (visible.length === 1) {
             if (!visible[0].isMaximized) visible[0].Toggle();
             return;
@@ -480,14 +484,18 @@ taskbar.onmouseup = event=> {
             for (let x = 0; x < gridW; x++) {
                 let i = y*gridW + x;
                 if (i >= visible.length) continue;
+
+                visible[i].win.style.transition = `${ANIME_DURATION/1000}s`;
+
                 if (visible[i].isMaximized) visible[i].Toggle();
                 visible[i].win.style.left = `${100*x/gridW}%`;
                 visible[i].win.style.top = `${100*y/gridH}%`;
                 visible[i].win.style.width = `${100/gridW}%`;
                 visible[i].win.style.height = `${100/gridH}%`;
+
+                setTimeout(()=> { visible[i].win.style.transition = "0s"; }, ANIME_DURATION/1000);
             }
         }
-
     };
     
     const minimizeAll = WIN.CreateContextMenuItem("Minimize all", "controls/minimize.svg");

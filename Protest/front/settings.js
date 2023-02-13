@@ -70,35 +70,35 @@ class Settings extends Tabs {
         this.chkPopOut = document.createElement("input");
         this.chkPopOut.type = "checkbox";
         this.subContent.appendChild(this.chkPopOut);
-        this.AddCheckBoxLabel(this.subContent, this.chkPopOut, "Show pop-out button on windows");
+        this.AddCheckBoxLabel(this.subContent, this.chkPopOut, "Pop-out button on windows");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
         this.chkTaskTooltip = document.createElement("input");
         this.chkTaskTooltip.type = "checkbox";
         this.subContent.appendChild(this.chkTaskTooltip);
-        this.AddCheckBoxLabel(this.subContent, this.chkTaskTooltip, "Show tooltip on taskbar icons");
+        this.AddCheckBoxLabel(this.subContent, this.chkTaskTooltip, "Tooltip on taskbar icons");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
         this.chkWindowShadows = document.createElement("input");
         this.chkWindowShadows.type = "checkbox";
         this.subContent.appendChild(this.chkWindowShadows);
-        this.AddCheckBoxLabel(this.subContent, this.chkWindowShadows, "Show shadow under windows");
+        this.AddCheckBoxLabel(this.subContent, this.chkWindowShadows, "Shadow under windows");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
         this.chkAnimations = document.createElement("input");
         this.chkAnimations.type = "checkbox";
         this.subContent.appendChild(this.chkAnimations);
-        this.AddCheckBoxLabel(this.subContent, this.chkAnimations, "Play animations");
+        this.AddCheckBoxLabel(this.subContent, this.chkAnimations, "Animations");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
         this.chkGlass = document.createElement("input");
         this.chkGlass.type = "checkbox";
         this.subContent.appendChild(this.chkGlass);
-        this.AddCheckBoxLabel(this.subContent, this.chkGlass, "Enable glass");
+        this.AddCheckBoxLabel(this.subContent, this.chkGlass, "Glass effect");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
@@ -211,7 +211,6 @@ class Settings extends Tabs {
         this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
         this.chkGlass.checked         = localStorage.getItem("glass") === "true";
 
-        
         this.saturation.value = localStorage.getItem("accent_saturation") ? localStorage.getItem("accent_saturation") : 100;
 
         const Apply = ()=> {
@@ -220,8 +219,9 @@ class Settings extends Tabs {
             container.className = "";
             if (!this.chkPopOut.checked) container.classList.add("no-popout");
             if (!this.chkWindowShadows.checked) container.classList.add("disable-window-dropshadows");
+            if (this.chkGlass.checked) container.classList.add("glass");
+
             document.body.className = this.chkAnimations.checked ? "" : "disable-animations";
-            //TODO:document.body.className = this.chkGlass.checked ? "" : "glass";
 
             localStorage.setItem("w_always_maxed", this.chkWinMaxed.checked);
             localStorage.setItem("w_popout", this.chkPopOut.checked);
@@ -248,8 +248,10 @@ class Settings extends Tabs {
 
             this.divSaturationValue.textContent = `${this.saturation.value}%`;
 
+            let accentColor = localStorage.getItem("accent_color") ? JSON.parse(localStorage.getItem("accent_color")) : [255,102,0];
+
             localStorage.setItem("accent_saturation", this.saturation.value);
-            UI.SetAccentColor(JSON.parse(localStorage.getItem("accent_color")), this.saturation.value / 100);
+            UI.SetAccentColor(accentColor, this.saturation.value / 100);
         };
 
         this.chkWinMaxed.onchange      = Apply;
@@ -259,7 +261,7 @@ class Settings extends Tabs {
         this.chkAnimations.onchange    = Apply;
         this.chkGlass.onchange         = Apply;
 
-        this.saturation.oninput = () =>{
+        this.saturation.oninput = ()=> {
             this.accentBoxes.style.filter = `saturate(${this.saturation.value}%)`;
             Apply();
         };
