@@ -67,6 +67,27 @@ class Settings extends Tabs {
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
+        this.chkPopOut = document.createElement("input");
+        this.chkPopOut.type = "checkbox";
+        this.subContent.appendChild(this.chkPopOut);
+        this.AddCheckBoxLabel(this.subContent, this.chkPopOut, "Show pop-out button on windows");
+        this.subContent.appendChild(document.createElement("br"));
+        this.subContent.appendChild(document.createElement("br"));
+
+        this.chkTaskTooltip = document.createElement("input");
+        this.chkTaskTooltip.type = "checkbox";
+        this.subContent.appendChild(this.chkTaskTooltip);
+        this.AddCheckBoxLabel(this.subContent, this.chkTaskTooltip, "Show tooltip on taskbar icons");
+        this.subContent.appendChild(document.createElement("br"));
+        this.subContent.appendChild(document.createElement("br"));
+
+        this.chkWindowShadows = document.createElement("input");
+        this.chkWindowShadows.type = "checkbox";
+        this.subContent.appendChild(this.chkWindowShadows);
+        this.AddCheckBoxLabel(this.subContent, this.chkWindowShadows, "Show shadow under windows");
+        this.subContent.appendChild(document.createElement("br"));
+        this.subContent.appendChild(document.createElement("br"));
+
         this.chkAnimations = document.createElement("input");
         this.chkAnimations.type = "checkbox";
         this.subContent.appendChild(this.chkAnimations);
@@ -74,10 +95,10 @@ class Settings extends Tabs {
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
-        this.chkWindowShadows = document.createElement("input");
-        this.chkWindowShadows.type = "checkbox";
-        this.subContent.appendChild(this.chkWindowShadows);
-        this.AddCheckBoxLabel(this.subContent, this.chkWindowShadows, "Show window drop-shadows");
+        this.chkGlass = document.createElement("input");
+        this.chkGlass.type = "checkbox";
+        this.subContent.appendChild(this.chkGlass);
+        this.AddCheckBoxLabel(this.subContent, this.chkGlass, "Enable glass");
         this.subContent.appendChild(document.createElement("br"));
         this.subContent.appendChild(document.createElement("br"));
 
@@ -89,26 +110,51 @@ class Settings extends Tabs {
         divColor.style.paddingBottom = "8px";
         this.subContent.appendChild(divColor);
 
+        this.accentBoxes = document.createElement("div");
+        this.subContent.appendChild(this.accentBoxes);
+
+        this.subContent.appendChild(document.createElement("br"));
+
+        const divSaturation = document.createElement("div");
+        divSaturation.textContent = "Saturation: ";
+        divSaturation.style.display = "inline-block";
+        divSaturation.style.minWidth = "120px";
+        divSaturation.style.fontWeight = "600";
+        this.subContent.appendChild(divSaturation);
+
+        this.saturation = document.createElement("input");
+        this.saturation.type = "range";
+        this.saturation.min = "50";
+        this.saturation.max = "120";
+        this.saturation.style.width = "200px";
+        this.subContent.appendChild(this.saturation);
+
+        this.divSaturationValue = document.createElement("div");
+        this.divSaturationValue.textContent = "100%";
+        this.divSaturationValue.style.paddingLeft = "8px";
+        this.divSaturationValue.style.display = "inline-block";
+        this.subContent.appendChild(this.divSaturationValue);
+
+
         this.accentIndicators = [];
         let selected_accent = [255, 102, 0];
         if (localStorage.getItem("accent_color"))
-            selected_accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o));
+            selected_accent = JSON.parse(localStorage.getItem("accent_color"));
 
         const accentColors = [[224,56,64], [255,102,0], [255,186,0], [96,192,32], [36,176,244]];
 
         for (let i = 0; i < accentColors.length; i++) {
-            let rgbString = `rgb(${accentColors[i][0]},${accentColors[i][1]},${accentColors[i][2]})`;
-            let hsl = UI.RgbToHsl(accentColors[i]);
-
+            let hsl = UI.RgbToHsl(accentColors[i]); //--clr-accent
+            
             let step1 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.78}%)`;
-            let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
+            let step2 = `hsl(${hsl[0]+8},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
             let step3 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.8}%)`;
             let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
 
             const themeBox = document.createElement("div");
             themeBox.style.display = "inline-block";
             themeBox.style.margin = "2px 4px";
-            this.subContent.appendChild(themeBox);
+            this.accentBoxes.appendChild(themeBox);
 
             const gradientBox = document.createElement("div");
             gradientBox.style.width = "48px";
@@ -126,7 +172,7 @@ class Settings extends Tabs {
             indicator.style.borderRadius = "8px";
             indicator.style.marginTop = "4px";
             indicator.style.marginLeft = isSelected ? "0" : "20px";
-            indicator.style.backgroundColor = rgbString;
+            indicator.style.backgroundColor = `hsl(${hsl[0]},${hsl[1]}%,${hsl[2]}%)`;
             indicator.style.border = `${step1} 1px solid`;
             indicator.style.transition = ".4s";
             themeBox.appendChild(indicator);
@@ -134,8 +180,8 @@ class Settings extends Tabs {
             this.accentIndicators.push(indicator);
 
             themeBox.onclick = () => {
-                localStorage.setItem("accent_color", `${accentColors[i][0]},${accentColors[i][1]},${accentColors[i][2]}`);
-                UI.SetAccentColor(accentColors[i]);
+                localStorage.setItem("accent_color", JSON.stringify(accentColors[i]));
+                UI.SetAccentColor(accentColors[i], this.saturation.value / 100);
 
                 for (let j = 0; j < WIN.array.length; j++) { //update other setting windows
                     if (WIN.array[j] instanceof Settings && WIN.array[j].params === "appearance") {
@@ -148,7 +194,7 @@ class Settings extends Tabs {
                     }
 
                     if (WIN.array[j].popOutWindow) {
-                        let accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o.trim()));
+                        let accent = JSON.parse(localStorage.getItem("accent_color"));
                         let hsl = UI.RgbToHsl(accent);
                         let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
                         WIN.array[j].popOutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
@@ -158,30 +204,65 @@ class Settings extends Tabs {
             };
         }
 
-        this.chkWinMaxed.checked     = localStorage.getItem("w_always_maxed") === "true";
+        this.chkWinMaxed.checked      = localStorage.getItem("w_always_maxed") === "true";
+        this.chkPopOut.checked        = localStorage.getItem("w_popout") === "true";
+        this.chkTaskTooltip.checked   = localStorage.getItem("w_tasktooltip") !== "false";
         this.chkWindowShadows.checked = localStorage.getItem("w_dropshadow") !== "false";
         this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
+        this.chkGlass.checked         = localStorage.getItem("glass") === "true";
+
+        
+        this.saturation.value = localStorage.getItem("accent_saturation") ? localStorage.getItem("accent_saturation") : 100;
 
         const Apply = ()=> {
             WIN.always_maxed = this.chkWinMaxed.checked;
-            container.className = this.chkWindowShadows.checked ? "" : "disable-window-dropshadows";
+            taskbar.className = this.chkTaskTooltip.checked ? "" : "no-tooltip";
+            container.className = "";
+            if (!this.chkPopOut.checked) container.classList.add("no-popout");
+            if (!this.chkWindowShadows.checked) container.classList.add("disable-window-dropshadows");
             document.body.className = this.chkAnimations.checked ? "" : "disable-animations";
+            //TODO:document.body.className = this.chkGlass.checked ? "" : "glass";
 
             localStorage.setItem("w_always_maxed", this.chkWinMaxed.checked);
+            localStorage.setItem("w_popout", this.chkPopOut.checked);
+            localStorage.setItem("w_tasktooltip", this.chkTaskTooltip.checked);
             localStorage.setItem("w_dropshadow", this.chkWindowShadows.checked);
             localStorage.setItem("animations", this.chkAnimations.checked);
+            localStorage.setItem("glass", this.chkGlass.checked);
+
+            localStorage.setItem("accent_saturation", this.saturation.value);
 
             for (let i = 0; i < WIN.array.length; i++) //update other setting windows
                 if (WIN.array[i] instanceof Settings && WIN.array[i].params === "appearance") {
-                    WIN.array[i].chkWinMaxed.checked     = this.chkWinMaxed.checked;
-                    WIN.array[i].chkAnimations.checked    = this.chkAnimations.checked;
+                    WIN.array[i].chkWinMaxed.checked      = this.chkWinMaxed.checked;
+                    WIN.array[i].chkPopOut.checked        = this.chkPopOut.checked;
+                    WIN.array[i].chkTaskTooltip.checked   = this.chkTaskTooltip.checked;
                     WIN.array[i].chkWindowShadows.checked = this.chkWindowShadows.checked;
+                    WIN.array[i].chkAnimations.checked    = this.chkAnimations.checked;
+                    WIN.array[i].chkGlass.checked         = this.chkGlass.checked;
+
+                    WIN.array[i].saturation.value = this.saturation.value;
+                    WIN.array[i].accentBoxes.style.filter = `saturate(${this.saturation.value}%)`;
+                    WIN.array[i].divSaturationValue.textContent = `${this.saturation.value}%`;
                 }
+
+            this.divSaturationValue.textContent = `${this.saturation.value}%`;
+
+            localStorage.setItem("accent_saturation", this.saturation.value);
+            UI.SetAccentColor(JSON.parse(localStorage.getItem("accent_color")), this.saturation.value / 100);
         };
 
-        this.chkWinMaxed.onchange     = Apply;
-        this.chkAnimations.onchange    = Apply;
+        this.chkWinMaxed.onchange      = Apply;
+        this.chkPopOut.onchange        = Apply;
+        this.chkTaskTooltip.onchange   = Apply;
         this.chkWindowShadows.onchange = Apply;
+        this.chkAnimations.onchange    = Apply;
+        this.chkGlass.onchange         = Apply;
+
+        this.saturation.oninput = () =>{
+            this.accentBoxes.style.filter = `saturate(${this.saturation.value}%)`;
+            Apply();
+        };
 
         Apply();
     }
@@ -381,14 +462,14 @@ class Settings extends Tabs {
             localStorage.setItem("restore_session", this.chkRestoreSession.checked);
             localStorage.setItem("alive_after_close", this.chkAliveOnClose.checked);
             localStorage.setItem("session_timeout", this.sessionTimeout.value);
-            localStorage.setItem("cookie_lifetime", this.cookieLife.value);           
+            localStorage.setItem("cookie_lifetime", this.cookieLife.value);
             
             for (let i = 0; i < WIN.array.length; i++) //update other setting windows
                 if (WIN.array[i] instanceof Settings && WIN.array[i].params === "session") {
                     WIN.array[i].chkRestoreSession.checked = this.chkRestoreSession.checked;
                     WIN.array[i].chkAliveOnClose.checked   = this.chkAliveOnClose.checked;
                     WIN.array[i].sessionTimeout.value      = this.sessionTimeout.value;
-                    WIN.array[i].cookieLife.value = this.cookieLife.value;
+                    WIN.array[i].cookieLife.value          = this.cookieLife.value;
 
                     if (timeMapping[this.sessionTimeout.value] == Infinity) {
                         WIN.array[i].divSessionTimeoutValue.textContent = timeMapping[this.sessionTimeout.value];

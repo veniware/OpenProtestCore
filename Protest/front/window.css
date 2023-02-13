@@ -312,6 +312,15 @@
     animation: task-icon-open .25s ease-in-out;
 }
 
+#container.no-popout > .window > .popout-box {
+    display: none;
+}
+
+#taskbar.no-tooltip > .bar-icon::before,
+#taskbar.no-tooltip > .bar-icon::after {
+    display: none;
+}
+
 .no-results:empty::after {
     display: block;
     content: "no results";

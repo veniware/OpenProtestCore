@@ -565,7 +565,7 @@ class Window {
         if ((this.themeColor[0] + this.themeColor[1] + this.themeColor[2]) / 3 < 128) newWin.document.body.style.color = "rgb(224,224,224)";
 
         if (localStorage.getItem("accent_color")) { //apply accent color
-            let accent = localStorage.getItem("accent_color").split(",").map(o => parseInt(o.trim()));
+            let accent = JSON.parse(localStorage.getItem("accent_color"));
             let hsl = UI.RgbToHsl(accent);
             let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
             newWin.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);

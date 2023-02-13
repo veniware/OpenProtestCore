@@ -16,12 +16,18 @@ const UI = {
         if (window.matchMedia('(prefers-reduced-motion)').matches && localStorage.getItem("animations") === null)
             localStorage.setItem("animations", "false");
 
-        WIN.always_maxed       = localStorage.getItem("w_always_maxed") === "true";
-        container.className     = localStorage.getItem("w_dropshadow") !== "false" ? "" : "disable-window-dropshadows";
+        WIN.always_maxed = localStorage.getItem("w_always_maxed") === "true";
+        taskbar.className = localStorage.getItem("w_tasktooltip") === "false" ? "no-tooltip" : "";
         document.body.className = localStorage.getItem("animations") !== "false" ? "" : "disable-animations";
 
+        container.className = "";
+        if (localStorage.getItem("w_popout") === "false") container.classList.add("no-popout");
+        if (localStorage.getItem("w_dropshadow") === "false") container.classList.add("disable-window-dropshadows");
+
+        //TODO:Glass
+
         if (localStorage.getItem("accent_color"))
-            UI.SetAccentColor(localStorage.getItem("accent_color").split(",").map(o => parseInt(o)));
+            UI.SetAccentColor(JSON.parse(localStorage.getItem("accent_color")));
         else
             UI.SetAccentColor([255, 102, 0]);
 
@@ -69,17 +75,16 @@ const UI = {
         return [h, s, l];
     },
 
-    SetAccentColor : accent=> {
-        let rgbString = `rgb(${accent[0]},${accent[1]},${accent[2]})`;
+    SetAccentColor : (accent, saturation=1)=> {
         let hsl = UI.RgbToHsl(accent);
     
-        let step1 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.78}%)`;
-        let step2 = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
-        let step3 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.8}%)`;
+        let step1 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.78}%)`;
+        let step2 = `hsl(${hsl[0]+7},${hsl[1]*saturation}%,${hsl[2]*.9}%)`; //--clr-select
+        let step3 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.8}%)`;
         let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
     
         let root = document.documentElement;
-        root.style.setProperty("--clr-accent", rgbString);
+        root.style.setProperty("--clr-accent", `hsl(${hsl[0]},${hsl[1]*saturation}%,${hsl[2]}%)`);
         root.style.setProperty("--clr-select", step2);
         root.style.setProperty("--grd-taskbar", gradient);
         root.style.setProperty("--grd-taskbar-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);

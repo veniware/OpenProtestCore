@@ -326,6 +326,10 @@ class List extends Window {
         this.popOutWindow.addEventListener("mousemove", event=> { this.List_mousemove(event); });
     }
 
+    AfterResize() { //override
+        this.UpdateViewport();
+    }
+
     LinkData(data) {
         this.link = data;
     }
@@ -681,5 +685,4 @@ class List extends Window {
 
         Refresh();
     }
-
 }

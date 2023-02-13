@@ -13,6 +13,8 @@
     right: 0;
     top: 0;
     bottom: 56px;
+    background: var(--bg);
+    background-size: 100vw 200vh;
 }
 
 #taskbar {
