@@ -29,9 +29,9 @@ const UI = {
         JSON.parse(localStorage.getItem("accent_color")) : [255,102,0];
 
         let accentSaturation = localStorage.getItem("accent_saturation") ?
-        localStorage.getItem("accent_saturation") : 100;
+        localStorage.getItem("accent_saturation") : 85;
 
-        UI.SetAccentColor(accentColor, accentSaturation);
+        UI.SetAccentColor(accentColor, accentSaturation/100);
 
         const pos = JSON.parse(localStorage.getItem("menu_button_pos"));
         if (pos) {

@@ -130,14 +130,21 @@ class Settings extends Tabs {
         this.subContent.appendChild(this.saturation);
 
         this.divSaturationValue = document.createElement("div");
-        this.divSaturationValue.textContent = "100%";
         this.divSaturationValue.style.paddingLeft = "8px";
         this.divSaturationValue.style.display = "inline-block";
         this.subContent.appendChild(this.divSaturationValue);
 
+        this.chkWinMaxed.checked      = localStorage.getItem("w_always_maxed") === "true";
+        this.chkPopOut.checked        = localStorage.getItem("w_popout") === "true";
+        this.chkTaskTooltip.checked   = localStorage.getItem("w_tasktooltip") !== "false";
+        this.chkWindowShadows.checked = localStorage.getItem("w_dropshadow") !== "false";
+        this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
+        this.chkGlass.checked         = localStorage.getItem("glass") === "true";
+
+        this.saturation.value = localStorage.getItem("accent_saturation") ? localStorage.getItem("accent_saturation") : 85;
 
         this.accentIndicators = [];
-        let selected_accent = [255, 102, 0];
+        let selected_accent = [255,102,0];
         if (localStorage.getItem("accent_color"))
             selected_accent = JSON.parse(localStorage.getItem("accent_color"));
 
@@ -145,10 +152,9 @@ class Settings extends Tabs {
 
         for (let i = 0; i < accentColors.length; i++) {
             let hsl = UI.RgbToHsl(accentColors[i]); //--clr-accent
-            
-            let step1 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.78}%)`;
-            let step2 = `hsl(${hsl[0]+8},${hsl[1]}%,${hsl[2]*.9}%)`; //--clr-select
-            let step3 = `hsl(${hsl[0]-4},${hsl[1]}%,${hsl[2]*.8}%)`;
+            let step1 = `hsl(${hsl[0]-4},${hsl[1]*this.saturation.value/100}%,${hsl[2]*.78}%)`;
+            let step2 = `hsl(${hsl[0]+7},${hsl[1]*this.saturation.value/100}%,${hsl[2]*.9}%)`; //--clr-select
+            let step3 = `hsl(${hsl[0]-4},${hsl[1]*this.saturation.value/100}%,${hsl[2]*.8}%)`;
             let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
 
             const themeBox = document.createElement("div");
@@ -172,46 +178,19 @@ class Settings extends Tabs {
             indicator.style.borderRadius = "8px";
             indicator.style.marginTop = "4px";
             indicator.style.marginLeft = isSelected ? "0" : "20px";
-            indicator.style.backgroundColor = `hsl(${hsl[0]},${hsl[1]}%,${hsl[2]}%)`;
+            indicator.style.backgroundColor = `hsl(${hsl[0]},${hsl[1]*this.saturation.value/100}%,${hsl[2]}%)`;
             indicator.style.border = `${step1} 1px solid`;
-            indicator.style.transition = ".4s";
+            indicator.style.transition = "margin .4s, width .4s";
             themeBox.appendChild(indicator);
 
             this.accentIndicators.push(indicator);
 
             themeBox.onclick = () => {
                 localStorage.setItem("accent_color", JSON.stringify(accentColors[i]));
-                UI.SetAccentColor(accentColors[i], this.saturation.value / 100);
-
-                for (let j = 0; j < WIN.array.length; j++) { //update other setting windows
-                    if (WIN.array[j] instanceof Settings && WIN.array[j].params === "appearance") {
-                        for (let k = 0; k < this.accentIndicators.length; k++) {
-                            WIN.array[j].accentIndicators[k].style.width = "8px";
-                            WIN.array[j].accentIndicators[k].style.marginLeft = "20px";
-                        }
-                        WIN.array[j].accentIndicators[i].style.width = "48px";
-                        WIN.array[j].accentIndicators[i].style.marginLeft = "0px";
-                    }
-
-                    if (WIN.array[j].popOutWindow) {
-                        let accent = JSON.parse(localStorage.getItem("accent_color"));
-                        let hsl = UI.RgbToHsl(accent);
-                        let select = `hsl(${hsl[0]+7},${hsl[1]}%,${hsl[2]*.9}%)`;
-                        WIN.array[j].popOutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `rgb(${accent[0]},${accent[1]},${accent[2]})`);
-                        WIN.array[j].popOutWindow.document.querySelector(":root").style.setProperty("--clr-select", select);
-                    }
-                }
+                Apply();
             };
         }
 
-        this.chkWinMaxed.checked      = localStorage.getItem("w_always_maxed") === "true";
-        this.chkPopOut.checked        = localStorage.getItem("w_popout") === "true";
-        this.chkTaskTooltip.checked   = localStorage.getItem("w_tasktooltip") !== "false";
-        this.chkWindowShadows.checked = localStorage.getItem("w_dropshadow") !== "false";
-        this.chkAnimations.checked    = localStorage.getItem("animations") !== "false";
-        this.chkGlass.checked         = localStorage.getItem("glass") === "true";
-
-        this.saturation.value = localStorage.getItem("accent_saturation") ? localStorage.getItem("accent_saturation") : 100;
 
         const Apply = ()=> {
             WIN.always_maxed = this.chkWinMaxed.checked;
@@ -232,7 +211,7 @@ class Settings extends Tabs {
 
             localStorage.setItem("accent_saturation", this.saturation.value);
 
-            for (let i = 0; i < WIN.array.length; i++) //update other setting windows
+            for (let i = 0; i < WIN.array.length; i++) { //update other setting windows
                 if (WIN.array[i] instanceof Settings && WIN.array[i].params === "appearance") {
                     WIN.array[i].chkWinMaxed.checked      = this.chkWinMaxed.checked;
                     WIN.array[i].chkPopOut.checked        = this.chkPopOut.checked;
@@ -242,9 +221,30 @@ class Settings extends Tabs {
                     WIN.array[i].chkGlass.checked         = this.chkGlass.checked;
 
                     WIN.array[i].saturation.value = this.saturation.value;
-                    WIN.array[i].accentBoxes.style.filter = `saturate(${this.saturation.value}%)`;
                     WIN.array[i].divSaturationValue.textContent = `${this.saturation.value}%`;
+
+                    let saturation = this.saturation.value / 100;
+                    for (let j = 0; j < this.accentBoxes.childNodes.length; j++) {
+                        let hsl = UI.RgbToHsl(accentColors[j]);
+                        let step1 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.78}%)`;
+                        let step2 = `hsl(${hsl[0]+7},${hsl[1]*saturation}%,${hsl[2]*.9}%)`; //--clr-select
+                        let step3 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.8}%)`;
+                        let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
+                    
+                        WIN.array[i].accentBoxes.childNodes[j].firstChild.style.background = gradient;
+                        WIN.array[i].accentBoxes.childNodes[j].lastChild.style.backgroundColor = `hsl(${hsl[0]},${hsl[1]*saturation}%,${hsl[2]}%)`;
+                        WIN.array[i].accentBoxes.childNodes[j].firstChild.style.border = `${step1} 1px solid`;
+                        WIN.array[i].accentBoxes.childNodes[j].lastChild.style.border = `${step1} 1px solid`;
+                    }
                 }
+
+                if (WIN.array[i].popOutWindow) {
+                    let accent = JSON.parse(localStorage.getItem("accent_color"));
+                    let hsl = UI.RgbToHsl(accent);
+                    WIN.array[i].popOutWindow.document.querySelector(":root").style.setProperty("--clr-select", `hsl(${hsl[0]+7},${hsl[1]*this.saturation.value/100}%,${hsl[2]*.9}%)`);
+                    WIN.array[i].popOutWindow.document.querySelector(":root").style.setProperty("--clr-accent", `hsl(${hsl[0]},${hsl[1]*this.saturation.value/100}%,${hsl[2]}%)`);
+                }
+            }
 
             this.divSaturationValue.textContent = `${this.saturation.value}%`;
 
@@ -260,11 +260,7 @@ class Settings extends Tabs {
         this.chkWindowShadows.onchange = Apply;
         this.chkAnimations.onchange    = Apply;
         this.chkGlass.onchange         = Apply;
-
-        this.saturation.oninput = ()=> {
-            this.accentBoxes.style.filter = `saturate(${this.saturation.value}%)`;
-            Apply();
-        };
+        this.saturation.oninput        = Apply;
 
         Apply();
     }

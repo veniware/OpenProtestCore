@@ -314,6 +314,10 @@
     backdrop-filter: blur(16px);
 }
 
+.glass > .window header.title {
+    text-shadow: #000 0 0 4px;
+}
+
 .glass > .window > .win-content > .list-listbox {
     background-color: #c0c0c080 !important;
 }
