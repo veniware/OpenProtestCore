@@ -185,9 +185,21 @@ class Settings extends Tabs {
 
             this.accentIndicators.push(indicator);
 
-            themeBox.onclick = () => {
+            themeBox.onclick = ()=> {
                 localStorage.setItem("accent_color", JSON.stringify(accentColors[i]));
                 Apply();
+
+                for (let j = 0; j < WIN.array.length; j++) { //update other setting windows
+                    if (WIN.array[j] instanceof Settings && WIN.array[j].params === "appearance") {
+                        for (let k = 0; k < this.accentIndicators.length; k++) {
+                            if (k === i) continue;
+                            WIN.array[j].accentIndicators[k].style.width = "8px";
+                            WIN.array[j].accentIndicators[k].style.marginLeft = "20px";
+                        }
+                        WIN.array[j].accentIndicators[i].style.width = "48px";
+                        WIN.array[j].accentIndicators[i].style.marginLeft = "0px";
+                    }
+                }
             };
         }
 
@@ -195,10 +207,11 @@ class Settings extends Tabs {
         const Apply = ()=> {
             WIN.always_maxed = this.chkWinMaxed.checked;
             taskbar.className = this.chkTaskTooltip.checked ? "" : "no-tooltip";
+
             container.className = "";
-            if (!this.chkPopOut.checked) container.classList.add("no-popout");
+            if (!this.chkPopOut.checked)        container.classList.add("no-popout");
             if (!this.chkWindowShadows.checked) container.classList.add("disable-window-dropshadows");
-            if (this.chkGlass.checked) container.classList.add("glass");
+            if (this.chkGlass.checked)          container.classList.add("glass");
 
             document.body.className = this.chkAnimations.checked ? "" : "disable-animations";
 
@@ -213,15 +226,18 @@ class Settings extends Tabs {
 
             for (let i = 0; i < WIN.array.length; i++) { //update other setting windows
                 if (WIN.array[i] instanceof Settings && WIN.array[i].params === "appearance") {
-                    WIN.array[i].chkWinMaxed.checked      = this.chkWinMaxed.checked;
-                    WIN.array[i].chkPopOut.checked        = this.chkPopOut.checked;
-                    WIN.array[i].chkTaskTooltip.checked   = this.chkTaskTooltip.checked;
-                    WIN.array[i].chkWindowShadows.checked = this.chkWindowShadows.checked;
-                    WIN.array[i].chkAnimations.checked    = this.chkAnimations.checked;
-                    WIN.array[i].chkGlass.checked         = this.chkGlass.checked;
 
-                    WIN.array[i].saturation.value = this.saturation.value;
-                    WIN.array[i].divSaturationValue.textContent = `${this.saturation.value}%`;
+                    if (WIN.array[i] !== this) {
+                        WIN.array[i].chkWinMaxed.checked      = this.chkWinMaxed.checked;
+                        WIN.array[i].chkPopOut.checked        = this.chkPopOut.checked;
+                        WIN.array[i].chkTaskTooltip.checked   = this.chkTaskTooltip.checked;
+                        WIN.array[i].chkWindowShadows.checked = this.chkWindowShadows.checked;
+                        WIN.array[i].chkAnimations.checked    = this.chkAnimations.checked;
+                        WIN.array[i].chkGlass.checked         = this.chkGlass.checked;
+
+                        WIN.array[i].saturation.value = this.saturation.value;
+                        WIN.array[i].divSaturationValue.textContent = `${this.saturation.value}%`;
+                    }
 
                     let saturation = this.saturation.value / 100;
                     for (let j = 0; j < this.accentBoxes.childNodes.length; j++) {
