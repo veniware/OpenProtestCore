@@ -1,142 +1,142 @@
 .view-toolbar {
-    position: absolute;
-    top: 0;
-    left: 40px;
-    right: 0px;
-    max-width: 800px;
-    z-index: 1;
-    transition: .2s;
-    white-space: nowrap;
+	position: absolute;
+	top: 0;
+	left: 40px;
+	right: 0px;
+	max-width: 800px;
+	z-index: 1;
+	transition: .2s;
+	white-space: nowrap;
 }
 
 .view-scroll {
-    position: absolute;
-    top: 48px;
-    bottom: 8px;
-    left: 40px;
-    right: 0px;
-    max-width: 800px;
-    overflow-y: auto;
-    transition: .2s;
+	position: absolute;
+	top: 48px;
+	bottom: 8px;
+	left: 40px;
+	right: 0px;
+	max-width: 800px;
+	overflow-y: auto;
+	transition: .2s;
 }
 
 .view-attributes-list {
-    top: 0px;
-    width: 100%;
-    color: #202020;
-    background-color: var(--clr-pane);
-    border-radius: 4px;
-    padding: 2px 0;
-    overflow-x: hidden;
+	top: 0px;
+	width: 100%;
+	color: #202020;
+	background-color: var(--clr-pane);
+	border-radius: 4px;
+	padding: 2px 0;
+	overflow-x: hidden;
 
-    transition: .2s;
+	transition: .2s;
 }
 
 .view-attributes-list > div {
-    white-space: nowrap;
-    height: 33px;
-    transition: height .2s;
+	white-space: nowrap;
+	height: 33px;
+	transition: height .2s;
 }
 
 .view-attributes-list > div:first-child {
-    border-radius: 4px 4px 0 0;
+	border-radius: 4px 4px 0 0;
 }
 .view-attributes-list > div:last-child {
-    border-radius: 0 0 4px 4px;
+	border-radius: 0 0 4px 4px;
 }
 .view-attributes-list > div:only-child {
-    border-radius: 4px 4px 4px 4px;
+	border-radius: 4px 4px 4px 4px;
 }
 
 .view-attributes-freeze > div:hover {
-    background-color: var(--clr-highlight);
+	background-color: var(--clr-highlight);
 }
 
 .view-attributes-freeze > div > input[type="text"] {
-    all: unset;
-    overflow: hidden;
-    text-overflow: ellipsis;
+	all: unset;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .view-attributes-list > div > input[type="text"] {
-    box-sizing: border-box;
-    margin: 2px 0px 2px 4px;
-    padding: 4px 8px;
+	box-sizing: border-box;
+	margin: 2px 0px 2px 4px;
+	padding: 4px 8px;
 }
 
 .view-attributes-list > div > input[type="text"]:nth-child(1) {
-    width: max(100px, 25%);
+	width: max(100px, 25%);
 }
 .view-attributes-list > div > input[type="text"]:nth-child(2) {
-    width: calc(100% - max(100px, 25%) - 44px);
+	width: calc(100% - max(100px, 25%) - 44px);
 }
 .view-attributes-list > div > input[type="button"]:nth-child(3) {
-    position: absolute;
-    right: 4px;
-    
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
-    background-color: var(--clr-control) !important;
-    background-image: url(/mono/delete.svg);
-    background-size: 20px 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-    animation: none !important;
-    margin: 2px 0px 2px 4px;
-    transition: .2s;
+	position: absolute;
+	right: 4px;
+	
+	width: 28px;
+	min-width: 28px;
+	height: 28px;
+	background-color: var(--clr-control) !important;
+	background-image: url(/mono/delete.svg);
+	background-size: 20px 20px;
+	background-position: center;
+	background-repeat: no-repeat;
+	animation: none !important;
+	margin: 2px 0px 2px 4px;
+	transition: .2s;
 }
 
 .view-attributes-list > div > div:nth-child(4) {
-    position: absolute;
-    right: 0px;
-    transform: translateY(-26px);
-    width: auto;
-    max-width: 30%;
-    color: #c0c0c0;
-    background-color: #202020;
-    border-radius: 4px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    padding: 0px 4px;
+	position: absolute;
+	right: 0px;
+	transform: translateY(-26px);
+	width: auto;
+	max-width: 30%;
+	color: #c0c0c0;
+	background-color: #202020;
+	border-radius: 4px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	padding: 0px 4px;
 
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity .2s, right .2s;
-    transition-delay: .4s;
+	visibility: hidden;
+	opacity: 0;
+	transition: opacity .2s, right .2s;
+	transition-delay: .4s;
 }
 
 .view-attributes-freeze > div > input[type="text"]:nth-child(2) {
-    width: calc(100% - max(100px, 25%) - 12px);
+	width: calc(100% - max(100px, 25%) - 12px);
 }
 
 .view-attributes-freeze > div > input[type="button"]:nth-child(3) {
-    display: none;
+	display: none;
 }
 
 .view-attributes-freeze > div:hover > div:nth-child(4) {
-    visibility: visible;
-    opacity: 1;
-    right: 6px;
-    transition-delay: .8s;
+	visibility: visible;
+	opacity: 1;
+	right: 6px;
+	transition-delay: .8s;
 }
 
 .view-attributes-freeze > div > div:nth-child(4):hover {
-    max-width: 90%;
-    transition-delay: 0s !important;
+	max-width: 90%;
+	transition-delay: 0s !important;
 }
 
 .view-attributes-with-info > div > div:nth-child(4) {
-    visibility: visible;
-    opacity: 1;
-    right: 6px;
-    max-width: 90%;
-    transition-delay: 0s !important;
+	visibility: visible;
+	opacity: 1;
+	right: 6px;
+	max-width: 90%;
+	transition-delay: 0s !important;
 }
 
 @container (min-width: 800px) {
-    .view-toolbar, .view-scroll {
-        left: 200px;
-    }
+	.view-toolbar, .view-scroll {
+		left: 200px;
+	}
 }

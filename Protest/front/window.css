@@ -1,442 +1,442 @@
 .window {
-    position: absolute;
-    background-color: rgb(64,64,64);
-    border-radius: 8px 8px 0 0;
-    border-top: 1px solid rgb(84, 84, 84);
-    box-shadow: rgba(0,0,0,.85) 0 0 8px;
+	position: absolute;
+	background-color: rgb(64,64,64);
+	border-radius: 8px 8px 0 0;
+	border-top: 1px solid rgb(84, 84, 84);
+	box-shadow: rgba(0,0,0,.85) 0 0 8px;
 
-    transition-timing-function: cubic-bezier(.2,.6,.36,1);
-    min-width: 240px;
-    min-height: 160px;
+	transition-timing-function: cubic-bezier(.2,.6,.36,1);
+	min-width: 240px;
+	min-height: 160px;
 
-    animation: win-open .2s;
+	animation: win-open .2s;
 }
 
 .disable-window-dropshadows > .window {
-    box-shadow: none;
+	box-shadow: none;
 }
 
 .window > .title {
-    position: absolute;
-    cursor: default;
-    left: 28px;
-    right: 120px;
-    top: 0px;
-    height: 30px;
+	position: absolute;
+	cursor: default;
+	left: 28px;
+	right: 120px;
+	top: 0px;
+	height: 30px;
 
-    color: whitesmoke;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 16px;
-    line-height: 28px;
+	color: whitesmoke;
+	text-align: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 16px;
+	line-height: 28px;
 }
 
 .window > .control {
-    position: absolute;
-    top: 4px;
-    width: 22px;
-    height: 22px;
-    background-color: rgb(192,192,192);
-    border-radius: 50%;
-    transition: .2s;
+	position: absolute;
+	top: 4px;
+	width: 22px;
+	height: 22px;
+	background-color: rgb(192,192,192);
+	border-radius: 50%;
+	transition: .2s;
 }
 
 .window > .control:hover {
-    filter: brightness(115%);
+	filter: brightness(115%);
 }
 
 .window > .control:active {
-    filter: brightness(85%);
-    transform: scale(.95);
+	filter: brightness(85%);
+	transform: scale(.95);
 }
 
 .window > .close-box {
-    right: 4px;
-    background-color: var(--clr-accent);
-    background-image: url(controls/close.svg);
+	right: 4px;
+	background-color: var(--clr-accent);
+	background-image: url(controls/close.svg);
 }
 .window > .maximize-box {
-    right: 30px;
-    background-image: url(controls/maximize.svg);
+	right: 30px;
+	background-image: url(controls/maximize.svg);
 }
 .window > .minimize-box {
-    right: 56px;
-    background-image: url(controls/minimize.svg);
+	right: 56px;
+	background-image: url(controls/minimize.svg);
 }
 
 .window > .popout-box {
-    right: 88px;
-    background-image: url(controls/popout.svg);
+	right: 88px;
+	background-image: url(controls/popout.svg);
 }
 
 .window > .resize {
-    position: absolute;
-    z-index: 5;
-    bottom: 0;
-    right: 0;
-    cursor: nw-resize;
+	position: absolute;
+	z-index: 5;
+	bottom: 0;
+	right: 0;
+	cursor: nw-resize;
 
 	border-bottom: 16px solid rgb(128,128,128);
 	border-left: 16px solid transparent;
 }
 
 .window > .titleicon {
-    position: absolute;
-    left: 6px;
-    top: 4px;
-    width: 22px;
-    height: 22px;
+	position: absolute;
+	left: 6px;
+	top: 4px;
+	width: 22px;
+	height: 22px;
 
-    background-repeat: no-repeat;
-    background-size: cover;
-    filter: invert(1);
+	background-repeat: no-repeat;
+	background-size: cover;
+	filter: invert(1);
 }
 
 .win-toolbar {
-    /*background: var(--grd-toolbar);*/
-    background-color: #505050;
-    border-radius: 4px;
-    position: absolute;
-    left: 4px;
-    right: 4px;
-    top: 32px;
-    height: 40px;
+	/*background: var(--grd-toolbar);*/
+	background-color: #505050;
+	border-radius: 4px;
+	position: absolute;
+	left: 4px;
+	right: 4px;
+	top: 32px;
+	height: 40px;
 }
 
 .win-toolbar > .win-toolbar-button {
-    all: unset;
-    float: left;
+	all: unset;
+	float: left;
 
-    width: 36px;
-    height: 36px;
-    outline: 0;
+	width: 36px;
+	height: 36px;
+	outline: 0;
 
-    border-radius: 2px;
-    margin: 2px;
+	border-radius: 2px;
+	margin: 2px;
 
-    background-size: 30px 30px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-color: transparent;
+	background-size: 30px 30px;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-color: transparent;
 
-    filter: drop-shadow(rgba(32,32,32,.5)1px 1px 1px);
+	filter: drop-shadow(rgba(32,32,32,.5)1px 1px 1px);
 }
 .win-toolbar > .win-toolbar-button:is(:hover, :focus, :focus-within) {
-    transition: .2s;
-    background-color: rgb(72,72,72);
+	transition: .2s;
+	background-color: rgb(72,72,72);
 }
 .win-toolbar > .win-toolbar-button:active {
-    transition: .2s;
-    background-color: rgb(64,64,64);
+	transition: .2s;
+	background-color: rgb(64,64,64);
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu {
-    position: relative;
+	position: relative;
 
-    visibility: hidden;
-    filter: opacity(0);
+	visibility: hidden;
+	filter: opacity(0);
 
-    left: 0;
-    top: calc(100% + 6px);
-    width: 200px;
-    height: 100px;
-    padding: 4px;
-        
-    background-color: var(--clr-pane);
-    color: rgb(32,32,32);
-    font-weight: 600;
+	left: 0;
+	top: calc(100% + 6px);
+	width: 200px;
+	height: 100px;
+	padding: 4px;
+		
+	background-color: var(--clr-pane);
+	color: rgb(32,32,32);
+	font-weight: 600;
 
-    min-height: 64px;
-    border-radius: 4px;
-    box-shadow: rgba(64,64,64,.6) 0 0 4px;
+	min-height: 64px;
+	border-radius: 4px;
+	box-shadow: rgba(64,64,64,.6) 0 0 4px;
 
-    transform: scaleY(.6);
-    transform-origin: 50% 0;
-    transition: .2s;
+	transform: scaleY(.6);
+	transform-origin: 50% 0;
+	transition: .2s;
 }
 .win-toolbar > .win-toolbar-button:is(:focus, :focus-within) > .win-toolbar-submenu {
-    visibility: visible;
-    filter: none;
-    transform: none;
+	visibility: visible;
+	filter: none;
+	transform: none;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu::before {
-    position: relative;
-    left: 9px;
-    top: -30px;
-    content: "";
-    border: solid;
-    border-color: var(--clr-pane) transparent;
-    border-width: 0 6px 6px 6px;
-    transform: translateX(6px) !important;
-    transform-origin: 50% 100%;
-    z-index: 1;
+	position: relative;
+	left: 9px;
+	top: -30px;
+	content: "";
+	border: solid;
+	border-color: var(--clr-pane) transparent;
+	border-width: 0 6px 6px 6px;
+	transform: translateX(6px) !important;
+	transform-origin: 50% 100%;
+	z-index: 1;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > input {
-    position: absolute;
-    left: 0;
-    top: 2px;
-    width: calc(100% - 16px);
-    padding: 2px 4px;
-    /*animation: none !important;*/
+	position: absolute;
+	left: 0;
+	top: 2px;
+	width: calc(100% - 16px);
+	padding: 2px 4px;
+	/*animation: none !important;*/
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 32px;
-    bottom: 0;
-    
-    overflow-x: hidden;
-    overflow-y: auto;
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 32px;
+	bottom: 0;
+	
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div {
-    border-radius: 2px;
-    padding: 2px;
-    margin: 2px;
-    height: 20px; 
-    transition: .2s;
+	border-radius: 2px;
+	padding: 2px;
+	margin: 2px;
+	height: 20px; 
+	transition: .2s;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div:hover {
-    background-color: var(--clr-highlight);
+	background-color: var(--clr-highlight);
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div > div:active {
-    background-color: var(--clr-select);
+	background-color: var(--clr-select);
 }
 
 .win-toolbar > .win-toolbar-button > input[type="text"] {
-    width: calc(100% - 48px);
-    line-height: 24px;
-    padding-left: 32px;
-    background: transparent;
-    animation: none !important;
-    color: var(--clr-fore);
-    font-weight: 600;
-    border-radius: 0;
+	width: calc(100% - 48px);
+	line-height: 24px;
+	padding-left: 32px;
+	background: transparent;
+	animation: none !important;
+	color: var(--clr-fore);
+	font-weight: 600;
+	border-radius: 0;
 }
 
 .win-toolbar > .win-toolbar-separator {
-    float: left;
-    width: 3px;
-    height: 32px;
-    border-radius: 2px;
-    margin: 4px;
-    background-color: #c0c0c0;
+	float: left;
+	width: 3px;
+	height: 32px;
+	border-radius: 2px;
+	margin: 4px;
+	background-color: #c0c0c0;
 }
 
 .win-content {
-    position: absolute;
-    color: rgb(224,224,244);
-    left: 4px;
-    right: 4px;
-    top: 32px;
-    bottom: 4px;
-    transition: top .2s;
+	position: absolute;
+	color: rgb(224,224,244);
+	left: 4px;
+	right: 4px;
+	top: 32px;
+	bottom: 4px;
+	transition: top .2s;
 }
 
 .win-dim {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 30px;
-    bottom: 0;
-    overflow: hidden;
-    
-    background-color: rgba(64,64,64,.8);
-    /*backdrop-filter: blur(4px*);*/
+	position: absolute;
+	left: 0;
+	right: 0;
+	top: 30px;
+	bottom: 0;
+	overflow: hidden;
+	
+	background-color: rgba(64,64,64,.8);
+	/*backdrop-filter: blur(4px*);*/
 
-    animation: fade-in .2s;
-    transition: opacity .2s, filter .2s;
+	animation: fade-in .2s;
+	transition: opacity .2s, filter .2s;
 }
 
 .win-confirm, .win-dialog {
-    background-color: var(--clr-pane);
-    color: rgb(32,32,32);
-    max-width: 100%;
-    margin: 0px auto;
+	background-color: var(--clr-pane);
+	color: rgb(32,32,32);
+	max-width: 100%;
+	margin: 0px auto;
 
-    box-shadow: rgba(0,0,0,.2) 0 12px 16px;
-    border-radius: 0 0 8px 8px;
-    padding: 32px 8px 16px 8px;
-    box-sizing: border-box;
+	box-shadow: rgba(0,0,0,.2) 0 12px 16px;
+	border-radius: 0 0 8px 8px;
+	padding: 32px 8px 16px 8px;
+	box-sizing: border-box;
 
-    animation: roll-in .2s;
-    transform-origin: 50% 0;
-    transition: transform .2s;
+	animation: roll-in .2s;
+	transform-origin: 50% 0;
+	transition: transform .2s;
 }
 
 .win-confirm {
-    width: 400px;
-    text-align: center;
-    font-weight: bold;
+	width: 400px;
+	text-align: center;
+	font-weight: bold;
 }
 
 .win-dialog {
-    position: absolute;
-    left: 10%;
-    right: 10%;
-    max-width: 960px;
-    height: calc(100% - 2px);
+	position: absolute;
+	left: 10%;
+	right: 10%;
+	max-width: 960px;
+	height: calc(100% - 2px);
 }
 
 .bar-icon {
-    position: absolute;
-    top: 2px;
-    width: 48px;
-    height: 48px;
-    border-radius: 8%;
-    background-color: rgba(0,0,0,0);
-    filter: none;
+	position: absolute;
+	top: 2px;
+	width: 48px;
+	height: 48px;
+	border-radius: 8%;
+	background-color: rgba(0,0,0,0);
+	filter: none;
 
-    transition: .2s, filter 0s;
+	transition: .2s, filter 0s;
 }
 
 .bar-icon > .icon {
-    position: relative;
-    left: 4%;
-    top: 4%;
-    width: 91.5%;
-    height: 91.5%;
-    z-index: 0;
+	position: relative;
+	left: 4%;
+	top: 4%;
+	width: 91.5%;
+	height: 91.5%;
+	z-index: 0;
 
-    background-repeat: no-repeat;
-    background-size: cover;
+	background-repeat: no-repeat;
+	background-size: cover;
 
-    transition: filter 0s;
-    animation: task-icon-open .25s ease-in-out;
+	transition: filter 0s;
+	animation: task-icon-open .25s ease-in-out;
 }
 
 #container.no-popout > .window > .popout-box {
-    display: none;
+	display: none;
 }
 
 #taskbar.no-tooltip > .bar-icon::before,
 #taskbar.no-tooltip > .bar-icon::after {
-    display: none;
+	display: none;
 }
 
 .no-results:empty::after {
-    display: block;
-    content: "no results";
-    font-size: 16px;
-    font-weight: bold;
-    color: #202020;
-    margin-top: 20px;
-    height: 100px;
-    text-align: center;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(mono/clear.svg);
-    background-size: 56px 56px;
-    background-position-y: 36px;
-    animation: fade-in .4s ease-in;
-    filter: brightness(400%);
+	display: block;
+	content: "no results";
+	font-size: 16px;
+	font-weight: bold;
+	color: #202020;
+	margin-top: 20px;
+	height: 100px;
+	text-align: center;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-image: url(mono/clear.svg);
+	background-size: 56px 56px;
+	background-position-y: 36px;
+	animation: fade-in .4s ease-in;
+	filter: brightness(400%);
 }
 
 .no-results-small:empty::after {
-    display: block;
-    content: "no results";
-    font-size: 14px;
-    font-weight: bold;
-    color: #202020;
-    padding-top: 8px;
-    text-align: center;
-    filter: brightness(400%);
+	display: block;
+	content: "no results";
+	font-size: 14px;
+	font-weight: bold;
+	color: #202020;
+	padding-top: 8px;
+	text-align: center;
+	filter: brightness(400%);
 }
 
 .waitbox {
-    position: absolute;
-    width: 100%;
-    height: 64px;
+	position: absolute;
+	width: 100%;
+	height: 64px;
 }
 
 .waitbox > div {
-    width: 32px;
-    height: 32px;
-    margin: 64px auto;
-    border-radius: 50%;
-    background-color: rgb(224,224,224);
-    box-shadow: rgb(224,224,224) 0 0 8px 2px;
-    animation: wait-animation 2s ease infinite;
+	width: 32px;
+	height: 32px;
+	margin: 64px auto;
+	border-radius: 50%;
+	background-color: rgb(224,224,224);
+	box-shadow: rgb(224,224,224) 0 0 8px 2px;
+	animation: wait-animation 2s ease infinite;
 }
 
 .wait-label {
-    position: absolute;
-    margin: 127px auto;
-    width: 100%;
-    text-align: center;
-    color: rgb(224,224,224);
-    font-weight: bold;
-    animation: delayed-fade-in 2s ease-in 1;
+	position: absolute;
+	margin: 127px auto;
+	width: 100%;
+	text-align: center;
+	color: rgb(224,224,224);
+	font-weight: bold;
+	animation: delayed-fade-in 2s ease-in 1;
 }
 
 @keyframes wait-animation {
-    0% { transform: translateX(175px); }
-    50% { transform: translateX(-175px); }
-    100% { transform: translateX(175px); }
+	0% { transform: translateX(175px); }
+	50% { transform: translateX(-175px); }
+	100% { transform: translateX(175px); }
 }
 
 @keyframes win-open {
-    0%{   transform: scale(1.1); filter: opacity(0); }
-    100%{ transform: scale(1);   filter: opacity(1); }
+	0%{   transform: scale(1.1); filter: opacity(0); }
+	100%{ transform: scale(1);   filter: opacity(1); }
 }
 
 @keyframes task-icon-open {
-    0%{   transform: scale(.8); }
-    60%{  transform: scale(1.1); }
-    100%{ transform: scale(1); }
+	0%{   transform: scale(.8); }
+	60%{  transform: scale(1.1); }
+	100%{ transform: scale(1); }
 }
 
 @keyframes focus-pop {
-    0%{   transform: scale(1); }
-    50%{  transform: scale(1.05); }
-    100%{ transform: scale(1); }
+	0%{   transform: scale(1); }
+	50%{  transform: scale(1.05); }
+	100%{ transform: scale(1); }
 }
 
 @keyframes fade-in {
-    0%{   opacity: 0 }
-    100%{ opacity: 1 }
+	0%{   opacity: 0 }
+	100%{ opacity: 1 }
 }
 
 @keyframes delayed-fade-in {
-    0%{   filter: opacity(0); }
-    60%{  filter: opacity(0); }
-    100%{ filter: opacity(1); }
+	0%{   filter: opacity(0); }
+	60%{  filter: opacity(0); }
+	100%{ filter: opacity(1); }
 }
 
 @keyframes roll-in {
-    0%{   transform: translateY(-100%); }
-    100%{ transform: none; }
+	0%{   transform: translateY(-100%); }
+	100%{ transform: none; }
 }
 
 @keyframes slide-in {
-    0%{   transform: translateX(100%); }
-    100%{ transform: none; }
+	0%{   transform: translateX(100%); }
+	100%{ transform: none; }
 }
 
 @keyframes fall-in {
-    0%{   opacity: 0; transform: translateY(-24px); }
-    100%{ opacity: 1; transform: none; }
+	0%{   opacity: 0; transform: translateY(-24px); }
+	100%{ opacity: 1; transform: none; }
 }
 @keyframes rise-in {
-    0%{   opacity: 0; transform: translateY(24px); }
-    100%{ opacity: 1; transform: none; }
+	0%{   opacity: 0; transform: translateY(24px); }
+	100%{ opacity: 1; transform: none; }
 }
 
 @media screen and (-ms-high-contrast: active) {
-    .window {
-        background-color: #000;
-        color: #fff;
-        border: 1px solid #ff0;
-    }
+	.window {
+		background-color: #000;
+		color: #fff;
+		border: 1px solid #ff0;
+	}
 
-    .window > .control {
-        filter: brightness(4);
-    }
+	.window > .control {
+		filter: brightness(4);
+	}
 }
