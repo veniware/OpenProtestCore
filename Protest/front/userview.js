@@ -40,8 +40,14 @@ class UserView extends View {
 			})
 			.then(json => {
 				if (json.error) throw(json.error);
-				LOADER.users[json.filename] = obj;
-				//TODO: upodate list.js is any...
+				this.link = obj;
+				LOADER.users.data[json.filename] = obj;
+
+				for (let i = 0; i < WIN.array.length; i++) {
+					if (WIN.array[i] instanceof UsersList) {
+						WIN.array[i].UpdateViewport(true);
+					}
+				}
 			})
 			.catch(error =>{
 				console.log(error);
