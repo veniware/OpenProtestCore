@@ -64,11 +64,11 @@ internal static class Ping {
                                 if (h[i].Length > 0 && h[i + 1].Length > 0 && !hostnames.ContainsKey(h[i]))
                                     hostnames.Add(h[i], h[i + 1]);
                                 else
-                                    await ws.SendAsync(Strings.CODE_INV, WebSocketMessageType.Text, true, CancellationToken.None);
+                                    await ws.SendAsync(Strings.CODE_INVALID_ARGUMENT, WebSocketMessageType.Text, true, CancellationToken.None);
                             }
                             await ws.SendAsync(Strings.CODE_ACK, WebSocketMessageType.Text, true, CancellationToken.None);
                         } else
-                            await ws.SendAsync(Strings.CODE_INV, WebSocketMessageType.Text, true, CancellationToken.None);
+                            await ws.SendAsync(Strings.CODE_INVALID_ARGUMENT, WebSocketMessageType.Text, true, CancellationToken.None);
                         break;
 
                     case "remove":
@@ -77,7 +77,7 @@ internal static class Ping {
                             hostnames.Remove(value);
                             await ws.SendAsync(Strings.CODE_ACK, WebSocketMessageType.Text, true, CancellationToken.None);
                         } else
-                            await ws.SendAsync(Strings.CODE_INV, WebSocketMessageType.Text, true, CancellationToken.None);
+                            await ws.SendAsync(Strings.CODE_INVALID_ARGUMENT, WebSocketMessageType.Text, true, CancellationToken.None);
                         break;
 
                     case "timeout":

@@ -14,6 +14,7 @@ public static class Strings {
     public const char DIRECTORY_SEPARATOR = '\\';
 #endif
 
+    
     public const string TIME_FORMAT          = "HH:mm:ss";
     public const string TIME_FORMAT_MILLI    = "HH:mm:ss:fff";
     public const string DATE_FORMAT          = "dd-MM-yyyy";
@@ -22,21 +23,22 @@ public static class Strings {
     public const string DATETIME_FORMAT_LONG = "dddd dd MMM yyyy HH:mm:ss";
     public const string DATETIME_FORMAT_FILE = "yyyy-MM-dd HH:mm:ss";
 
-    public static readonly ArraySegment<byte> CODE_OK = new ArraySegment<byte>(Encoding.UTF8.GetBytes("ok"));
-    public static readonly ArraySegment<byte> CODE_ACK = new ArraySegment<byte>(Encoding.UTF8.GetBytes("acknowledge"));
-    public static readonly ArraySegment<byte> CODE_UNT = new ArraySegment<byte>(Encoding.UTF8.GetBytes("unauthorized"));
-    public static readonly ArraySegment<byte> CODE_FAI = new ArraySegment<byte>(Encoding.UTF8.GetBytes("failed"));
-    public static readonly ArraySegment<byte> CODE_INV = new ArraySegment<byte>(Encoding.UTF8.GetBytes("invalid argument"));
-    public static readonly ArraySegment<byte> CODE_NOT = new ArraySegment<byte>(Encoding.UTF8.GetBytes("not found"));
-    public static readonly ArraySegment<byte> CODE_FLE = new ArraySegment<byte>(Encoding.UTF8.GetBytes("no such file"));
-    public static readonly ArraySegment<byte> CODE_EXS = new ArraySegment<byte>(Encoding.UTF8.GetBytes("file already exists"));
-    public static readonly ArraySegment<byte> CODE_INF = new ArraySegment<byte>(Encoding.UTF8.GetBytes("not enough information"));
-    public static readonly ArraySegment<byte> CODE_NHO = new ArraySegment<byte>(Encoding.UTF8.GetBytes("no such host is known"));
-    public static readonly ArraySegment<byte> CODE_UNA = new ArraySegment<byte>(Encoding.UTF8.GetBytes("service is unavailable"));
-    public static readonly ArraySegment<byte> CODE_UNR = new ArraySegment<byte>(Encoding.UTF8.GetBytes("host is unreachable"));
-    public static readonly ArraySegment<byte> CODE_TCP = new ArraySegment<byte>(Encoding.UTF8.GetBytes("tcp connection failure"));
-    public static readonly ArraySegment<byte> CODE_TSK = new ArraySegment<byte>(Encoding.UTF8.GetBytes("another task is already in progress"));
-    public static readonly ArraySegment<byte> CODE_NTK = new ArraySegment<byte>(Encoding.UTF8.GetBytes("this task no longer exists"));
+    //pre-baked json responses:
+    public static readonly ArraySegment<byte> CODE_OK  = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"status\":\"ok\"}"));
+    public static readonly ArraySegment<byte> CODE_ACK = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"status\":\"acknowledge\"}"));
+
+    public static readonly ArraySegment<byte> CODE_FAILED                 = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"failed\"}"));
+    public static readonly ArraySegment<byte> CODE_UNAUTHORIZED           = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"unauthorized\"}"));
+    public static readonly ArraySegment<byte> CODE_INVALID_ARGUMENT       = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"invalid argument\"}"));
+    public static readonly ArraySegment<byte> CODE_NOT_FOUND              = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"not found\"}"));
+    public static readonly ArraySegment<byte> CODE_FILE_NOT_FOUND         = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"file not found\"}"));
+    public static readonly ArraySegment<byte> CODE_NOT_ENOUGH_INFO        = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"not enough information\"}"));
+    public static readonly ArraySegment<byte> CODE_HOST_UNKNOWN           = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"no such host is known\"}"));
+    public static readonly ArraySegment<byte> CODE_HOST_UNREACHABLE       = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"host is unreachable\"}"));
+    public static readonly ArraySegment<byte> CODE_TCP_CONN_FAILURE       = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"tcp connection failure\"}"));
+    public static readonly ArraySegment<byte> CODE_OTHER_TASK_IN_PROGRESS = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"another task is already in progress\"}"));
+    public static readonly ArraySegment<byte> CODE_TASK_DONT_EXITSTS      = new ArraySegment<byte>(Encoding.UTF8.GetBytes("{\"error\":\"this task no longer exists\"}"));
+
 
     public static readonly string DIR_ROOT        = Directory.GetCurrentDirectory();
     public static readonly string DIR_KNOWLAGE    = $"{DIR_ROOT}{DIRECTORY_SEPARATOR}knowlage";

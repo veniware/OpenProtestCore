@@ -35,12 +35,16 @@ class DeviceView extends View {
 				body: JSON.stringify(obj)
 			}) 
 			.then(response => {
-				if (response.status === 200) {
-
-				}
+				if (response.status !== 200) return;
+				return response.json();
+			})
+			.then(json => {
+				if (json.error) throw(json.error);
+				LOADER.devices[json.filename] = obj;
+				//TODO: upodate list.js is any...
 			})
 			.catch(error =>{
-
+				console.log(error);
 			});
 		});
 	}

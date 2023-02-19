@@ -278,7 +278,7 @@ public sealed class Database {
             startIndex = endIndex + 1;
         }
 
-        //TODO: get filename .. checl client
+
         filename ??= GenerateFilename();
 
 
@@ -286,17 +286,17 @@ public sealed class Database {
         using (StreamReader reader = new StreamReader(ctx.Request.InputStream, ctx.Request.ContentEncoding))
             payload = reader.ReadToEnd();
 
-        if (payload.Length == 0) return Strings.CODE_INV.Array;
+        if (payload.Length == 0) return Strings.CODE_INVALID_ARGUMENT.Array;
 
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new AttributeListJsonConverter());
         SynchronizedDictionary<string, Attribute> modifications = JsonSerializer.Deserialize<SynchronizedDictionary<string, Attribute>>(payload, options);
 
         if (Save(filename, modifications, SaveMethod.overwrite, initiator)) {
-            return Strings.CODE_OK.Array;
+            return Encoding.UTF8.GetBytes($"{{\"status\":\"ok\", \"filename\":\"{filename}\"}}");
         }
 
-        return Strings.CODE_FAI.Array;
+        return Strings.CODE_FAILED.Array;
     }
 
     public byte[] Serialize() {

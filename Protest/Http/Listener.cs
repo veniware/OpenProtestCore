@@ -205,7 +205,7 @@ public sealed class Listener {
         byte[] buffer;
 
         switch (ctx.Request.Url.AbsolutePath) {
-            case "/logout"  : buffer = Auth.RevokeAccess(sessionId, username) ? Strings.CODE_OK.Array : Strings.CODE_FAI.Array; break;
+            case "/logout"  : buffer = Auth.RevokeAccess(sessionId, username) ? Strings.CODE_OK.Array : Strings.CODE_FAILED.Array; break;
 
             case "/db/getdevices"         : buffer = DatabaseInstances.devices.Serialize(); break;
             case "/db/getusers"           : buffer = DatabaseInstances.users.Serialize(); break;

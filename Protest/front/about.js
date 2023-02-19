@@ -15,8 +15,8 @@ class About extends Tabs {
 		this.tabAbout   = this.AddTab("About", "mono/logo.svg");
 		this.tabLegal   = this.AddTab("License", "mono/gpl.svg");
 
-		this.tabAbout.onclick   = () => this.ShowAbout();
-		this.tabLegal.onclick   = () => this.ShowLegal();
+		this.tabAbout.onclick = () => this.ShowAbout();
+		this.tabLegal.onclick = () => this.ShowLegal();
 
 		switch (this.params) {
 			case "legal":
