@@ -141,11 +141,38 @@
 	background-color: rgb(64,64,64);
 }
 
+#menufilter {
+	position: absolute;
+	left: 40px;
+	right: 40px;
+	top: 80px;
+	height: 36px;
+	text-align: center;
+}
+
+#menufilter > div {
+	display: inline-block;
+	width: 32px;
+	height: 32px;
+	margin: 0 2px;
+	border: #404040 1px solid;
+	border-radius: 4px;
+	background-size: 26px 26px;
+	background-position: center;
+	background-repeat: no-repeat;
+}
+#menufilter > div:hover {
+	background-color: rgba(128,128,128,.5);
+}
+#menufilter > div:active {
+	background-color: rgb(56,56,56);
+}
+
 #menulist {
 	position: absolute;
 	left: 8px;
 	right: 8px;
-	top: 80px;
+	top: 120px;
 	bottom: 56px;
 
 	overflow-x: hidden;
@@ -218,11 +245,11 @@
 }
 
 #lblUsername:focus {
-	background-color: rgb(72,72,72);
+	background-color: rgba(128,128,128,.5);
 }
 
-#lblUsername:hover, #btnPersonalize:hover, #btnLogout:hover  {
-	background-color: rgb(72,72,72);
+#lblUsername:hover, #btnPersonalize:hover, #btnLogout:hover {
+	background-color: rgba(128,128,128,.5);
 }
 
 #lblUsername:active, #btnPersonalize:active #btnLogout:active {
@@ -385,7 +412,14 @@
 }
 
 @media only screen and (max-height: 400px) {
+	#menufilter {
+		opacity: 0 !important;
+		visibility: hidden !important;
+		transition-duration: .2s;
+	}
+
 	#menulist {
+		top: 80px;
 		bottom: 16px;
 		transition-duration:.2s;
 	}

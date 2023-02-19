@@ -57,6 +57,9 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
+.view-attributes-freeze > div > input[type="text"]:nth-child(1) {
+	text-transform: capitalize;
+}
 
 .view-attributes-list > div > input[type="text"] {
 	box-sizing: border-box;
