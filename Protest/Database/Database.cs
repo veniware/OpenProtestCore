@@ -272,13 +272,14 @@ public sealed class Database {
             if (endIndex == -1) endIndex = querySpan.Length;
 
             ReadOnlySpan<char> attr = querySpan[startIndex..endIndex];
-            if (attr.StartsWith("filename=", StringComparison.OrdinalIgnoreCase))
-                filename = attr[9..].ToString();
+            if (attr.StartsWith("file=", StringComparison.OrdinalIgnoreCase))
+                filename = attr[5..].ToString();
 
             startIndex = endIndex + 1;
         }
 
-        filename ??= GenerateFilename(); 
+        //TODO: get filename .. checl client
+        filename ??= GenerateFilename();
 
 
         string payload;
@@ -355,7 +356,7 @@ public sealed class Database {
         if (filename.Length == 0) return null;
         if (attributeName.Length == 0) return null;
 
-        dictionary.TryGetValue(filename, out Entry entry);        
+        dictionary.TryGetValue(filename, out Entry entry);
         if (entry == null) return null;
 
         attributeName = Uri.UnescapeDataString(attributeName);

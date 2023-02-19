@@ -7,20 +7,23 @@ class Tabs extends Window {
 		this.tabsList = [];
 		this.content.style.overflow = "hidden";
 
-		this.subContent = document.createElement("div");
-		this.subContent.className = "v-tab-body";
-		this.content.appendChild(this.subContent);
+		this.tabsBox = document.createElement("div");
+		this.tabsBox.className = "tabs-box";
+		this.tabsBox.setAttribute("role", "tabpanel");
+		this.content.appendChild(this.tabsBox);
 
-		this.tabsContainer = document.createElement("div");
-		this.tabsContainer.className = "v-tabs";
-		this.tabsContainer.setAttribute("role", "tabpanel");
-		this.content.appendChild(this.tabsContainer);
+		this.tabsPanel = document.createElement("div");
+		this.tabsPanel.tabIndex = -1;
+		this.tabsPanel.className = "tabs-panel";
+		this.content.appendChild(this.tabsPanel);
 	}
 
 	AddTab(text, icon, subtext) {
-		const newTab = document.createElement("div");
+		const newTab = document.createElement("button");
+		newTab.tabIndex = 0;
 		newTab.setAttribute("role", "tab");
-		this.tabsContainer.appendChild(newTab);
+		newTab.setAttribute("aria-label", text);
+		this.tabsBox.appendChild(newTab);
 		this.tabsList.push(newTab);
 
 		const divIcon = document.createElement("div");
@@ -37,7 +40,7 @@ class Tabs extends Window {
 			newTab.appendChild(divSubtext);
 		}
 
-		newTab.addEventListener("click", event => {
+		newTab.addEventListener("click", ()=> {
 			this.DeselectAllTabs();
 			newTab.className = "v-tab-selected";
 		});

@@ -19,15 +19,8 @@ button:hover, input[type="button"]:hover, input[type="submit"]:hover, input[type
 }
 
 button:focus, input[type="button"]:focus, input[type="submit"]:focus, input[type="reset"]:focus, input[type="color"]:focus {
-	animation: underline .15s 1 linear;
-
-	border-bottom-left-radius: 2px;
-	border-bottom-right-radius: 2px;
-
-	background-image: linear-gradient(to right,var(--clr-accent) 100%, var(--clr-accent) 0%);
-	background-position: bottom center;
-	background-size: 100% 3px;
-	background-repeat: no-repeat;
+	animation: outline .3s ease-in;
+	box-shadow: var(--clr-accent) 0 0 0 2px;
 }
 
 button:active, input[type="button"]:active, input[type="submit"]:active, input[type="reset"]:active, input[type="color"]:active {

@@ -102,9 +102,8 @@ public sealed class Listener {
         bool isLoopback = IPAddress.IsLoopback(remoteIp);
 
         bool isAuthenticated = isLoopback || Auth.IsAuthenticated(ctx);
-        //bool isAuthenticated = Auth.IsAuthenticated(ctx);
-
         bool isAuthorized = isLoopback || Auth.IsAuthorized(ctx, path);
+        //bool isAuthenticated = Auth.IsAuthenticated(ctx);
         //bool isAuthorized = Auth.IsAuthorized(ctx, path);
 
         if (!isAuthenticated) {

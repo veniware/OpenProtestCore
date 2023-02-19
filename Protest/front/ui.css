@@ -188,7 +188,7 @@
 	transform: translateX(0);
 }
 
-#btnSettings, #btnLogout {
+#btnPersonalize, #btnLogout {
 	position: absolute;
 	width: 40px;
 	height: 36px;
@@ -205,9 +205,9 @@
 	transition-duration: .1s;
 }
 
-#btnSettings {
+#btnPersonalize {
 	left: 8px;
-	background-image: url("mono/wrench.svg?light");
+	background-image: url("mono/personalize.svg?light");
 }
 
 #btnLogout {
@@ -221,11 +221,11 @@
 	background-color: rgb(72,72,72);
 }
 
-#lblUsername:hover, #btnSettings:hover, #btnLogout:hover  {
+#lblUsername:hover, #btnPersonalize:hover, #btnLogout:hover  {
 	background-color: rgb(72,72,72);
 }
 
-#lblUsername:active, #btnSettings:active #btnLogout:active {
+#lblUsername:active, #btnPersonalize:active #btnLogout:active {
 	background-color: rgb(56,56,56);
 }
 
@@ -322,6 +322,57 @@
 	background-color: #c0c0c080 !important;
 }
 
+.spinner {
+	width: 48px;
+	height: 48px;
+	perspective: 150px;
+}
+
+.spinner > div {
+	position: relative;
+	width: 48px;
+	height: 48px;
+	transform-style: preserve-3d;
+	animation: spin-spinner 1.5s infinite ease-in;
+}
+
+.spinner > div::before, .spinner > div::after {
+	position: absolute;
+	content: "";
+	width: 48px;
+	height: 48px;
+	border: 1px solid black;
+	border-radius: 4px;
+}
+
+.spinner > div::before { /*front*/
+	transform: translateZ(24px);
+	background-color: var(--clr-accent);
+	animation: light-spinner 1.5s infinite ease-in;
+}
+.spinner > div::after { /*left*/
+	transform: rotateY(-90deg) translateZ(24px);
+	background-color: #c0c0c0;
+	animation: fill-spinner 1.5s infinite ease-in;
+}
+
+@keyframes spin-spinner {
+	0%   { transform: rotateY( 0deg); }
+	50%  { transform: rotateY( 90deg); }
+	100% { transform: rotateY( 90deg); }
+}
+@keyframes light-spinner {
+	0%   { filter: brightness(100%) }
+	50%  { filter: brightness(140%) }
+	100% { filter: brightness(140%) }
+}
+@keyframes fill-spinner {
+	0%   { filter: brightness(40%) }
+	50%  { filter: brightness(100%); box-shadow: var(--clr-accent) 0 0 0 inset; }
+	95%  { box-shadow: var(--clr-accent) 64px 0 0 inset; }
+	100% { box-shadow: var(--clr-accent) 64px 0 0 inset; }
+}
+
 @media only screen and (max-width: 540px) {
 	#menubox {
 		left: 0 !important;
@@ -339,7 +390,7 @@
 		transition-duration:.2s;
 	}
 
-	#lblUsername, #btnSettings, #btnLogout {
+	#lblUsername, #btnPersonalize, #btnLogout {
 		opacity: 0 !important;
 		visibility: hidden !important;
 	}

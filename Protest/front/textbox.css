@@ -30,12 +30,8 @@ input[type="number"]:focus,
 input[type="date"]:focus,
 textarea:focus,
 select:focus {
-	animation: underline .15s 1 linear;
-	
-	background-image: linear-gradient(to right,var(--clr-accent) 100%, var(--clr-accent) 0%);
-	background-position: bottom center;
-	background-size: 100% 3px;
-	background-repeat: no-repeat;
+	animation: outline .3s ease-in;
+	box-shadow: var(--clr-accent) 0 0 0 2px;
 }
 
 input[type="text"]:disabled,

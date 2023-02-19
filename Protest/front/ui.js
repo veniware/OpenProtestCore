@@ -445,9 +445,9 @@ btnLogout.onclick = async ()=> {
 	});
 }
 
-btnSettings.onclick = () => {
+btnPersonalize.onclick = () => {
 	MENU.Close();
-	new Settings();
+	new Personalize();
 };
 
 taskbar.onmouseup = event=> {

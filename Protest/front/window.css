@@ -142,7 +142,7 @@
 	width: 200px;
 	height: 100px;
 	padding: 4px;
-		
+
 	background-color: var(--clr-pane);
 	color: rgb(32,32,32);
 	font-weight: 600;
@@ -180,7 +180,7 @@
 	top: 2px;
 	width: calc(100% - 16px);
 	padding: 2px 4px;
-	/*animation: none !important;*/
+	animation: none !important;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div {
@@ -216,6 +216,7 @@
 	padding-left: 32px;
 	background: transparent;
 	animation: none !important;
+	box-shadow: none !important;
 	color: var(--clr-fore);
 	font-weight: 600;
 	border-radius: 0;

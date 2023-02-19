@@ -910,7 +910,7 @@ class Window {
 		newLabel.textContent = label;
 		newLabel.setAttribute("for", "id" + id);
 		newLabel.setAttribute("tabindex", "0");
-		newLabel.style.width = "80%";
+		newLabel.style.maxWidth = "80%";
 		parent.appendChild(newLabel);
 
 		newLabel.onkeydown = event=> {

@@ -2,19 +2,20 @@ class UserView extends View {
 	constructor(params) {
 		super();
 		this.params = params ? params : { file: null };
+		this.file = params.file;
 
-		this.link = LOADER.users.data[this.params.file];
+		this.link = LOADER.users.data[this.file];
 
 		this.SetIcon("mono/user.svg");
 
-		if (this.params.file) {
+		if (this.file) {
 			this.InitializePreview();
 		} else {
 			this.SetTitle("New user");
 		}
 	}
 
-	Edit() { //overrides
+	Edit() { //override
 		const btnSave = super.Edit();
 		btnSave.addEventListener("click", async ()=>{
 
@@ -22,10 +23,12 @@ class UserView extends View {
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				let name  = this.attributes.childNodes[i].childNodes[0].value;
 				let value = this.attributes.childNodes[i].childNodes[1].value;
-				obj[name] = value;
+				obj[name] = {v:value};
 			}
 
-			await fetch("/saveuser", {
+			let path = this.file ? `/db/saveuser?file=${this.file}` : "/db/saveuser";
+
+			await fetch(path, {
 				method: "POST",
 				cache: "no-cache",
 				credentials: "same-origin",
@@ -36,19 +39,17 @@ class UserView extends View {
 
 				}
 			})
-
-			
 			.catch(error =>{
 
 			});
 		});
 	}
 
-	Fetch() { //overrides
+	Fetch() { //override
 
 	}
 
-	Delete() { //overridable
+	Delete() { //override
 		this.ConfirmBox("Are you sure you want to delete this user?").addEventListener("click", ()=> {
 			
 		});

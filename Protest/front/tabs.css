@@ -1,41 +1,52 @@
-.v-tabs {
+.tabs-box {
 	position: absolute;
 	width: 175px;
 	left: 25px;
 	top: 16px;
 	bottom: 16px;
+	overflow-y: auto;
+	z-index: 1;
 }
 
-.v-tabs > div {
+.tabs-box > button {
+	all: unset;
 	position: relative;
+	box-sizing: border-box;
+	width: 100%;
+	height: 40px;
 	min-height: 32px;
-	margin: 4px 0 4px 4px;
+	margin: 2px 0 2px 0;
 	padding: 4px;
 	color: rgb(16,16,16);
 	background: linear-gradient(90deg, rgba(16,16,16,.15) 90%, rgba(16,16,16,.25) 100%);
 	background-color: rgb(160,160,160);
 	border-radius: 8px 0 0 8px;
-	transform: scaleX(.975);
 	transform-origin: 100%;
+	transform: scaleX(.98);
 	transition: .2s;
 }
 
-.v-tabs > .v-tab-selected {
+.tabs-box > .v-tab-selected {
 	background: unset;
 	background: linear-gradient(90deg, transparent 80%, var(--clr-pane) 100%);
 	background-color: var(--clr-pane);
 	transform: scaleX(1);
 }
 
-.v-tabs > div:hover {
+.tabs-box > button:hover {
 	background-color: rgb(172,172,172) !important;
 }
 
-.v-tabs > div:active {
+.tabs-box > button:active {
 	background-color: rgb(208,208,208) !important;
 }
 
-.v-tabs > div > div:nth-child(1) { /*icon*/
+.tabs-box > button:focus {
+	animation: tabs-outline .3s ease-in;
+	box-shadow: var(--clr-accent) 0px -2px 0px 0px inset, var(--clr-accent) 2px 0px 0px 0px inset, var(--clr-accent) 0px 2px 0px 0px inset;
+}
+
+.tabs-box > button > div:nth-child(1) { /*icon*/
 	position: absolute;
 	left: 4px;
 	top: calc(50% - 16px);
@@ -44,16 +55,16 @@
 	background-size: contain;
 }
 
-.v-tabs > div > div:nth-child(2) { /*text*/
+.tabs-box > button > div:nth-child(2) { /*text*/
 	position: absolute;
 	left: 8px;
-	right: 8px;
+	right: 12px;
 	top: 10px;
 	text-align: right;
 	font-weight: 600;
 }
 
-.v-tabs > div > div:nth-child(3) { /*subtext*/
+.tabs-box > button > div:nth-child(3) { /*subtext*/
 	position: absolute;
 	left: 40px;
 	right: 8px;
@@ -63,16 +74,24 @@
 	font-style: italic;
 }
 
-.v-tab-body {
+.tabs-panel {
 	position: absolute;
 	left: 200px;
 	right: 8px;
 	top: 8px;
 	bottom: 8px;
-	z-index: +1;
+	z-index: 2;
 	background-color: var(--clr-pane);
 	color: rgb(16,16,16);
+	outline: 0;
 	border-radius: 4px;
 	padding: 4px;
 	overflow: hidden;
+}
+
+@keyframes tabs-outline {
+	0%   { box-shadow: var(--clr-accent) 0px -4px 0px 0px inset; }
+	30%  { box-shadow: var(--clr-accent) 0px -5px 0px 0px inset, var(--clr-accent) 0px 0px 0px 0px inset, var(--clr-accent) 0px 0px 0px 0px inset; }
+	65%  { box-shadow: var(--clr-accent) 0px -3px 0px 0px inset, var(--clr-accent) 2px 0px 0px 0px inset, var(--clr-accent) 0px 0px 0px 0px inset; }
+	100% { box-shadow: var(--clr-accent) 0px -2px 0px 0px inset, var(--clr-accent) 2px 0px 0px 0px inset, var(--clr-accent) 0px 2px 0px 0px inset; }
 }
