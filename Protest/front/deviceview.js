@@ -60,8 +60,37 @@ class DeviceView extends View {
 	}
 
 	Delete() { //override
-		this.ConfirmBox("Are you sure you want to delete this device?").addEventListener("click", ()=> {
-			
+		this.ConfirmBox("Are you sure you want to delete this device?").addEventListener("click", async ()=> {
+			await fetch(`db/deletedevice?file=${this.file}`, {
+				method: "GET",
+				cache: "no-cache",
+				credentials: "same-origin",
+			}) 
+			.then(response => {
+				if (response.status !== 200) return;
+				return response.json();
+			})
+			.then(json => {
+				if (json.error) throw(json.error);
+
+				delete LOADER.devices.data[this.file];
+				LOADER.devices.length--;
+
+				for (let i = 0; i < WIN.array.length; i++) {
+					if (WIN.array[i] instanceof DevicesList) {
+
+						let element = Array.from(WIN.array[i].list.childNodes).filter(o=>o.getAttribute("id") === this.file);
+						element.forEach(o => WIN.array[i].list.removeChild(o));
+
+						WIN.array[i].UpdateViewport(true);
+					}
+				}
+
+				this.params.select = null;
+			})
+			.catch(error =>{
+				console.error(error);
+			});
 		});
 	}
 }

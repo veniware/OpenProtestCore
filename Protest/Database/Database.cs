@@ -5,6 +5,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net;
+using System.Security.Policy;
+using System;
 
 namespace Protest;
 
@@ -121,12 +123,17 @@ public sealed class Database {
 
         dictionary.Remove(filename, out _);
 
+        Console.WriteLine(filename);
+
         try {
             File.Delete($"{location}{Strings.DIRECTORY_SEPARATOR}{filename}");
         } catch (Exception ex) {
             Logger.Error(ex);
             return false;
         }
+
+        Console.WriteLine("done .. now loggin");
+
 
         Logger.Action(initiator, $"Delete equip: {filename}");
 
@@ -273,14 +280,12 @@ public sealed class Database {
 
             ReadOnlySpan<char> attr = querySpan[startIndex..endIndex];
             if (attr.StartsWith("file=", StringComparison.OrdinalIgnoreCase))
-                filename = attr[5..].ToString();
+                filename = Uri.UnescapeDataString(attr[5..].ToString());
 
             startIndex = endIndex + 1;
         }
 
-
         filename ??= GenerateFilename();
-
 
         string payload;
         using (StreamReader reader = new StreamReader(ctx.Request.InputStream, ctx.Request.ContentEncoding))
@@ -297,6 +302,35 @@ public sealed class Database {
         }
 
         return Strings.CODE_FAILED.Array;
+    }
+
+    public byte[] DeleteHandler(HttpListenerContext ctx, string initiator) {
+        string filename = null;
+
+        ReadOnlySpan<char> querySpan = ctx.Request.Url.Query.AsSpan();
+        if (querySpan.StartsWith("?")) querySpan = querySpan[1..];
+
+        int startIndex = 0;
+        while (startIndex < querySpan.Length) {
+            int endIndex = querySpan[startIndex..].IndexOf('&');
+            if (endIndex == -1) endIndex = querySpan.Length;
+
+            ReadOnlySpan<char> attr = querySpan[startIndex..endIndex];
+            if (attr.StartsWith("file=", StringComparison.OrdinalIgnoreCase))
+                filename = Uri.UnescapeDataString(attr[5..].ToString());
+
+            startIndex = endIndex + 1;
+        }
+
+        if (filename is null) {
+            return Strings.CODE_INVALID_ARGUMENT.Array;
+        }
+
+        if (Delete(filename, initiator)) {
+            return Strings.CODE_OK.Array;
+        } else {
+            return Strings.CODE_FILE_NOT_FOUND.Array;
+        }
     }
 
     public byte[] Serialize() {

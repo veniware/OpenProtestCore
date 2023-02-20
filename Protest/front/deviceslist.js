@@ -27,6 +27,9 @@ class DevicesList extends List {
 			findTextbox.parentElement.style.width = "200px";
 			this.RefreshList();
 		}
+
+		addButton.onclick = ()=> this.Add();
+		removeButton.onclick = ()=> this.Delete();
 	}
 
 	InflateElement(element, entry, type) { //override
@@ -46,5 +49,48 @@ class DevicesList extends List {
 				new EquipView({ file: element.getAttribute("id") });
 			};
 		}
+	}
+
+	Add() {
+		new DeviceView({file: null});
+	}
+
+	Delete() {
+		this.ConfirmBox("Are you sure you want to delete this device?").addEventListener("click", async ()=> {
+			if (this.params.select === null) return;
+			
+			let file = this.params.select;
+
+			await fetch(`db/deletedevice?file=${file}`, {
+				method: "GET",
+				cache: "no-cache",
+				credentials: "same-origin",
+			}) 
+			.then(response => {
+				if (response.status !== 200) return;
+				return response.json();
+			})
+			.then(json => {
+				if (json.error) throw(json.error);
+
+				delete LOADER.devices.data[file];
+				LOADER.devices.length--;
+
+				for (let i = 0; i < WIN.array.length; i++) {
+					if (WIN.array[i] instanceof DevicesList) {
+
+						let element = Array.from(WIN.array[i].list.childNodes).filter(o=>o.getAttribute("id") === file);
+						element.forEach(o => WIN.array[i].list.removeChild(o));
+
+						WIN.array[i].UpdateViewport(true);
+					}
+				}
+
+				this.Close();
+			})
+			.catch(error =>{
+				console.error(error);
+			});
+		});
 	}
 }
