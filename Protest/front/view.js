@@ -7,9 +7,18 @@ class View extends Window {
 		this.content.style.overflowY = "scroll";
 		this.content.style.containerType = "inline-size";
 
+		this.InitializeComponent();
+	}
+
+	InitializeComponent() {
 		this.bar = document.createElement("div");
 		this.bar.className = "win-toolbar view-toolbar";
 		this.content.appendChild(this.bar);
+
+		this.timeline = document.createElement("div");
+		this.timeline.style.display = "none";
+		this.timeline.className = "view-timeline";
+		this.content.appendChild(this.timeline);
 
 		this.scroll = document.createElement("div");
 		this.scroll.className = "view-scroll";
@@ -26,6 +35,10 @@ class View extends Window {
 		this.initiatorButton = this.AddToolbarButton("Info", "mono/lamp.svg?light");
 		this.initiatorButton.onclick = () => this.Info();
 		this.bar.appendChild(this.initiatorButton);
+
+		this.timelineButton = this.AddToolbarButton("Timeline", "mono/timeline.svg?light");
+		this.timelineButton.onclick = () => this.Timeline();
+		this.bar.appendChild(this.timelineButton);
 
 		this.bar.appendChild(this.AddToolbarSeparator());
 
@@ -106,7 +119,27 @@ class View extends Window {
 		}
 	}
 
+	Timeline() {
+		if (this.timeline.style.display === "none") {
+			this.timeline.style.display = "initial";
+			this.scroll.style.top = "96px";
+			this.timelineButton.style.borderBottom = "#c0c0c0 solid 2px";
+		} else {
+			this.timeline.style.display = "none";
+			this.scroll.style.top = "48px";
+			this.timelineButton.style.borderBottom = "none";
+		}
+	}
+
 	Edit() { //overridable
+		if (this.attributes.classList.contains("view-attributes-with-info")) {
+			this.Info();
+		}
+
+		if (this.timeline.style.display !== "none") {
+			this.Timeline();
+		}
+
 		for (let i = 0; i < this.bar.childNodes.length; i++) {
 			this.bar.childNodes[i].style.display = "none";
 		}

@@ -295,7 +295,7 @@ class List extends Window {
 		};
 
 		findTextbox.onchange = ()=> {
-			findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
+			//findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
 		
 			findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
 			this.params.find = findTextbox.value;

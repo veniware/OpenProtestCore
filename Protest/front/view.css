@@ -9,6 +9,20 @@
 	white-space: nowrap;
 }
 
+.view-timeline {
+	position: absolute;
+	top: 48px;
+	height: 40px;
+	left: 40px;
+	right: 0px;
+	max-width: 800px;
+	color: #202020;
+	background-color: var(--clr-pane);
+	border-radius: 4px;
+
+	transition: .2s;
+}
+
 .view-scroll {
 	position: absolute;
 	top: 48px;
@@ -139,7 +153,9 @@
 }
 
 @container (min-width: 800px) {
-	.view-toolbar, .view-scroll {
+	.view-timeline,
+	.view-toolbar,
+	.view-scroll {
 		left: 200px;
 	}
 }

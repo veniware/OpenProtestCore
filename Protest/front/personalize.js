@@ -145,8 +145,8 @@ class Personalize extends Tabs {
 			this.accentBoxes.appendChild(themeBox);
 
 			const gradientBox = document.createElement("div");
-			gradientBox.style.width = "56px";
-			gradientBox.style.height = "56px";
+			gradientBox.style.width = "48px";
+			gradientBox.style.height = "48px";
 			gradientBox.style.borderRadius = "4px";
 			gradientBox.style.background = gradient;
 			gradientBox.style.border = `${step1} 1px solid`;
@@ -155,11 +155,11 @@ class Personalize extends Tabs {
 			let isSelected = selected_accent[0] == accentColors[i][0] && selected_accent[1] == accentColors[i][1] && selected_accent[2] == accentColors[i][2];
 
 			const indicator = document.createElement("div");
-			indicator.style.width = isSelected ? "56px" : "8px";
+			indicator.style.width = isSelected ? "48px" : "8px";
 			indicator.style.height = "8px";
 			indicator.style.borderRadius = "8px";
 			indicator.style.marginTop = "4px";
-			indicator.style.marginLeft = isSelected ? "0" : "24px";
+			indicator.style.marginLeft = isSelected ? "0" : "20px";
 			indicator.style.backgroundColor = `hsl(${hsl[0]},${hsl[1]*this.saturation.value/100}%,${hsl[2]}%)`;
 			indicator.style.border = `${step1} 1px solid`;
 			indicator.style.transition = "margin .4s, width .4s";
@@ -176,9 +176,9 @@ class Personalize extends Tabs {
 						for (let k = 0; k < this.accentIndicators.length; k++) {
 							if (k === i) continue;
 							WIN.array[j].accentIndicators[k].style.width = "8px";
-							WIN.array[j].accentIndicators[k].style.marginLeft = "24px";
+							WIN.array[j].accentIndicators[k].style.marginLeft = "20px";
 						}
-						WIN.array[j].accentIndicators[i].style.width = "56px";
+						WIN.array[j].accentIndicators[i].style.width = "48px";
 						WIN.array[j].accentIndicators[i].style.marginLeft = "0px";
 					}
 				}
