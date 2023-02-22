@@ -25,13 +25,21 @@ const UI = {
 		if (localStorage.getItem("w_dropshadow") === "false") container.classList.add("disable-window-dropshadows");
 		if (localStorage.getItem("glass") === "true") container.classList.add("glass");
 
-		let accentColor = localStorage.getItem("accent_color") ?
-		JSON.parse(localStorage.getItem("accent_color")) : [255,102,0];
+		let accentColor;
+		try {
+			accentColor = localStorage.getItem("accent_color") ?
+			JSON.parse(localStorage.getItem("accent_color")) : [255,102,0];
+		} catch {
+			localStorage.removeItem("accent_color");
+			accentColor = [];
+		}
 
 		let accentSaturation = localStorage.getItem("accent_saturation") ?
 		localStorage.getItem("accent_saturation") : 100;
 
-		UI.SetAccentColor(accentColor, accentSaturation/100);
+		if (accentSaturation !== 100) {	
+			UI.SetAccentColor(accentColor, accentSaturation/100);
+		}
 
 		const pos = JSON.parse(localStorage.getItem("menu_button_pos"));
 		if (pos) {

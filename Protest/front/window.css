@@ -102,6 +102,12 @@
 	right: 4px;
 	top: 32px;
 	height: 40px;
+
+	overflow: hidden;
+}
+
+.win-toolbar:is(:hover, :focus-within) {
+	overflow: visible;
 }
 
 .win-toolbar > .win-toolbar-button {

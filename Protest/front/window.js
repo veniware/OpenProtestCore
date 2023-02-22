@@ -1,5 +1,5 @@
 const ANIME_DURATION = 200;
-const onMobile = (/Android|webOS|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent));
+const onMobile = (/Android|webOS|iPhone|iPad|iPod|Opera Mini/i.test(navigator.userAgent));
 
 const WIN = {
 	array: [],
@@ -295,8 +295,7 @@ class Window {
 				WIN.offsetX  = this.task.offsetLeft;
 				WIN.x0 = event.clientX;
 				WIN.isIcoMoving = true;
-				WIN.active = this
-				;
+				WIN.active = this;
 			}
 		};
 
@@ -547,7 +546,8 @@ class Window {
 			`width=${this.win.clientWidth},height=${this.win.clientHeight},left=${window.screenX+this.win.offsetLeft},top=${window.screenY+this.win.offsetTop}`);
 
 		newWin.document.write(`<title>${WIN.EscapeHtml(this.header.textContent)}</title>`);
-		newWin.document.write("<link rel='icon' href='mono/icon24.png'>");
+		newWin.document.write(`<link rel='icon' href='${this.iconPath}' media='(prefers-color-scheme:light)'>`);
+		newWin.document.write(`<link rel='icon' href='${this.iconPath}?light' media='(prefers-color-scheme:dark)'>`);
 		newWin.document.write("<link rel='stylesheet' href='root.css'>");
 
 		for (let i = 0; i < LOADER.baseStyles.length; i++)
@@ -613,7 +613,7 @@ class Window {
 			container.appendChild(this.win);
 			this.win.appendChild(this.content);
 			
-			newWin.onbeforeunload = () => {};
+			newWin.onbeforeunload = ()=> {};
 			newWin.close();
 			this.popOutWindow = null;
 
@@ -887,9 +887,10 @@ class Window {
 		this.task.setAttribute("tip", title);
 	}
 	
-	SetIcon(icon) {
-		this.icon.style.backgroundImage = "url(" + icon + ")";
-		this.titleicon.style.backgroundImage = "url(" + icon + ")";
+	SetIcon(iconPath) {
+		this.icon.style.backgroundImage = `url(${iconPath})`;
+		this.titleicon.style.backgroundImage = `url(${iconPath})`;
+		this.iconPath = iconPath;
 	}
 
 	SetThemeColor(color) {
