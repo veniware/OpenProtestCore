@@ -440,17 +440,17 @@ cap.onclick = () => { MENU.Close(); };
 btnLogout.onclick = async ()=> {
 	MENU.Close();
 
-	await fetch("/logout")
-	.then(response => {
-		if (response.status == 200) {
+	try {
+		const response = await fetch("/logout");
+		if (response.status === 200) {
 			location.reload();
 		} else {
 			console.error(response.text());
 		}
-	})
-	.catch(error =>{
+	} catch (error) {
 		console.error(error);
-	});
+
+	}
 }
 
 btnPersonalize.onclick = () => {

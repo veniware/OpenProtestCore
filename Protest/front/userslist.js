@@ -60,17 +60,17 @@ class UsersList extends List {
 			if (this.params.select === null) return;
 			
 			let file = this.params.select;
-			
-			await fetch(`db/deleteuser?file=${file}`, {
-				method: "GET",
-				cache: "no-cache",
-				credentials: "same-origin",
-			}) 
-			.then(response => {
+
+			try {
+				const response = await fetch(`db/users/delete?file=${file}`, {
+					method: "GET",
+					cache: "no-cache",
+					credentials: "same-origin",
+				});
+
 				if (response.status !== 200) return;
-				return response.json();
-			})
-			.then(json => {
+
+				const json = response.json();
 				if (json.error) throw(json.error);
 
 				delete LOADER.users.data[file];
@@ -78,19 +78,22 @@ class UsersList extends List {
 
 				for (let i = 0; i < WIN.array.length; i++) {
 					if (WIN.array[i] instanceof UsersList) {
-
 						let element = Array.from(WIN.array[i].list.childNodes).filter(o=>o.getAttribute("id") === file);
 						element.forEach(o => WIN.array[i].list.removeChild(o));
-
 						WIN.array[i].UpdateViewport(true);
+
+					} else if (WIN.array[i] instanceof UserView && WIN.array[i].params.file === file) {
+						WIN.array[i].Close();
 					}
 				}
 
-				this.Close();
-			})
-			.catch(error =>{
+				this.params.select = null;
+
+			} catch (error) {
 				console.error(error);
-			});
+
+			}
+
 		});
 	}
 }

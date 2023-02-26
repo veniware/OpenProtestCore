@@ -174,7 +174,7 @@ class About extends Tabs {
 		box.style.userSelect = "text";
 		this.tabsPanel.appendChild(box);
 
-		await fetch("/license.txt")
+		await fetch("license.txt")
 		.then(response=> response.text())
 		.then(text=>{
 			if (text.length === 0) return;

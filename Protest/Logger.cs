@@ -1,12 +1,14 @@
 using System.IO;
 #if DEBUG
 using System.Runtime.CompilerServices;
+using System.Threading;
 #endif
 
 namespace Protest;
 
 internal static class Logger {
-    private static readonly object syncLog = new object();
+    private static readonly object syncError = new object();
+    private static readonly object syncAction = new object();
 
 #if DEBUG
     public static void Error(Exception ex, [CallerLineNumber] int line = 0, [CallerMemberName] string caller = null, [CallerFilePath] string file = null) {
@@ -25,7 +27,7 @@ internal static class Logger {
 #endif
 
     public static void Error(string ex) {
-        lock (syncLog)
+        lock (syncError)
             try {
                 using StreamWriter writer = new StreamWriter($"{Strings.DIR_LOG}{Strings.DIRECTORY_SEPARATOR}error.log", true, System.Text.Encoding.UTF8);
                 writer.Write(DateTime.Now.ToString(Strings.DATETIME_FORMAT_FILE));
@@ -38,19 +40,21 @@ internal static class Logger {
     }
 
     public static void Action(string initiator, string action) {
-        string msg = $"{DateTime.Now.ToString(Strings.DATETIME_FORMAT_FILE),-24}{initiator,-32}{action}";
-        lock (syncLog)
-            try {
-                using StreamWriter writer = new StreamWriter($"{Strings.DIR_LOG}{Strings.DIRECTORY_SEPARATOR}{DateTime.Now.ToString(Strings.DATE_FORMAT_FILE)}.log", true, System.Text.Encoding.UTF8);
-                writer.WriteLine(msg);
-            } catch { }
+        new Thread(() => {
+            string msg = $"{DateTime.Now.ToString(Strings.DATETIME_FORMAT_FILE),-24}{initiator,-32}{action}";
+            lock (syncAction)
+                try {
+                    using StreamWriter writer = new StreamWriter($"{Strings.DIR_LOG}{Strings.DIRECTORY_SEPARATOR}{DateTime.Now.ToString(Strings.DATE_FORMAT_FILE)}.log", true, System.Text.Encoding.UTF8);
+                    writer.WriteLine(msg);
+                } catch { }
 
-        //KeepAlive.Broadcast($"{{\"action\":\"log\",\"msg\":\"{msg}\"}}");
+            //KeepAlive.Broadcast($"{{\"action\":\"log\",\"msg\":\"{msg}\"}}");
+        }).Start();
     }
 
     public static byte[] Get() {
         byte[] bytes = null;
-        lock (syncLog)
+        lock (syncAction)
             try {
                 bytes = File.ReadAllBytes($"{Strings.DIR_LOG}{Strings.DIRECTORY_SEPARATOR}{DateTime.Now.ToString(Strings.DATE_FORMAT_FILE)}.log");
             } catch { }

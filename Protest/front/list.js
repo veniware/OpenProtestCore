@@ -365,6 +365,34 @@ class List extends Window {
 		this.UpdateViewport(true);
 	}
 
+	MatchFilters(entry) {
+		if (this.params.filter.length > 0) {
+			if (!entry.type) return false;
+			if (entry.type.v !== this.params.filter) return false;
+		}
+
+		if (this.params.find.length > 0) {
+			const keywords = this.params.find.toLowerCase().split(" ");
+
+			for (let i = 0; i < keywords.length; i++) {
+				if (keywords[i].length === 0) continue;
+
+				let flag = false;
+
+				for (const key in entry) {
+					if (entry[key].v.toLowerCase().indexOf(keywords[i]) > -1) {
+						flag = true;
+						break;
+					}
+				}
+
+				if (!flag) return false;
+			}
+		}
+
+		return true;
+	}
+
 	RefreshList() {
 		this.list.innerHTML = "";
 
@@ -391,25 +419,32 @@ class List extends Window {
 			const keywords = this.params.find.toLowerCase().split(" ");
 
 			for (let i = 0; i < filtered.length; i++) {
-				let flag = false;
-	
+				let flag = true;
+				
 				for (let j = 0; j < keywords.length; j++) {
 					if (keywords[j].length === 0) continue;
 
+					let wordFlag = false;
 					for (const key in this.link.data[filtered[i]]) {
 						if (this.link.data[filtered[i]][key].v.toLowerCase().indexOf(keywords[j]) > -1) {
-							flag = true;
-							continue;
+							wordFlag = true;
+							break;
 						}
+					}
+
+					if (!wordFlag) {
+						flag = false;
+						break;
 					}
 				}
 
 				if (flag) {
 					found.push(filtered[i]);
-					continue;
 				}
 			}
 		}
+
+		let match = [];
 
 		if (this.params.sort.length > 0) {
 			const attr = this.params.sort;

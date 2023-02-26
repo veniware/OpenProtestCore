@@ -186,7 +186,6 @@
 	top: 2px;
 	width: calc(100% - 16px);
 	padding: 2px 4px;
-	animation: none !important;
 }
 
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu > div {

@@ -79,7 +79,7 @@ internal class Configuration {
     internal static void CreateDefault() {
 
 
-        StringBuilder sb = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
 
         if (DB_KEY_STRING is null || DB_KEY_STRING.Length > 0) {
             DB_KEY_STRING = Cryptography.RandomStringGenerator(40);
@@ -93,32 +93,32 @@ internal class Configuration {
             PRESHARED_KEY_IV = Cryptography.HashStringToBytes(PRESHARED_KEY_STRING, 16); //128-bits
         }
 
-        sb.AppendLine($"# version {Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}");
-        sb.AppendLine();
+        builder.AppendLine($"# version {Assembly.GetExecutingAssembly().GetName().Version.Major}.{Assembly.GetExecutingAssembly().GetName().Version.Minor}");
+        builder.AppendLine();
 
-        sb.AppendLine($"db_key        = {DB_KEY_STRING}");
-        sb.AppendLine($"preshared_key = {PRESHARED_KEY_STRING}");
-        sb.AppendLine();
+        builder.AppendLine($"db_key        = {DB_KEY_STRING}");
+        builder.AppendLine($"preshared_key = {PRESHARED_KEY_STRING}");
+        builder.AppendLine();
 
-        sb.AppendLine($"force_registry_keys = {force_registry_keys.ToString().ToLower()}");
-        sb.AppendLine();
+        builder.AppendLine($"force_registry_keys = {force_registry_keys.ToString().ToLower()}");
+        builder.AppendLine();
 
-        sb.AppendLine("# you can use multiple entries");
-        sb.AppendLine("ip_access   = *");
-        sb.AppendLine();
+        builder.AppendLine("# you can use multiple entries");
+        builder.AppendLine("ip_access   = *");
+        builder.AppendLine();
 
-        sb.AppendLine("http_prefix = http://127.0.0.1:8080/");
-        sb.AppendLine("#http_prefix = http://[::1]:8080/");
-        sb.AppendLine("#http_prefix = https://+:443/");
-        sb.AppendLine();
-        sb.AppendLine();
+        builder.AppendLine("http_prefix = http://127.0.0.1:8080/");
+        builder.AppendLine("#http_prefix = http://[::1]:8080/");
+        builder.AppendLine("#http_prefix = https://+:443/");
+        builder.AppendLine();
+        builder.AppendLine();
 
-        sb.AppendLine("###");
-        sb.AppendLine("###  Use NETSH to bind an SSL certificate with your https endpoint:");
-        sb.AppendLine($"###  netsh http add sslcert ipport=0.0.0.0:443 certhash=[thumbprint] appid={{{Strings.GUID}}}");
-        sb.AppendLine("###");
+        builder.AppendLine("###");
+        builder.AppendLine("###  Use NETSH to bind an SSL certificate with your https endpoint:");
+        builder.AppendLine($"###  netsh http add sslcert ipport=0.0.0.0:443 certhash=[thumbprint] appid={{{Strings.GUID}}}");
+        builder.AppendLine("###");
 
-        File.WriteAllText(Strings.FILE_CONFIG, sb.ToString());
+        File.WriteAllText(Strings.FILE_CONFIG, builder.ToString());
     }
 
     [SupportedOSPlatform("windows")]

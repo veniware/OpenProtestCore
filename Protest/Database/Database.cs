@@ -5,21 +5,21 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net;
+using System.Drawing.Drawing2D;
 
 namespace Protest;
 
 public sealed class Database {
     public enum SaveMethod {
-        ignore = 0,
+        ignore    = 0,
         createnew = 1,
         overwrite = 2,
-        append = 3,
-        merge = 4
+        append    = 3,
+        merge     = 4
     }
 
     [Serializable]
     public record Attribute {
-        //public string name;
         public string value;
         public string initiator;
         public long date;
@@ -91,6 +91,16 @@ public sealed class Database {
     }
 
     private bool Write(Entry entry) {
+        string filename = $"{location}{Strings.DIRECTORY_SEPARATOR}{entry.filename}";
+
+        try { //create timeline file
+            if (File.Exists(filename)) {
+                DirectoryInfo timelineDir = new DirectoryInfo($"{filename}_");
+                if (!timelineDir.Exists) timelineDir.Create();
+                File.Move(filename, $"{filename}_{Strings.DIRECTORY_SEPARATOR}{DateTime.Now.Ticks}");
+            }
+        } catch {}
+
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new AttributeListJsonConverter());
 #if DEBUG
@@ -105,7 +115,7 @@ public sealed class Database {
 
         try {
             lock (entry.syncWrite)
-                File.WriteAllBytes($"{location}{Strings.DIRECTORY_SEPARATOR}{entry.filename}", cipher);
+                File.WriteAllBytes(filename, cipher);
         } catch (Exception ex) {
             Logger.Error(ex);
             return false;
@@ -121,8 +131,6 @@ public sealed class Database {
 
         dictionary.Remove(filename, out _);
 
-        Console.WriteLine(filename);
-
         try {
             File.Delete($"{location}{Strings.DIRECTORY_SEPARATOR}{filename}");
         } catch (Exception ex) {
@@ -130,10 +138,7 @@ public sealed class Database {
             return false;
         }
 
-        Console.WriteLine("done .. now loggin");
-
-
-        Logger.Action(initiator, $"Delete equip: {filename}");
+        Logger.Action(initiator, $"Delete entry from {this.name} database: {filename}");
 
         return true;
     }
@@ -143,37 +148,20 @@ public sealed class Database {
     }
 
     public bool Save(string filename, SynchronizedDictionary<string, Attribute> modifications, SaveMethod method, string initiator) {
-        if (filename is null || filename.Length == 0) {
+        if (filename is null || filename.Length == 0)
             filename = GenerateFilename();
-        }
 
         bool exist = dictionary.ContainsKey(filename);
-
-        if (!exist) { //if don't exists, add to db
-            return SaveNew(filename, modifications, initiator);
-        }
-
-        switch (method) { //if exists
-        case SaveMethod.ignore:
-            return true;
-
-        case SaveMethod.createnew: //keep the old file, create new
-            return SaveNew(filename, modifications, initiator);
-
-        case SaveMethod.overwrite:
-            return SaveOverwrite(filename, modifications, initiator);
-
-        case SaveMethod.append:  //append new attributes
-            return SaveAppend(filename, modifications, initiator);
-
-        case SaveMethod.merge:  //merged all attributes
-            return SaveMerge(filename, modifications, initiator);
-
-        default:
-            break;
-        }
-
-        return false;
+        if (!exist) method = SaveMethod.createnew;
+        
+        return method switch {
+            SaveMethod.ignore    => true,
+            SaveMethod.createnew => SaveNew(filename, modifications, initiator),       //keep the old file, create new
+            SaveMethod.overwrite => SaveOverwrite(filename, modifications, initiator), //ignore previous attributes
+            SaveMethod.append    => SaveAppend(filename, modifications, initiator),    //append new attributes
+            SaveMethod.merge     => SaveMerge(filename, modifications, initiator),     //merged all attributes
+            _ => false,
+        };
     }
 
     private bool SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
@@ -195,29 +183,27 @@ public sealed class Database {
     private bool SaveOverwrite(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
 
-        Entry newEntry = new Entry() {
-            filename = filename,
-            attributes = modifications,
-            syncWrite = oldEntry.syncWrite
-        };
+        //keep old initiator and date, if data didn't change
+        foreach (KeyValuePair<string, Attribute> pair in modifications) {
+            if (!oldEntry.attributes.ContainsKey(pair.Key)) continue;
+            if (pair.Value.value != oldEntry.attributes[pair.Key].value) continue;
+            pair.Value.initiator = oldEntry.attributes[pair.Key].initiator;
+            pair.Value.date = oldEntry.attributes[pair.Key].date;
+        }
 
-        dictionary.TryAdd(filename, newEntry);
+        oldEntry.attributes = modifications;
+
+        dictionary.TryAdd(filename, oldEntry);
         version = DateTime.Now.Ticks;
 
-        //new Thread(() => { Write(newEntry); }).Start();
-        Write(newEntry);
+        //new Thread(() => { Write(oldEntry); }).Start();
+        Write(oldEntry);
 
         Logger.Action(initiator, $"Overwrite entry on {this.name} database: {filename}");
         return true;
     }
     private bool SaveAppend(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
-
-        /*foreach (Attribute newAttr in modifications.Values) {
-            if (!oldEntry.attributes.ContainsKey(newAttr.name)) {
-                oldEntry.attributes.TryAdd(newAttr.name, newAttr);
-            }
-        }*/
 
         foreach (KeyValuePair<string, Attribute> pair in modifications) {
             if (!oldEntry.attributes.ContainsKey(pair.Key)) {
@@ -237,12 +223,6 @@ public sealed class Database {
     private bool SaveMerge(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         dictionary.Remove(filename, out Entry oldEntry);
 
-        /*foreach (Attribute oldAttr in oldEntry.attributes.Values) {
-            if (!modifications.ContainsKey(oldAttr.name)) {
-                modifications.TryAdd(oldAttr.name, oldAttr);
-            }
-        }*/
-
         foreach (KeyValuePair<string, Attribute> pair in oldEntry.attributes) {
             if (!modifications.ContainsKey(pair.Key)) {
                 modifications.TryAdd(pair.Key, pair.Value);
@@ -250,13 +230,14 @@ public sealed class Database {
         }
 
         oldEntry.attributes = modifications;
+
         dictionary.TryAdd(filename, oldEntry);
         version = DateTime.Now.Ticks;
 
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
 
-        Logger.Action(initiator, $"Marge with entry on {this.name} database: {filename}");
+        Logger.Action(initiator, $"Marge with entry on {this.name} database: {filename}");        
         return true;
     }
 
@@ -295,6 +276,11 @@ public sealed class Database {
         options.Converters.Add(new AttributeListJsonConverter());
         SynchronizedDictionary<string, Attribute> modifications = JsonSerializer.Deserialize<SynchronizedDictionary<string, Attribute>>(payload, options);
 
+        foreach (KeyValuePair<string, Attribute> pair in modifications) {
+            pair.Value.initiator = initiator;
+            pair.Value.date = DateTime.Now.Ticks;
+        }
+
         if (Save(filename, modifications, SaveMethod.overwrite, initiator)) {
             return Encoding.UTF8.GetBytes($"{{\"status\":\"ok\", \"filename\":\"{filename}\"}}");
         }
@@ -329,6 +315,57 @@ public sealed class Database {
         } else {
             return Strings.CODE_FILE_NOT_FOUND.Array;
         }
+    }
+
+    public byte[] TimelineHandler(HttpListenerContext ctx) {
+        string file = null;
+
+        ReadOnlySpan<char> querySpan = ctx.Request.Url.Query.AsSpan();
+        if (querySpan.StartsWith("?")) querySpan = querySpan[1..];
+
+        int startIndex = 0;
+        while (startIndex < querySpan.Length) {
+            int endIndex = querySpan[startIndex..].IndexOf('&');
+            if (endIndex == -1) endIndex = querySpan.Length;
+
+            ReadOnlySpan<char> attr = querySpan[startIndex..endIndex];
+            if (attr.StartsWith("file=", StringComparison.OrdinalIgnoreCase))
+                file = Uri.UnescapeDataString(attr[5..].ToString());
+
+            startIndex = endIndex + 1;
+        }
+
+        if (file is null) {
+            return Strings.CODE_INVALID_ARGUMENT.Array;
+        }
+
+        string fullname = $"{location}{Strings.DIRECTORY_SEPARATOR}{file}";
+
+        StringBuilder builder = new StringBuilder();
+
+        try {        
+            DirectoryInfo timelineDir = new DirectoryInfo($"{fullname}_");
+            if (!timelineDir.Exists) return Strings.CODE_FILE_NOT_FOUND.Array;
+            
+            FileInfo[] files = timelineDir.GetFiles();
+
+            builder.Append('{');
+            for (int i = 0; i < files.Length; i++) {
+                if (i > 0) builder.Append(',');
+                builder.Append($"\"{files[i].Name}\":");
+
+                try {
+                    byte[] bytes = File.ReadAllBytes(files[i].FullName);
+                    string plain = Encoding.UTF8.GetString(Cryptography.Decrypt(bytes, Configuration.DB_KEY, Configuration.DB_KEY_IV));
+                    builder.Append(plain);
+                } catch {
+                    builder.Append("null");
+                }
+            }
+            builder.Append('}');
+        } catch { }
+
+        return Encoding.UTF8.GetBytes(builder.ToString());
     }
 
     public byte[] Serialize() {
@@ -408,10 +445,8 @@ internal sealed class EntryJsonConverter : JsonConverter<Database.Entry> {
     }
 
     public override void Write(Utf8JsonWriter writer, Database.Entry value, JsonSerializerOptions options) {
-        //writer.WriteStartObject();
         writer.WritePropertyName(value.filename);
         attributeListConverter.Write(writer, value.attributes, options);
-        //writer.WriteEndObject();
     }
 }
 
@@ -436,10 +471,7 @@ internal sealed class AttributeListJsonConverter : JsonConverter<SynchronizedDic
 
                 reader.Read(); //start obj
 
-                /*if (propertyName == "n") {
-                    attr.name = reader.GetString();
-
-                } else*/ if (propertyName == "v") {
+                if (propertyName == "v") {
                     attr.value = reader.GetString();
 
                 } else if (propertyName == "i") {
@@ -469,7 +501,6 @@ internal sealed class AttributeListJsonConverter : JsonConverter<SynchronizedDic
             writer.WritePropertyName(pair.Key);
 
             writer.WriteStartObject();
-            //writer.WriteString("n", pair.Value.name);
             writer.WriteString("v", pair.Value.value);
             writer.WriteString("i", pair.Value.initiator);
             writer.WriteNumber("d", pair.Value.date);

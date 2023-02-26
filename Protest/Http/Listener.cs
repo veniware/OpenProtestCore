@@ -207,14 +207,17 @@ public sealed class Listener {
         switch (ctx.Request.Url.AbsolutePath) {
         case "/logout": buffer = Auth.RevokeAccess(sessionId, username) ? Strings.CODE_OK.Array : Strings.CODE_FAILED.Array; break;
 
-        case "/db/savedevice": buffer = DatabaseInstances.devices.SaveHandler(ctx, username); break;
-        case "/db/saveuser": buffer = DatabaseInstances.users.SaveHandler(ctx, username); break;
-        case "/db/getdevices": buffer = DatabaseInstances.devices.Serialize(); break;
-        case "/db/getusers": buffer = DatabaseInstances.users.Serialize(); break;
-        case "/db/getdeviceattribute": buffer = DatabaseInstances.devices.GetAttribute(ctx.Request.Url.Query); break;
-        case "/db/getuserattribute": buffer = DatabaseInstances.users.GetAttribute(ctx.Request.Url.Query); break;
-        case "/db/deletedevice": buffer = DatabaseInstances.devices.DeleteHandler(ctx, username); break;
-        case "/db/deleteuser": buffer = DatabaseInstances.users.DeleteHandler(ctx, username); break;
+        case "/db/devices/get"       : buffer = DatabaseInstances.devices.Serialize(); break;
+        case "/db/devices/timeline"  : buffer = DatabaseInstances.devices.TimelineHandler(ctx); break;
+        case "/db/devices/save"      : buffer = DatabaseInstances.devices.SaveHandler(ctx, username); break;
+        case "/db/devices/delete"    : buffer = DatabaseInstances.devices.DeleteHandler(ctx, username); break;
+        case "/db/devices/attribute" : buffer = DatabaseInstances.devices.GetAttribute(ctx.Request.Url.Query); break;
+
+        case "/db/users/get"       : buffer = DatabaseInstances.users.Serialize(); break;
+        case "/db/users/timeline"  : buffer = DatabaseInstances.users.TimelineHandler(ctx); break;
+        case "/db/users/save"      : buffer = DatabaseInstances.users.SaveHandler(ctx, username); break;
+        case "/db/users/delete"    : buffer = DatabaseInstances.users.DeleteHandler(ctx, username); break;
+        case "/db/users/attribute" : buffer = DatabaseInstances.users.GetAttribute(ctx.Request.Url.Query); break;
 
         default: return false;
         }

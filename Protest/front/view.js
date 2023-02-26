@@ -93,7 +93,7 @@ class View extends Window {
 	}
 
 	InitializePreview() {
-		this.SetTitle(this.link.title.v ? this.link.title.v : "");
+		this.SetTitle(this.link.title ? this.link.title.v : "");
 		this.InitializeAttributesList();
 	}
 
@@ -119,19 +119,21 @@ class View extends Window {
 		}
 	}
 
-	Timeline() {
+	Timeline() { //overridable
 		if (this.timeline.style.display === "none") {
 			this.timeline.style.display = "initial";
 			this.scroll.style.top = "96px";
 			this.timelineButton.style.borderBottom = "#c0c0c0 solid 2px";
+			return true;
 		} else {
 			this.timeline.style.display = "none";
 			this.scroll.style.top = "48px";
 			this.timelineButton.style.borderBottom = "none";
+			return false;
 		}
 	}
 
-	Edit() { //overridable
+	Edit(isNew = false) { //overridable
 		if (this.attributes.classList.contains("view-attributes-with-info")) {
 			this.Info();
 		}
@@ -155,6 +157,7 @@ class View extends Window {
 		btnRevert.value = "Revert";
 		btnRevert.style.margin = "6px";
 		this.bar.appendChild(btnRevert);
+		if (isNew) btnRevert.disabled = "true";
 
 		const btnCancel = document.createElement("input");
 		btnCancel.type = "button";
@@ -226,8 +229,12 @@ class View extends Window {
 		};
 
 		btnCancel.onclick = () => {
-			Revert();
-			ExitEdit();
+			if (isNew) {
+				this.Close();
+			} else {
+				Revert();
+				ExitEdit();
+			}
 		};
 
 		return btnSave;

@@ -61,16 +61,16 @@ class DevicesList extends List {
 			
 			let file = this.params.select;
 
-			await fetch(`db/deletedevice?file=${file}`, {
-				method: "GET",
-				cache: "no-cache",
-				credentials: "same-origin",
-			}) 
-			.then(response => {
+			try {
+				const response = await fetch(`db/devices/delete?file=${file}`, {
+					method: "GET",
+					cache: "no-cache",
+					credentials: "same-origin",
+				});
+
 				if (response.status !== 200) return;
-				return response.json();
-			})
-			.then(json => {
+
+				const json = await response.json();
 				if (json.error) throw(json.error);
 
 				delete LOADER.devices.data[file];
@@ -78,19 +78,21 @@ class DevicesList extends List {
 
 				for (let i = 0; i < WIN.array.length; i++) {
 					if (WIN.array[i] instanceof DevicesList) {
-
 						let element = Array.from(WIN.array[i].list.childNodes).filter(o=>o.getAttribute("id") === file);
 						element.forEach(o => WIN.array[i].list.removeChild(o));
-
 						WIN.array[i].UpdateViewport(true);
+
+					} else if (WIN.array[i] instanceof DeviceView && WIN.array[i].params.file === file) {
+						WIN.array[i].Close();
 					}
 				}
 
-				this.Close();
-			})
-			.catch(error =>{
+				this.params.select = null;
+
+			} catch (error) {
 				console.error(error);
-			});
+			}
+
 		});
 	}
 }

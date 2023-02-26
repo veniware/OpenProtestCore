@@ -110,27 +110,23 @@ const LOADER = {
 	},
 
 	LoadDevices: async callback => {
-		await fetch("/db/getdevices")
-		.then(response=>response.json())
-		.then(json => {
-			LOADER.devices = json;
+		try {
+			const response = await fetch("db/devices/get");
+			LOADER.devices = await response.json();
 			callback("ok", "devices");
-		})
-		.catch(error => {
+		} catch (error) {
 			callback(error, "devices");
-		});
+		}
 	},
 
 	LoadUsers: async callback => {
-		await fetch("/db/getusers")
-		.then(response=>response.json())
-		.then(json => {
-			LOADER.users = json;
+		try {
+			const response = await fetch("db/users/get");
+			LOADER.users = await response.json();
 			callback("ok", "users");
-		})
-		.catch(error => {
+		} catch (error) {
 			callback(error, "users");
-		});
+		}
 	},
 
 	StoreSession: () => {

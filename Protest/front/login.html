@@ -160,14 +160,15 @@
 
 			if (txtUsername.value === "" || txtPassword.value === "") return;
 			busy = true;
-			
-			await fetch("/auth", {
-				method: "POST",
-				cache: "no-cache",
-				credentials: "same-origin",
-				body: `${txtUsername.value}${String.fromCharCode(127)}${txtPassword.value}`
-			})
-			.then(response => {
+
+			try {
+				const response = await fetch("auth", {
+					method: "POST",
+					cache: "no-cache",
+					credentials: "same-origin",
+					body: `${txtUsername.value}${String.fromCharCode(127)}${txtPassword.value}`
+				});
+
 				if (response.status === 202) {
 					localStorage.setItem("last_username", txtUsername.value);
 					location.reload();
@@ -182,14 +183,15 @@
 					}, 1000);
 				}
 				busy = false;
-			})
-			.catch(error =>{
+
+			} catch (error) {
 				lblMessage.style.visibility = "visible";
 				lblMessage.style.color = "red";
 				lblMessage.textContent = "Server is unreachable.";
 				console.log(error);
-				busy = false
-			});
+				busy = false;
+			}
+
 		};
 	</script>
 </body></html>
