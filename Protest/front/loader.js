@@ -13,7 +13,7 @@ const LOADER = {
 
 	baseScripts: [
 		"ui.js",
-		"window.js"
+		"window.js",
 	],
 
 	primaryScripts: [

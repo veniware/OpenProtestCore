@@ -4,6 +4,7 @@ class UserView extends View {
 		this.params = params ? params : { file: null };
 
 		this.link = LOADER.users.data[this.params.file];
+		this.timelineName = "users";
 
 		this.SetIcon("mono/user.svg");
 
@@ -13,6 +14,8 @@ class UserView extends View {
 			this.SetTitle("New user");
 			this.Edit(true);
 
+			this.AddAttribute("type", "", null, true);
+
 			this.AddAttribute("title", "", null, true);
 			this.AddAttribute("department", "", null, true);
 			this.AddAttribute("firstname", "", null, true);
@@ -21,39 +24,6 @@ class UserView extends View {
 			this.AddAttribute("email", "", null, true);
 			this.AddAttribute("office number", "", null, true);
 			this.AddAttribute("mobile number", "", null, true);
-		}
-	}
-
-	async Timeline() { //override
-		const toggle = super.Timeline();
-		if (!toggle) return;
-
-		try {
-			const response = await fetch(`db/users/timeline?file=${this.params.file}`, {
-				method: "GET",
-				cache: "no-cache",
-				credentials: "same-origin"
-			});
-
-			if (response.status !== 200) throw(response.status);
-
-			const json = await response.json();
-			if (json.error) return;
-
-			let min=Number.MAX_SAFE_INTEGER, max=0;
-			for (const key in json) {
-				let int = parseInt(key);
-				if (min > int) min = int;
-				if (max < int) max = int;
-			}
-
-			for (const key in json) {
-				let int = parseInt(key);
-				console.log(json[key]);
-			}
-
-		} catch (error) {
-			console.error(error);
 		}
 	}
 
