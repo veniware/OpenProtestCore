@@ -119,18 +119,64 @@ class View extends Window {
 		}
 	}
 
-	Timeline() { //overridable
-		if (this.timeline.style.display === "none") {
-			this.timeline.style.display = "initial";
-			this.scroll.style.top = "96px";
-			this.timelineButton.style.borderBottom = "#c0c0c0 solid 2px";
-			return true;
-		} else {
+	async Timeline() { //overridable
+		if (this.timeline.style.display !== "none") {
 			this.timeline.style.display = "none";
 			this.scroll.style.top = "48px";
 			this.timelineButton.style.borderBottom = "none";
-			return false;
+			return;
 		}
+
+		if (this.timeline.firstChild) this.timeline.removeChild(this.timeline.firstChild);
+
+		const innerTimeline = document.createElement("div");
+		this.timeline.appendChild(innerTimeline);
+
+		this.timeline.style.display = "initial";
+		this.scroll.style.top = "96px";
+		this.timelineButton.style.borderBottom = "#c0c0c0 solid 2px";
+
+		let json;
+		try {
+			const response = await fetch(`db/${this.timelineName}/timeline?file=${this.params.file}`, {
+				method: "GET",
+				cache: "no-cache",
+				credentials: "same-origin"
+			});
+
+			if (response.status !== 200) throw(response.status);
+
+			json = await response.json();
+			if (json.error) throw(json.error);
+
+		} catch (error) {
+			console.error(error);
+			return;
+		}
+
+		let count = 0;
+		let min = Number.MAX_SAFE_INTEGER;
+		let max = Date.now();
+
+		for (const key in json) {
+			count++;
+			let int = parseInt(key);
+			if (min > int) min = int;
+		}
+
+		json[Date.now()] = this.link;
+
+		let timeSpan = max - min;
+		let avgGap = 100 / count;
+		
+		for (const key in json) {
+			let int = parseInt(key);
+			const dot = document.createElement("div");
+			dot.className = "timeline-dot";
+			dot.style.left = `calc(${(int - min) / timeSpan * 100}% - 5px)`;
+			innerTimeline.appendChild(dot);
+		}
+
 	}
 
 	Edit(isNew = false) { //overridable

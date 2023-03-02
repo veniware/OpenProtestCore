@@ -351,8 +351,11 @@ public sealed class Database {
 
             builder.Append('{');
             for (int i = 0; i < files.Length; i++) {
+                if (!long.TryParse(files[i].Name, out long ticks)) continue;
+                long unixTicks = Strings.DateTimeToUnixTicks(ticks);
+
                 if (i > 0) builder.Append(',');
-                builder.Append($"\"{files[i].Name}\":");
+                builder.Append($"\"{unixTicks}\":");
 
                 try {
                     byte[] bytes = File.ReadAllBytes(files[i].FullName);
