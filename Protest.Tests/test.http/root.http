@@ -6,4 +6,5 @@ Accept-Encoding: br, gzip
 
 ###
 
-GET http://{{ip}}:{{port}}/login
+GET http://{{ip}}:{{port}}/mono/timeline.svg?light
+

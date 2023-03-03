@@ -349,6 +349,10 @@
 	background-color: #c0c0c080 !important;
 }
 
+.glass > .window .win-toolbar {
+	background-color: transparent !important;
+}
+
 .spinner {
 	width: 48px;
 	height: 48px;
