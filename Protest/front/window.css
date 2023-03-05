@@ -117,9 +117,9 @@
 	width: 36px;
 	height: 36px;
 	outline: 0;
-
 	border-radius: 2px;
 	margin: 2px;
+	box-sizing: border-box;
 
 	background-size: 30px 30px;
 	background-position: center;

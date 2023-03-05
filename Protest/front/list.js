@@ -218,7 +218,7 @@ class List extends Window {
 
 				if (added[i] === this.params.filter) {
 					newType.style.backgroundColor = "var(--clr-select)";
-					filterButton.style.borderBottom = "#c0c0c0 solid 2px";
+					filterButton.style.borderBottom = "#c0c0c0 solid 3px";
 				}
 
 				newType.onclick = () => {
@@ -229,7 +229,7 @@ class List extends Window {
 						filterButton.style.borderBottom = "";
 					} else {
 						this.params.filter = added[i];
-						filterButton.style.borderBottom = "#c0c0c0 solid 2px";
+						filterButton.style.borderBottom = "#c0c0c0 solid 3px";
 						newType.style.backgroundColor = "var(--clr-select)";
 					}
 
