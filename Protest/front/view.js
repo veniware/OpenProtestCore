@@ -32,9 +32,9 @@ class View extends Window {
 		this.sortButton.onclick = () => this.Sort();
 		this.bar.appendChild(this.sortButton);
 
-		this.initiatorButton = this.AddToolbarButton("Info", "mono/lamp.svg?light");
-		this.initiatorButton.onclick = () => this.Info();
-		this.bar.appendChild(this.initiatorButton);
+		this.infoButton = this.AddToolbarButton("Info", "mono/lamp.svg?light");
+		this.infoButton.onclick = () => this.Info();
+		this.bar.appendChild(this.infoButton);
 
 		this.timelineButton = this.AddToolbarButton("Timeline", "mono/timeline.svg?light");
 		this.timelineButton.onclick = () => this.Timeline();
@@ -54,8 +54,7 @@ class View extends Window {
 		deleteButton.onclick = () => this.Delete();
 		this.bar.appendChild(deleteButton);
 
-		this.SetupFloatingMenu();
-		
+		this.SetupFloatingMenu();		
 	}
 
 	AddAttribute(name, value, initiator, date, editMode=false) {
@@ -118,15 +117,21 @@ class View extends Window {
 	}
 
 	Sort() {
-
+		if (this.order === "alphabetical") {
+			this.sortButton.style.borderBottom = "none";
+			this.order = "group";
+		} else {
+			this.sortButton.style.borderBottom = "#c0c0c0 solid 2px";
+			this.order = "alphabetical";
+		}
 	}
 
 	Info() {
 		if (this.attributes.classList.contains("view-attributes-with-info")) {
-			this.initiatorButton.style.borderBottom = "none";
+			this.infoButton.style.borderBottom = "none";
 			this.attributes.classList.remove("view-attributes-with-info");
 		} else {
-			this.initiatorButton.style.borderBottom = "#c0c0c0 solid 2px";
+			this.infoButton.style.borderBottom = "#c0c0c0 solid 2px";
 			this.attributes.classList.add("view-attributes-with-info");
 		}
 	}
