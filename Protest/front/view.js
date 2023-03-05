@@ -123,7 +123,6 @@ class View extends Window {
 		this.attributes.innerHTML = "";
 
 		if (this.order === "group") {
-
 			let pushed = [];
 			let nextGroup = null;
 			for (let i = 0; i < this.groupSchema.length; i++) {
@@ -156,7 +155,7 @@ class View extends Window {
 				nextGroup = this.CreateGroupTitle("mono/other.svg", "other");
 			}
 
-			for (let key in this.link)
+			for (let key in this.link) {
 				if (!pushed.includes(key)) {
 
 					if (nextGroup) {
@@ -173,9 +172,25 @@ class View extends Window {
 						)
 					);
 				}
+			}
 
 		} else {
+			let sorted = [];
+			for (let key in this.link) {
+				sorted.push(key);
+			}
+			sorted.sort((a,b)=> a.localeCompare(b));
 			
+			for (let i = 0; i < sorted.length; i++) {
+				this.attributes.appendChild(
+					this.CreateAttribute(
+						sorted[i],
+						this.link[sorted[i]].v,
+						this.link[sorted[i]].i,
+						this.link[sorted[i]].d
+					)
+				);
+			}
 		}
 	}
 
@@ -187,6 +202,7 @@ class View extends Window {
 			this.sortButton.style.borderBottom = "#c0c0c0 solid 2px";
 			this.order = "alphabetical";
 		}
+		this.InitializePreview();
 	}
 
 	Info() {
