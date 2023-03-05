@@ -166,6 +166,20 @@
 	max-width: 100px;
 }
 
+.view-attributes-list > .view-attributes-group {
+	margin-top: 16px;
+	padding-left: 40px;
+	line-height: 32px;
+	text-transform: capitalize;
+	font-weight: 600;
+	background-repeat: no-repeat;
+	background-size: 28px 28px;
+	background-position: 4px 50%;
+	background-color: #909090;
+
+	transition: .2s;
+}
+
 .view-attributes-freeze > div > input[type="text"]:nth-child(2) {
 	width: calc(100% - max(100px, 25%) - 12px);
 }

@@ -1,9 +1,27 @@
+const USERS_GROUP_SCHEMA = [
+    "type", "title", "department", "division", "company",
+
+    ["mono/user.svg", "general"],
+    "first name", "middle name", "last name", "display name", "employee id",
+
+    ["mono/credential.svg", "authentication"],
+    "domain", "username", "password",
+
+    ["mono/contact.svg", "contact information"],
+    "e-mail", "secondary e-mail", "telephone number", "mobile number", "mobile extension", "fax",
+
+    ["mono/sim.svg", "sim information"],
+    "sim", "puk", "voicemail"
+];
+
 class UserView extends View {
 	constructor(params) {
 		super();
 		this.params = params ? params : { file: null };
 
 		this.link = LOADER.users.data[this.params.file];
+		this.order = "group";
+		this.groupSchema = USERS_GROUP_SCHEMA;
 		this.timelineName = "users";
 
 		this.SetIcon("mono/user.svg");
@@ -14,16 +32,16 @@ class UserView extends View {
 			this.SetTitle("New user");
 			this.Edit(true);
 
-			this.AddAttribute("type", "", null, null, true);
+			this.attributes.appendChild(this.CreateAttribute("type", "", null, null, true));
 
-			this.AddAttribute("title", "", null, null, true);
-			this.AddAttribute("department", "", null, null, true);
-			this.AddAttribute("firstname", "", null, null, true);
-			this.AddAttribute("lastname", "", null, null, true);
-			this.AddAttribute("username", "", null, null, true);
-			this.AddAttribute("email", "", null, null, true);
-			this.AddAttribute("office number", "", null, null, true);
-			this.AddAttribute("mobile number", "", null, null, true);
+			this.attributes.appendChild(this.CreateAttribute("title", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("department", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("first name", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("last name", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("username", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("email", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("office number", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("mobile number", "", null, null, true));
 		}
 	}
 
@@ -33,6 +51,7 @@ class UserView extends View {
 
 			let obj = {};
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
+				if (this.attributes.childNodes[i].childNodes.length < 2) continue;
 				let name  = this.attributes.childNodes[i].childNodes[0].value;
 				let value = this.attributes.childNodes[i].childNodes[1].value;
 				obj[name] = {v:value};

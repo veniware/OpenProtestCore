@@ -5,7 +5,7 @@ class UsersList extends List {
 		this.SetTitle("Users");
 		this.SetIcon("mono/users.svg");
 
-		this.defaultColumns = ["firstname", "lastname", "username", "email"];
+		this.defaultColumns = ["first name", "last name", "username", "email"];
 
 		const columns = localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`) ?
 			JSON.parse(localStorage.getItem(`${this.constructor.name.toLowerCase()}_columns`)) :

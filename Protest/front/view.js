@@ -54,12 +54,12 @@ class View extends Window {
 		deleteButton.onclick = () => this.Delete();
 		this.bar.appendChild(deleteButton);
 
-		this.SetupFloatingMenu();		
+		this.SetupFloatingMenu();
 	}
 
-	AddAttribute(name, value, initiator, date, editMode=false) {
+	CreateAttribute(name, value, initiator, date, editMode=false) {
 		const newAttribute = document.createElement("div");
-		this.attributes.appendChild(newAttribute);
+		//this.attributes.appendChild(newAttribute);
 
 		const nameBox = document.createElement("input");
 		nameBox.type = "text";
@@ -97,10 +97,21 @@ class View extends Window {
 		removeButton.onclick = ()=> {
 			newAttribute.innerHTML = "";
 			newAttribute.style.height = "0px";
-			setTimeout(() =>{
-				this.attributes.removeChild(newAttribute);
-			}, 200);
+			setTimeout(() =>{ this.attributes.removeChild(newAttribute); }, 200);
 		};
+
+		return newAttribute;
+	}
+
+	CreateGroupTitle(icon, title) {
+		const newGroup = document.createElement("div");
+		newGroup.className = "view-attributes-group";
+		//this.attributes.appendChild(newGroup);
+
+		newGroup.style.backgroundImage = `url(${icon})`;
+		newGroup.textContent = title;
+
+		return newGroup;
 	}
 
 	InitializePreview() {
@@ -108,11 +119,63 @@ class View extends Window {
 		this.InitializeAttributesList();
 	}
 
-	InitializeAttributesList() {
+	InitializeAttributesList(editMode=false) {
 		this.attributes.innerHTML = "";
 
-		for (const attr in this.link) {
-			this.AddAttribute(attr, this.link[attr].v, this.link[attr].i, this.link[attr].d);
+		if (this.order === "group") {
+
+			let pushed = [];
+			let nextGroup = null;
+			for (let i = 0; i < this.groupSchema.length; i++) {
+				if (Array.isArray(this.groupSchema[i])) {
+					if (!editMode) {
+						nextGroup = this.CreateGroupTitle(this.groupSchema[i][0], this.groupSchema[i][1]);
+					}
+				} else {
+					if (!this.link.hasOwnProperty(this.groupSchema[i])) continue;
+
+					if (nextGroup) {
+						this.attributes.appendChild(nextGroup);
+						nextGroup = null;
+					}
+
+					this.attributes.appendChild(
+						this.CreateAttribute(
+							this.groupSchema[i],
+							this.link[this.groupSchema[i]].v,
+							this.link[this.groupSchema[i]].i,
+							this.link[this.groupSchema[i]].d
+						)
+					);
+
+					pushed.push(this.groupSchema[i]);
+				}
+			}
+			
+			if (!editMode) {
+				nextGroup = this.CreateGroupTitle("mono/other.svg", "other");
+			}
+
+			for (let key in this.link)
+				if (!pushed.includes(key)) {
+
+					if (nextGroup) {
+						this.attributes.appendChild(nextGroup);
+						nextGroup = null;
+					}
+
+					this.attributes.appendChild(
+						this.CreateAttribute(
+							key,
+							this.link[key].v,
+							this.link[key].i,
+							this.link[key].d
+						)
+					);
+				}
+
+		} else {
+			
 		}
 	}
 
@@ -267,6 +330,14 @@ class View extends Window {
 			this.bar.childNodes[i].style.display = "none";
 		}
 
+		for (let i = 0; i < this.attributes.childNodes.length; i++) {
+			if (this.attributes.childNodes[i].childNodes.length < 2) {
+				this.attributes.childNodes[i].innerHTML = "";
+				this.attributes.childNodes[i].style.height = "0px";
+				this.attributes.childNodes[i].style.marginTop = "0px";
+			}
+		}
+
 		const btnSave = document.createElement("input");
 		btnSave.type = "button";
 		btnSave.value = "Save";
@@ -308,7 +379,7 @@ class View extends Window {
 		}
 
 		addAttributeButton.onclick = ()=> {
-			this.AddAttribute("", "", null, null, true);
+			this.attributes.appendChild(this.CreateAttribute("", "", null, null, true));
 		};
 
 		const ExitEdit = ()=> {
@@ -331,8 +402,8 @@ class View extends Window {
 			}
 		};
 
-		const Revert = ()=> {
-			this.InitializeAttributesList();
+		const Revert = editMode=> {
+			this.InitializeAttributesList(editMode);
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 3) continue;
 				this.attributes.childNodes[i].childNodes[0].removeAttribute("readonly");
@@ -346,14 +417,14 @@ class View extends Window {
 		};
 
 		btnRevert.onclick = () => {
-			Revert();
+			Revert(true);
 		};
 
 		btnCancel.onclick = () => {
 			if (isNew) {
 				this.Close();
 			} else {
-				Revert();
+				Revert(false);
 				ExitEdit();
 			}
 		};

@@ -365,7 +365,7 @@
 	width: 48px;
 	height: 48px;
 	transform-style: preserve-3d;
-	animation: spin-spinner 1.5s infinite ease-in;
+	animation: spin-spinner 2s infinite ease-in;
 }
 
 .spinner > div::before, .spinner > div::after {
@@ -380,27 +380,28 @@
 .spinner > div::before { /*front*/
 	transform: translateZ(24px);
 	background-color: var(--clr-accent);
-	animation: light-spinner 1.5s infinite ease-in;
+	animation: light-spinner 2s infinite ease-in;
 }
 .spinner > div::after { /*left*/
 	transform: rotateY(-90deg) translateZ(24px);
-	background-color: #c0c0c0;
-	animation: fill-spinner 1.5s infinite ease-in;
+	background-color: var(--clr-pane);
+	animation: fill-spinner 2s infinite ease-in;
 }
 
 @keyframes spin-spinner {
 	0%   { transform: rotateY( 0deg); }
-	50%  { transform: rotateY( 90deg); }
+	20%  { transform: rotateY( 90deg); }
 	100% { transform: rotateY( 90deg); }
 }
 @keyframes light-spinner {
 	0%   { filter: brightness(100%) }
-	50%  { filter: brightness(140%) }
+	20%  { filter: brightness(140%) }
 	100% { filter: brightness(140%) }
 }
 @keyframes fill-spinner {
 	0%   { filter: brightness(40%) }
-	50%  { filter: brightness(100%); box-shadow: var(--clr-accent) 0 0 0 inset; }
+	20%  { filter: brightness(100%);}
+	20.1%{ box-shadow: var(--clr-accent) 0 0 0 inset; }
 	95%  { box-shadow: var(--clr-accent) 64px 0 0 inset; }
 	100% { box-shadow: var(--clr-accent) 64px 0 0 inset; }
 }

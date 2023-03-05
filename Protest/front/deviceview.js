@@ -1,9 +1,49 @@
+const DEVICES_GROUP_SCHEMA = [
+    "type", "name",
+
+    ["mono/portscan.svg", "network"],
+    "ip", "ipv6", "mask", "hostname", "mac address", "dhcp enabled", "ports", "network adapter speed",
+    "overwriteprotocol",
+
+    [".", "device"],
+    "manufacturer", "model", "serial number", "chasse type", "description",
+
+    ["mono/motherboard.svg", "motherboard"],
+    "motherboard", "motherboard manufacturer", "motherboard serial number", "bios",
+
+    ["mono/cpu.svg", "processor"],
+    "processor", "cpu cores", "cpu frequency", "cpu architecture", "cpu cache", "l1 cache", "l2 cache", "l3 cache",
+
+    ["mono/ram.svg", "memory"],
+    "memory", "total memory", "memory modules", "ram slot", "ram speed", "ram slot used", "ram type", "ram form factor",
+
+    ["mono/diskdrive.svg", "disk drive"],
+    "disk drive", "physical disk", "logical disk",
+
+    ["mono/videocard.svg", "video card"],
+    "video controller", "video driver",
+
+    ["mono/os.svg", "operating system"],
+    "operating system", "os architecture", "os version", "os build", "service pack", "os serial no", "os install date",
+
+    ["mono/user.svg", "owner"],
+    "owner", "owner full name", "location",
+
+    ["mono/directory.svg", "active directory"],
+    "distinguished name", "dns hostname", "created on dc",
+
+    ["mono/credential.svg", "credentials"],
+    "domain", "username", "password", "la password", "ssh username", "ssh password"
+];
+
 class DeviceView extends View {
 	constructor(params) {
 		super();
 		this.params = params ? params : { file: null };
 
 		this.link = LOADER.users.data[this.params.file];
+		this.order = "group";
+		this.groupSchema = DEVICES_GROUP_SCHEMA;
 		this.timelineName = "devices";
 
 		this.SetIcon("mono/gear.svg");
@@ -14,16 +54,16 @@ class DeviceView extends View {
 			this.SetTitle("New Device");
 			this.Edit(true);
 
-			this.AddAttribute("type", "", null, null, true);
+			this.attributes.appendChild(this.CreateAttribute("type", "", null, null, true));
 
-			this.AddAttribute("name", "", null, null, true);
-			this.AddAttribute("ip", "", null, null, true);
-			this.AddAttribute("hostname", "", null, null, true);
-			this.AddAttribute("mac address", "", null, null, true);
-			this.AddAttribute("manufacturer", "", null, null, true);
-			this.AddAttribute("model", "", null, null, true);
-			this.AddAttribute("location", "", null, null, true);
-			this.AddAttribute("owner", "", null, null, true);
+			this.attributes.appendChild(this.CreateAttribute("name", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("ip", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("hostname", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("mac address", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("manufacturer", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("model", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("location", "", null, null, true));
+			this.attributes.appendChild(this.CreateAttribute("owner", "", null, null, true));
 		}
 	}
 
@@ -33,6 +73,7 @@ class DeviceView extends View {
 
 			let obj = {};
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
+				if (this.attributes.childNodes[i].childNodes.length < 2) continue;
 				let name  = this.attributes.childNodes[i].childNodes[0].value;
 				let value = this.attributes.childNodes[i].childNodes[1].value;
 				obj[name] = {v:value};
