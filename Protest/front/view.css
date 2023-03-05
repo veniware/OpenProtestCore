@@ -19,6 +19,7 @@
 	color: #202020;
 	background-color: var(--clr-pane);
 	border-radius: 4px;
+	overflow: hidden;
 
 	transition: .2s;
 }
@@ -30,19 +31,24 @@
 	height: 100%;
 }
 
-.view-timeline > div > .timeline-dot {
+.view-timeline .timeline-con {
 	position: absolute;
-	top: 15px;
-	width: 10px;
-	height: 10px;
-	background-color: var(--clr-accent);
-	outline: 2px solid #404040;
-	border-radius: 10px;
+	top: 0;
+	width: min(1.5%, 10px);
+	height: 100%;
+}
+.view-timeline .timeline-con:hover {
+	background-color: var(--clr-highlight);
 }
 
-.view-timeline > div > .timeline-dot:hover {
-	transform: scale(1.2);
-	transition: .4s;
+.view-timeline .timeline-dot {
+	position: absolute;
+	top: 15px;
+	width: 100%;
+	height: 10px;
+	/*background-color: var(--clr-accent);*/
+	outline: 2px solid #404040;
+	border-radius: 10px;
 }
 
 .view-scroll {
@@ -129,20 +135,35 @@
 	position: absolute;
 	right: 0px;
 	transform: translateY(-26px);
+	text-align: right;
 	width: auto;
-	max-width: 30%;
-	color: #c0c0c0;
-	background-color: #202020;
-	border-radius: 4px;
+	max-width: auto;
 	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
-	padding: 0px 4px;
 
 	visibility: hidden;
 	opacity: 0;
 	transition: opacity .2s, right .2s;
 	transition-delay: .4s;
+}
+
+.view-attributes-list > div > div:nth-child(4) > div {
+	display: inline-block;
+	color: #c0c0c0;
+	background-color: #202020;
+	border-radius: 4px;
+	padding: 0 4px;
+	margin-left: 2px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+
+.view-attributes-list > div > div:nth-child(4) > div:nth-child(1) {
+	max-width: 150px;
+}
+.view-attributes-list > div > div:nth-child(4) > div:nth-child(2) {
+	max-width: 100px;
 }
 
 .view-attributes-freeze > div > input[type="text"]:nth-child(2) {
@@ -160,17 +181,20 @@
 	transition-delay: .8s;
 }
 
-.view-attributes-freeze > div > div:nth-child(4):hover {
-	max-width: 90%;
-	transition-delay: 0s !important;
+
+.view-attributes-freeze > div > div:nth-child(4):hover > div {
+	max-width: initial;
 }
 
 .view-attributes-with-info > div > div:nth-child(4) {
 	visibility: visible;
 	opacity: 1;
 	right: 6px;
-	max-width: 90%;
 	transition-delay: 0s !important;
+}
+
+.view-attributes-with-info > div > div:nth-child(4) > div {
+	max-width: initial !important;
 }
 
 @container (min-width: 800px) {

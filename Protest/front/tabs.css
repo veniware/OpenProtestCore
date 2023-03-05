@@ -4,6 +4,7 @@
 	left: 25px;
 	top: 16px;
 	bottom: 16px;
+	outline: 0;
 	overflow-y: auto;
 	z-index: 1;
 }

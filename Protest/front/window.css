@@ -318,6 +318,26 @@
 	animation: task-icon-open .25s ease-in-out;
 }
 
+.floating-menu {
+	position: absolute;
+	left: 50%;
+	top: 100px;
+	z-index: 1;
+	bottom: 8px;
+	width: 200px;
+	min-height: 40px;
+	max-height: 80px;
+	overflow: hidden;
+	outline: 0;
+	background-color: var(--clr-pane);
+	border-radius: 4px;
+	box-shadow: #202020 0 0 4px;
+
+	transition: .4s;
+	transition-delay: .4s;
+}
+
+
 #container.no-popout > .window > .popout-box {
 	display: none;
 }

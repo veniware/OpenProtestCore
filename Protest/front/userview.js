@@ -14,16 +14,16 @@ class UserView extends View {
 			this.SetTitle("New user");
 			this.Edit(true);
 
-			this.AddAttribute("type", "", null, true);
+			this.AddAttribute("type", "", null, null, true);
 
-			this.AddAttribute("title", "", null, true);
-			this.AddAttribute("department", "", null, true);
-			this.AddAttribute("firstname", "", null, true);
-			this.AddAttribute("lastname", "", null, true);
-			this.AddAttribute("username", "", null, true);
-			this.AddAttribute("email", "", null, true);
-			this.AddAttribute("office number", "", null, true);
-			this.AddAttribute("mobile number", "", null, true);
+			this.AddAttribute("title", "", null, null, true);
+			this.AddAttribute("department", "", null, null, true);
+			this.AddAttribute("firstname", "", null, null, true);
+			this.AddAttribute("lastname", "", null, null, true);
+			this.AddAttribute("username", "", null, null, true);
+			this.AddAttribute("email", "", null, null, true);
+			this.AddAttribute("office number", "", null, null, true);
+			this.AddAttribute("mobile number", "", null, null, true);
 		}
 	}
 

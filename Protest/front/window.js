@@ -857,6 +857,14 @@ class Window {
 		};
 	}
 
+	SetupFloatingMenu() {
+		this.floating = document.createElement("div");
+		this.floating.className = "floating-menu";
+		this.floating.style.visibility = "hidden";
+		this.win.appendChild(this.floating);
+		return this.floating;
+	}
+
 	AddToolbarButton(tooltip, icon) {
 		const newButton = document.createElement("button");
 		newButton.className = "win-toolbar-button";

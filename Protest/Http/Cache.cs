@@ -66,7 +66,7 @@ internal sealed class Cache {
     public readonly Dictionary<string, Entry> cache = new Dictionary<string, Entry>();
 
     public Cache(string path) {
-        birthdate = DateTime.Now.ToString(Strings.DATETIME_FORMAT);
+        birthdate = DateTime.UtcNow.ToString(Strings.DATETIME_FORMAT);
         this.path = path;
         Load();
     }
@@ -77,7 +77,7 @@ internal sealed class Cache {
     }
 
     private bool Load() {
-        birthdate = DateTime.Now.ToString(Strings.DATETIME_FORMAT);
+        birthdate = DateTime.UtcNow.ToString(Strings.DATETIME_FORMAT);
 
 #if DEBUG
         long _raw = 0, _brotli = 0, _deflate = 0, _gzip = 0;

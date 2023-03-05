@@ -342,27 +342,48 @@ class Personalize extends Tabs {
 			this.region.appendChild(option);
 		}
 
-		const date = document.createElement("div");
-		this.tabsPanel.appendChild(date);
+		this.tabsPanel.appendChild(document.createElement("br"));
+		this.tabsPanel.appendChild(document.createElement("br"));
 
-		const time = document.createElement("div");
-		this.tabsPanel.appendChild(time);
+		this.region_date = document.createElement("div");
+		this.region_date.style.marginBottom = "8px";
+		this.tabsPanel.appendChild(this.region_date);
 
-		const digits = document.createElement("div");
-		this.tabsPanel.appendChild(digits);
+		this.region_time = document.createElement("div");
+		this.region_time.style.marginBottom = "8px";
+		this.tabsPanel.appendChild(this.region_time);
 
-		this.region.onchange = event=>{
+		this.region_number = document.createElement("div");
+		this.tabsPanel.appendChild(this.region_number);
+
+		this.region.value = localStorage.getItem("regional_format");
+
+		const Apply = () => {
+			UI.regionalFormat = this.region.value;
+			localStorage.setItem("regional_format", this.region.value);
+
 			const now = new Date();
 			date_month.textContent = now.toLocaleDateString(this.region.value, {month:"short"}).toUpperCase();
 			date_date.textContent = now.getDate();
 			date_day.textContent = now.toLocaleDateString(this.region.value, {weekday:"long"});
 
-			date.textContent = now.toLocaleDateString(this.region.value, {});
-			time.textContent = now.toLocaleTimeString(this.region.value, {});
+			for (let i = 0; i < WIN.array.length; i++) //update other setting windows
+				if (WIN.array[i] instanceof Personalize && WIN.array[i].params === "region") {
+					WIN.array[i].region.value = this.region.value;
 
-			digits.textContent = "";
+					WIN.array[i].region_date.textContent = "Date: " + now.toLocaleDateString(this.region.value, {});
+					WIN.array[i].region_time.textContent = "Time: " + now.toLocaleTimeString(this.region.value, {});
+		
+					let num = 1_234_567_890.321;
+					WIN.array[i].region_number.textContent = "Number: " + num.toLocaleString(this.region.value);
+				}
 		};
 
+		this.region.onchange = ()=>{
+			Apply();
+		};
+
+		Apply();
 	}
 
 	ShowSession() {

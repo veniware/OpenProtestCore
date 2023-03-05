@@ -266,7 +266,6 @@
 	overflow: hidden;
 	outline: 0;
 	background-color: var(--clr-pane);
-	/*border: 2px solid #202020;*/
 	border-radius: 4px;
 	box-shadow: #202020 0 0 4px;
 	animation: rise-in 1 .2s;
@@ -331,7 +330,8 @@
 	box-shadow: black 0 0 4px;
 }
 
-.glass > #contextmenu {
+.glass > #contextmenu,
+.glass > .window > .floating-menu {
 	background-color: #C0C0C080 !important;
 	backdrop-filter: blur(12px);
 }
@@ -345,13 +345,14 @@
 	text-shadow: #000 0 0 4px;
 }
 
+.glass > .window .win-toolbar {
+	background-color: transparent !important;
+}
+
 .glass > .window > .win-content > .list-listbox {
 	background-color: #c0c0c080 !important;
 }
 
-.glass > .window .win-toolbar {
-	background-color: transparent !important;
-}
 
 .spinner {
 	width: 48px;

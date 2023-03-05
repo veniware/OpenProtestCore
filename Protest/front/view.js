@@ -53,9 +53,12 @@ class View extends Window {
 		const deleteButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
 		deleteButton.onclick = () => this.Delete();
 		this.bar.appendChild(deleteButton);
+
+		this.SetupFloatingMenu();
+		
 	}
 
-	AddAttribute(name, value, initiator, editMode=false) {
+	AddAttribute(name, value, initiator, date, editMode=false) {
 		const newAttribute = document.createElement("div");
 		this.attributes.appendChild(newAttribute);
 
@@ -79,9 +82,18 @@ class View extends Window {
 		removeButton.setAttribute("aria-label", "Remove attribute");
 		newAttribute.appendChild(removeButton);
 
+		const infoBox = document.createElement("div");
+		newAttribute.appendChild(infoBox);
+
+		let modDate = date ? new Date(UI.TicksToUnixDate(date)) : new Date();
+		const dateBox = document.createElement("div");
+		dateBox.textContent = `${modDate.toLocaleDateString(UI.regionalFormat, {})} ${modDate.toLocaleTimeString(UI.regionalFormat, {})}`;
+		infoBox.appendChild(dateBox);
+
+		let modInitiator = initiator ? initiator : KEEP.username;
 		const initiatorBox = document.createElement("div");
-		initiatorBox.textContent = initiator;
-		newAttribute.appendChild(initiatorBox);
+		initiatorBox.textContent = modInitiator;
+		infoBox.appendChild(initiatorBox);
 
 		removeButton.onclick = ()=> {
 			newAttribute.innerHTML = "";
@@ -101,7 +113,7 @@ class View extends Window {
 		this.attributes.innerHTML = "";
 
 		for (const attr in this.link) {
-			this.AddAttribute(attr, this.link[attr].v, `${this.link[attr].i} - ${this.link[attr].d}`)
+			this.AddAttribute(attr, this.link[attr].v, this.link[attr].i, this.link[attr].d);
 		}
 	}
 
@@ -154,29 +166,87 @@ class View extends Window {
 			return;
 		}
 
-		let count = 0;
+		let sorted = [];
+
+		sorted.push({
+			time: Date.now(),
+			obj: this.link
+		});
+
 		let min = Number.MAX_SAFE_INTEGER;
 		let max = Date.now();
 
 		for (const key in json) {
-			count++;
-			let int = parseInt(key);
-			if (min > int) min = int;
+			let timestamp = UI.TicksToUnixDate(key);
+			if (min > timestamp) min = timestamp;
+
+			sorted.push({
+				time: timestamp,
+				obj: json[key]
+			});
 		}
 
-		json[Date.now()] = this.link;
+		sorted.sort((a,b)=> b.time - a.time); //reversed
+
 
 		let timeSpan = max - min;
-		let avgGap = 100 / count;
-		
-		for (const key in json) {
-			let int = parseInt(key);
+		let lastStamp = Math.MAX_SAFE_INTEGER;
+		let maxGap = { index:-1, length:0 };
+
+		for (let i = 0; i < sorted.length; i++) {
+			let x = (sorted[i].time - min) * 100 / timeSpan;
+
+			if (lastStamp - x < 1.66) x = lastStamp - 1.66;
+
+			const con = document.createElement("div");
+			con.className = "timeline-con";
+			con.style.left = `calc(${x}% - 5px)`;
+			innerTimeline.appendChild(con);
+
 			const dot = document.createElement("div");
 			dot.className = "timeline-dot";
-			dot.style.left = `calc(${(int - min) / timeSpan * 100}% - 5px)`;
-			innerTimeline.appendChild(dot);
+			con.appendChild(dot);
+			
+			sorted[i].x = x;
+			sorted[i].con = con;
+
+			let gap = lastStamp - x;
+			if (maxGap.length < gap) maxGap = { index:i, length:gap };;
+			lastStamp = x;
+
+			con.onmouseenter = ()=> {
+				this.floating.style.visibility = "visible";
+				this.floating.style.opacity = "1";
+				
+				let left = this.content.offsetLeft + this.timeline.offsetLeft + con.offsetLeft - 72.5;
+				if (left < 0) left = 0;
+				if (left + 200 > this.content.offsetWidth) left = this.content.offsetWidth - 200;
+				this.floating.style.left = `${left}px`;
+				this.floating.style.top = `${this.content.offsetTop + this.timeline.offsetTop + 44}px`;
+
+				let date = new Date(sorted[i].time);
+				this.floating.textContent = `${date.toLocaleDateString(UI.regionalFormat, {})} ${date.toLocaleTimeString(UI.regionalFormat, {})}`;
+
+			};
+
+			con.onmouseleave = ()=> {
+				this.floating.style.visibility = "hidden";
+				this.floating.style.opacity = "0";
+			};
+
+			con.onclick = ()=> {
+				console.log(sorted[i].time);
+			};
 		}
 
+		//TODO: need a better way
+		if (lastStamp < 0 && maxGap.length > 3) {
+			let diff = Math.abs(lastStamp);
+			if (diff > maxGap) diff = maxGap - 2;
+			for (let i = maxGap.index; i < sorted.length; i++) {
+				sorted[i].con.style.left = `calc(${sorted[i].x + diff}% - 5px)`;
+			}
+		}
 	}
 
 	Edit(isNew = false) { //overridable
@@ -233,7 +303,7 @@ class View extends Window {
 		}
 
 		addAttributeButton.onclick = ()=> {
-			this.AddAttribute("", "", null, true);
+			this.AddAttribute("", "", null, null, true);
 		};
 
 		const ExitEdit = ()=> {

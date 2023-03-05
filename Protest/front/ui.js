@@ -1,5 +1,8 @@
+const UNIX_BASE_TICKS = 62135596800000; //divided by 10000
+
 const UI = {
 	lastActivity: Date.now(),
+	regionalFormat: "sys",
 
 	Initialize : ()=> {
 		//set clock
@@ -37,9 +40,12 @@ const UI = {
 		let accentSaturation = localStorage.getItem("accent_saturation") ?
 		localStorage.getItem("accent_saturation") : 100;
 
-		if (accentSaturation !== 100) {	
+		if (accentSaturation !== 100) {
 			UI.SetAccentColor(accentColor, accentSaturation/100);
 		}
+
+		UI.regionalFormat = localStorage.getItem("regional_format") ?
+		localStorage.getItem("regional_format") : "sys";
 
 		const pos = JSON.parse(localStorage.getItem("menu_button_pos"));
 		if (pos) {
@@ -57,6 +63,32 @@ const UI = {
 		}
 	},
 
+	SetAccentColor : (accent, saturation)=> {
+		let hsl = UI.RgbToHsl(accent);
+	
+		let step1 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.78}%)`;
+		let step2 = `hsl(${hsl[0]+7},${hsl[1]*saturation}%,${hsl[2]*.9}%)`; //--clr-select
+		let step3 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.8}%)`;
+		let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
+	
+		let root = document.documentElement;
+		root.style.setProperty("--clr-accent", `hsl(${hsl[0]},${hsl[1]*saturation}%,${hsl[2]}%)`);
+		root.style.setProperty("--clr-select", step2);
+		root.style.setProperty("--grd-taskbar", gradient);
+		root.style.setProperty("--grd-taskbar-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
+	
+		let ico = "<svg version=\"1.1\" xmlns:serif=\"http://www.serif.com/\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"48px\" height=\"48px\"  viewBox=\"0 0 48 48\" enable-background=\"new 0 0 48 48\" xml:space=\"preserve\">"+
+			"<g fill=\""+step2+"\">"+
+			"<path d=\"M26.935,0.837h7.491l0.624,14.984l-8.24,1.873L26.935,0.837z\"/>"+
+			"<path d=\"M38.172,19.068l-3.871,8.866l-22.974,9.489l0.125-8.44l13.412-2.299V15.821L1.712,20.566l1.998,26.221 l42.579,0.375l-0.249-30.466L38.172,19.068z\"/>"+
+			"<path d=\"M4.459,0.837l0.374,16.857l8.741-1.873l-0.5-14.984H4.459z\"/>"+
+			"<path d=\"M15.821,0.837h7.304L24,13.2l-8.054,1.498L15.821,0.837z\"/>"+
+			"<path d=\"M37.672,0.837h7.367l1.249,12.986l-8.491,1.998L37.672,0.837z\"/>"+
+			"</g></svg>";
+	
+		favicon.href = "data:image/svg+xml;base64," + btoa(ico);
+	},
+	
 	RgbToHsl : color=> {
 		let r = color[0] / 255;
 		let g = color[1] / 255;
@@ -85,30 +117,10 @@ const UI = {
 		return [h, s, l];
 	},
 
-	SetAccentColor : (accent, saturation)=> {
-		let hsl = UI.RgbToHsl(accent);
-	
-		let step1 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.78}%)`;
-		let step2 = `hsl(${hsl[0]+7},${hsl[1]*saturation}%,${hsl[2]*.9}%)`; //--clr-select
-		let step3 = `hsl(${hsl[0]-4},${hsl[1]*saturation}%,${hsl[2]*.8}%)`;
-		let gradient = `linear-gradient(to bottom, ${step1}0%, ${step2}92%, ${step3}100%)`;
-	
-		let root = document.documentElement;
-		root.style.setProperty("--clr-accent", `hsl(${hsl[0]},${hsl[1]*saturation}%,${hsl[2]}%)`);
-		root.style.setProperty("--clr-select", step2);
-		root.style.setProperty("--grd-taskbar", gradient);
-		root.style.setProperty("--grd-taskbar-rev", `linear-gradient(to bottom, ${step3}0%, ${step2}2%, ${step1}100%)`);
-	
-		let ico = "<svg version=\"1.1\" xmlns:serif=\"http://www.serif.com/\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\" width=\"48px\" height=\"48px\"  viewBox=\"0 0 48 48\" enable-background=\"new 0 0 48 48\" xml:space=\"preserve\">"+
-			"<g fill=\""+step2+"\">"+
-			"<path d=\"M26.935,0.837h7.491l0.624,14.984l-8.24,1.873L26.935,0.837z\"/>"+
-			"<path d=\"M38.172,19.068l-3.871,8.866l-22.974,9.489l0.125-8.44l13.412-2.299V15.821L1.712,20.566l1.998,26.221 l42.579,0.375l-0.249-30.466L38.172,19.068z\"/>"+
-			"<path d=\"M4.459,0.837l0.374,16.857l8.741-1.873l-0.5-14.984H4.459z\"/>"+
-			"<path d=\"M15.821,0.837h7.304L24,13.2l-8.054,1.498L15.821,0.837z\"/>"+
-			"<path d=\"M37.672,0.837h7.367l1.249,12.986l-8.491,1.998L37.672,0.837z\"/>"+
-			"</g></svg>";
-	
-		favicon.href = "data:image/svg+xml;base64," + btoa(ico);
+	TicksToUnixDate: ticks=> {
+		ticks = ticks.toString();
+		ticks = parseInt(ticks.substring(0, ticks.length - 4));
+		return ticks - UNIX_BASE_TICKS;
 	}
 };
 
@@ -491,13 +503,13 @@ taskbar.onmouseup = event=> {
 		for (let y = 0; y < gridH; y++) {
 			for (let x = 0; x < gridW; x++) {
 				let i = y*gridW + x;
-				if (i >= visible.length) continue;
+				if (i >= visible.length) break;
 
 				visible[i].win.style.transition = `${ANIME_DURATION/1000}s`;
 
 				if (visible[i].isMaximized) visible[i].Toggle();
 				visible[i].win.style.left   = gridW < 5 ? `calc(${100*x/gridW}% + 8px)` : `${100*x/gridW}%`;
-				visible[i].win.style.tot    = gridW < 5 ? `calc(${100*y/gridH}% + 8px)` : `${100*y/gridH}%`;
+				visible[i].win.style.top    = gridW < 5 ? `calc(${100*y/gridH}% + 8px)` : `${100*y/gridH}%`;
 				visible[i].win.style.width  = gridW < 5 ? `calc(${100/gridW}% - 16px)`  : `${100/gridW}%`;
 				visible[i].win.style.height = gridW < 5 ? `calc(${100/gridH}% - 16px)`  : `${100/gridH}%`;
 
@@ -570,9 +582,11 @@ contextmenu.onblur = ()=>{
 	analog_clock_m.style.transform = "rotate(" + m * 6 + "deg)";
 	analog_clock_h.style.transform = "rotate(" + h * 30 + "deg)";
 
-	date_month.textContent = now.toLocaleDateString(undefined, {month:"short"}).toUpperCase();
+	regionalFormat = localStorage.getItem("regional_format") ? localStorage.getItem("regional_format") : "sys";
+
+	date_month.textContent = now.toLocaleDateString(regionalFormat, {month:"short"}).toUpperCase();
 	date_date.textContent = now.getDate();
-	date_day.textContent = now.toLocaleDateString(undefined, {weekday:"long"});
+	date_day.textContent = now.toLocaleDateString(regionalFormat, {weekday:"long"});
 
 	setTimeout(() => minuteLoop(), 60000);
 })();

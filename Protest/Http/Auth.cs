@@ -43,7 +43,7 @@ internal static class Auth {
 
         Session session = sessions[sessionId];
 
-        if (DateTime.Now.Ticks - session.loginTime > session.sessionTimeout) { //expired
+        if (DateTime.UtcNow.Ticks - session.loginTime > session.sessionTimeout) { //expired
             RevokeAccess(sessionId);
             return false;
         }
@@ -108,7 +108,7 @@ internal static class Auth {
             access         = acl.TryGetValue(username, out AccessControl value) ? value : default!,
             ip             = ctx.Request.RemoteEndPoint.Address,
             sessionId      = sessionId,
-            loginTime      = DateTime.Now.Ticks,
+            loginTime      = DateTime.UtcNow.Ticks,
             sessionTimeout = SESSION_TIMEOUT,
         };
 
@@ -230,7 +230,7 @@ internal sealed class AccessControlJsonConverter : JsonConverter<Auth.AccessCont
                     List<string> list = new List<string>();
                     while (reader.Read() && reader.TokenType != JsonTokenType.EndArray) {
                         list.Add(reader.GetString());
-                    }
+                    } 
                     access.authorization = list.ToArray();
 
                 } else {

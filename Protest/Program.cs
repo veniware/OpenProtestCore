@@ -23,20 +23,6 @@ namespace Protest;
 internal class Program {
 
     static void Main(string[] args) {
-
-        DateTime now = DateTime.Now;
-
-        Console.WriteLine(now.ToString());
-        Console.WriteLine(now.Ticks);
-        Console.WriteLine();
-        Console.WriteLine(Strings.DateTimeToUnixTicks(now));
-        Console.WriteLine(Strings.DateTimeToUnixTicks(now.Ticks));
-
-
-
-
-        Console.Title = "Pro-test";
-
         Console.WriteLine(@"   _____");
         Console.WriteLine(@"  |  __ \            _            _");
         Console.WriteLine(@"  | |_/ / __ ___ ___| |_ ___  ___| |_");

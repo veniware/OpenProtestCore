@@ -8,13 +8,14 @@ class Tabs extends Window {
 		this.content.style.overflow = "hidden";
 
 		this.tabsBox = document.createElement("div");
+		this.tabsBox.tabIndex = -1;
 		this.tabsBox.className = "tabs-box";
-		this.tabsBox.setAttribute("role", "tabpanel");
 		this.content.appendChild(this.tabsBox);
 
 		this.tabsPanel = document.createElement("div");
 		this.tabsPanel.tabIndex = -1;
 		this.tabsPanel.className = "tabs-panel";
+		this.tabsPanel.setAttribute("role", "tabpanel");
 		this.content.appendChild(this.tabsPanel);
 	}
 

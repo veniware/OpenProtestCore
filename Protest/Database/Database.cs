@@ -22,7 +22,7 @@ public sealed class Database {
     public record Attribute {
         public string value;
         public string initiator;
-        public long date;
+        public long date; //utc
     }
 
     [Serializable]
@@ -48,7 +48,7 @@ public sealed class Database {
     }
 
     public static string GenerateFilename(int offset = 0) {
-        return (DateTime.Now.Ticks + offset).ToString("x");
+        return (DateTime.UtcNow.Ticks + offset).ToString("x");
     }
 
     private void ReadAll() {
@@ -68,7 +68,7 @@ public sealed class Database {
         }
 
         if (successful)
-            version = DateTime.Now.Ticks;
+            version = DateTime.UtcNow.Ticks;
     }
 
     private static Entry Read(FileInfo file) {
@@ -97,7 +97,7 @@ public sealed class Database {
             if (File.Exists(filename)) {
                 DirectoryInfo timelineDir = new DirectoryInfo($"{filename}_");
                 if (!timelineDir.Exists) timelineDir.Create();
-                File.Move(filename, $"{filename}_{Strings.DIRECTORY_SEPARATOR}{DateTime.Now.Ticks}");
+                File.Move(filename, $"{filename}_{Strings.DIRECTORY_SEPARATOR}{DateTime.UtcNow.Ticks}");
             }
         } catch {}
 
@@ -172,7 +172,7 @@ public sealed class Database {
         };
 
         dictionary.TryAdd(filename, newEntry);
-        version = DateTime.Now.Ticks;
+        version = DateTime.UtcNow.Ticks;
 
         //new Thread(() => { Write(newEntry); }).Start();
         Write(newEntry);
@@ -194,7 +194,7 @@ public sealed class Database {
         oldEntry.attributes = modifications;
 
         dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.Now.Ticks;
+        version = DateTime.UtcNow.Ticks;
 
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
@@ -212,7 +212,7 @@ public sealed class Database {
         }
 
         dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.Now.Ticks;
+        version = DateTime.UtcNow.Ticks;
 
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
@@ -232,7 +232,7 @@ public sealed class Database {
         oldEntry.attributes = modifications;
 
         dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.Now.Ticks;
+        version = DateTime.UtcNow.Ticks;
 
         //new Thread(() => { Write(oldEntry); }).Start();
         Write(oldEntry);
@@ -278,7 +278,7 @@ public sealed class Database {
 
         foreach (KeyValuePair<string, Attribute> pair in modifications) {
             pair.Value.initiator = initiator;
-            pair.Value.date = DateTime.Now.Ticks;
+            pair.Value.date = DateTime.UtcNow.Ticks;
         }
 
         if (Save(filename, modifications, SaveMethod.overwrite, initiator)) {
@@ -351,11 +351,8 @@ public sealed class Database {
 
             builder.Append('{');
             for (int i = 0; i < files.Length; i++) {
-                if (!long.TryParse(files[i].Name, out long ticks)) continue;
-                long unixTicks = Strings.DateTimeToUnixTicks(ticks);
-
                 if (i > 0) builder.Append(',');
-                builder.Append($"\"{unixTicks}\":");
+                builder.Append($"\"{files[i].Name}\":");
 
                 try {
                     byte[] bytes = File.ReadAllBytes(files[i].FullName);

@@ -14,16 +14,16 @@ class DeviceView extends View {
 			this.SetTitle("New Device");
 			this.Edit(true);
 
-			this.AddAttribute("type", "", null, true);
+			this.AddAttribute("type", "", null, null, true);
 
-			this.AddAttribute("name", "", null, true);
-			this.AddAttribute("ip", "", null, true);
-			this.AddAttribute("hostname", "", null, true);
-			this.AddAttribute("mac address", "", null, true);
-			this.AddAttribute("manufacturer", "", null, true);
-			this.AddAttribute("model", "", null, true);
-			this.AddAttribute("location", "", null, true);
-			this.AddAttribute("owner", "", null, true);
+			this.AddAttribute("name", "", null, null, true);
+			this.AddAttribute("ip", "", null, null, true);
+			this.AddAttribute("hostname", "", null, null, true);
+			this.AddAttribute("mac address", "", null, null, true);
+			this.AddAttribute("manufacturer", "", null, null, true);
+			this.AddAttribute("model", "", null, null, true);
+			this.AddAttribute("location", "", null, null, true);
+			this.AddAttribute("owner", "", null, null, true);
 		}
 	}
 
