@@ -49,6 +49,10 @@ class View extends Window {
 		const fetchButton = this.AddToolbarButton("Fetch", "mono/ball.svg?light");
 		fetchButton.onclick = () => this.Fetch();
 		this.bar.appendChild(fetchButton);
+		
+		const copyButton = this.AddToolbarButton("Copy", "mono/copy.svg?light");
+		copyButton.onclick = () => this.Copy();
+		this.bar.appendChild(copyButton);
 
 		const deleteButton = this.AddToolbarButton("Delete", "mono/delete.svg?light");
 		deleteButton.onclick = () => this.Delete();
@@ -450,6 +454,7 @@ class View extends Window {
 
 	Fetch() {} //overridable
 
-	Delete() {} //overridable
+	Copy() {} //overridable
 
+	Delete() {} //overridable
 }

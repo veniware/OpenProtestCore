@@ -341,6 +341,10 @@
 	backdrop-filter: blur(16px);
 }
 
+.glass > .window .win-dim {
+	background-color: rgba(32,32,32,.2);
+}
+
 .glass > .window header.title {
 	text-shadow: #000 0 0 4px;
 }

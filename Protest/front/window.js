@@ -121,8 +121,6 @@ document.body.onmousemove = event=> {
 };
 
 document.body.onmouseup = ()=> {
-	//if (!WIN.isMoving && !WIN.isResizing) return;
-
 	if (WIN.active != null) {
 		WIN.active.task.style.transition = `${ANIME_DURATION/1000}s`;
 		WIN.active.task.style.zIndex = "3";
@@ -133,7 +131,6 @@ document.body.onmouseup = ()=> {
 	WIN.isResizing = false;
 	WIN.isIcoMoving = false;
 	WIN.active = null;
-	//event.stopPropagation();
 };
 
 document.body.onkeydown = event=> {
@@ -145,9 +142,9 @@ document.body.onkeydown = event=> {
 };
 
 document.body.onbeforeunload = () => {
-	//if (localStorage.getItem("alive_after_close") != "true") {
-	//	fetch("/logout");
-	//}
+	/*if (localStorage.getItem("alive_after_close") != "true") {
+		fetch("/logout");
+	}*/
 
 	LOADER.StoreSession();
 

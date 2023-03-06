@@ -28,6 +28,11 @@ class UserView extends View {
 
 		if (this.params.file) {
 			this.InitializePreview();
+		
+		} else if (params.copy) {
+			this.SetTitle(`Copy of ${this.params.copy}`);
+			this.Edit(true);
+
 		} else {
 			this.SetTitle("New user");
 			this.Edit(true);
@@ -96,6 +101,20 @@ class UserView extends View {
 
 	Fetch() { //override
 	
+	}
+
+	Copy() { //override
+		const copy = new UserView({copy: this.header.textContent});
+		for (let i = 0; i < this.attributes.childNodes.length; i++) {
+			if (this.attributes.childNodes[i].childNodes.length < 3) continue;
+			copy.attributes.appendChild(
+				copy.CreateAttribute(
+					this.attributes.childNodes[i].childNodes[0].value,
+					this.attributes.childNodes[i].childNodes[1].value,
+					null, null, true
+				)
+			);
+		}
 	}
 
 	Delete() { //override
