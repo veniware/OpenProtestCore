@@ -36,7 +36,7 @@ internal class Program {
         Console.WriteLine(" - Debug mode");
         Console.WriteLine($" - Startup path: {Environment.CommandLine}");
 #endif
-        Console.WriteLine($" - Start time: {DateTime.Now.ToString(Strings.DATETIME_FORMAT)}");
+        Console.WriteLine($" - Startup time: {DateTime.Now.ToString(Strings.DATETIME_FORMAT)}");
         Console.WriteLine($" - GUID: {Strings.GUID}");
         Console.WriteLine();
 
