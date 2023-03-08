@@ -903,7 +903,7 @@ class Window {
 		this.content.style.backgroundColor = `rgb(${color[0]},${color[1]},${color[2]})`;
 
 		if ((this.themeColor[0]+this.themeColor[1]+this.themeColor[2]) / 3 > 127)
-			this.content.style.color = "#202020";
+			this.content.style.color = "var(--clr-dark)";
 	}
 
 	AfterResize() { } //overridable

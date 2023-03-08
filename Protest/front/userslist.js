@@ -23,7 +23,7 @@ class UsersList extends List {
 
 		if (this.params.find && this.params.find.length > 0) {
 			findTextBox.value = this.params.find;
-			findTextBox.parentElement.style.borderBottom = findTextBox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
+			findTextBox.parentElement.style.borderBottom = findTextBox.value.length === 0 ? "none" : "var(--clr-light) solid 2px";
 			findTextBox.parentElement.style.width = "200px";
 			this.RefreshList();
 		}

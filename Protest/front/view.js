@@ -203,7 +203,7 @@ class View extends Window {
 			this.sortButton.style.borderBottom = "none";
 			this.order = "group";
 		} else {
-			this.sortButton.style.borderBottom = "#c0c0c0 solid 3px";
+			this.sortButton.style.borderBottom = "var(--clr-light) solid 3px";
 			this.order = "alphabetical";
 		}
 		this.InitializePreview();
@@ -214,7 +214,7 @@ class View extends Window {
 			this.infoButton.style.borderBottom = "none";
 			this.attributes.classList.remove("view-attributes-with-info");
 		} else {
-			this.infoButton.style.borderBottom = "#c0c0c0 solid 3px";
+			this.infoButton.style.borderBottom = "var(--clr-light) solid 3px";
 			this.attributes.classList.add("view-attributes-with-info");
 		}
 	}
@@ -234,7 +234,7 @@ class View extends Window {
 
 		this.timeline.style.display = "initial";
 		this.scroll.style.top = "96px";
-		this.timelineButton.style.borderBottom = "#c0c0c0 solid 3px";
+		this.timelineButton.style.borderBottom = "var(--clr-light) solid 3px";
 
 		let json;
 		try {

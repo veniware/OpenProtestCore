@@ -105,7 +105,7 @@ class About extends Tabs {
 
 		const donate = document.createElement("a");
 		donate.style.display = "inline-block";
-		donate.style.border = "#202020 1px solid";
+		donate.style.border = "#var(--clr-dark) 1px solid";
 		donate.style.borderRadius = "4px";
 		donate.style.padding = "2px 4px";
 		donate.style.margin = "1px";
@@ -122,7 +122,7 @@ class About extends Tabs {
 
 		const involve = document.createElement("a");
 		involve.style.display = "inline-block";
-		involve.style.border = "#202020 1px solid";
+		involve.style.border = "var(--clr-dark) 1px solid";
 		involve.style.borderRadius = "4px";
 		involve.style.padding = "2px 4px";
 		involve.style.margin = "1px";

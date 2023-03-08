@@ -1,5 +1,5 @@
 .list-listbox {
-	color: #202020;
+	color: var(--clr-dark);
 	background-color: var(--clr-pane);
 	outline: 0;
 

@@ -222,7 +222,7 @@
 	background: transparent;
 	animation: none !important;
 	box-shadow: none !important;
-	color: var(--clr-fore);
+	color: var(--clr-light);
 	font-weight: 600;
 	border-radius: 0;
 }
@@ -233,7 +233,7 @@
 	height: 32px;
 	border-radius: 2px;
 	margin: 4px;
-	background-color: #c0c0c0;
+	background-color: var(--clr-light);
 }
 
 .win-content {
@@ -331,7 +331,7 @@
 	outline: 0;
 	background-color: var(--clr-pane);
 	border-radius: 4px;
-	box-shadow: #202020 0 0 4px;
+	box-shadow: var(--clr-dark) 0 0 4px;
 
 	transition: .4s;
 	transition-delay: .4s;
@@ -352,7 +352,7 @@
 	content: "no results";
 	font-size: 16px;
 	font-weight: bold;
-	color: #202020;
+	color: var(--clr-dark);
 	margin-top: 20px;
 	height: 100px;
 	text-align: center;
@@ -370,7 +370,7 @@
 	content: "no results";
 	font-size: 14px;
 	font-weight: bold;
-	color: #202020;
+	color: var(--clr-dark);
 	padding-top: 8px;
 	text-align: center;
 	filter: brightness(400%);

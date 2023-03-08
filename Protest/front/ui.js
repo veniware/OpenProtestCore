@@ -11,7 +11,7 @@ const UI = {
 			newDot.setAttribute("r", i%3==0 ? 2.5 : 1.5);
 			newDot.setAttribute("cx", 48 + Math.sin(i*30/57.29577951)*36);
 			newDot.setAttribute("cy", 48 - Math.cos(i*30/57.29577951)*36);
-			newDot.setAttribute("fill", "var(--clr-fore)");
+			newDot.setAttribute("fill", "var(--clr-contrast)");
 			analog_clock.appendChild(newDot);
 		}
 
@@ -133,6 +133,7 @@ const MENU = {
 	list         : [],
 	altPress     : 0,
 	lastAltPress : 0,
+	filterIndex  : -1,
 
 	Clear: ()=> {
 		if (searchboxinput.value.length > 0) {
@@ -217,6 +218,24 @@ const MENU = {
 			l_width: logo.style.width,
 			l_height: logo.style.height
 		}));
+	},
+
+	Filter: (index)=> {
+		if (index === MENU.filterIndex) {
+			menufilterdot.style.transform = "scale(0)";
+			menufilterdot.style.width = "8px";
+			menufilterdot.style.height = "8px";
+			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 12 + 1}px`;
+			MENU.filterIndex = -1;
+
+		} else {
+			menufilterdot.style.transform = "scale(1)";
+			menufilterdot.style.width = "32px";
+			menufilterdot.style.height = "4px";
+			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 1}px`;
+			MENU.filterIndex = index;
+
+		}
 	}
 };
 

@@ -19,10 +19,10 @@
 <body>
 	<main id="container">
 		<svg id="analog_clock" width="96" height="96" aria-hidden="true">
-			<circle cx="48" cy="48" r="44" stroke="var(--clr-fore)" stroke-width="6" fill="rgba(0,0,0,0)"/>
-			<circle cx="48" cy="48" r="4" fill="var(--clr-fore)"/>
-			<line id="analog_clock_h" x1="48" y1="48" x2="48" y2="24" stroke="var(--clr-fore)" stroke-width="5"/>
-			<line id="analog_clock_m" x1="48" y1="48" x2="48" y2="16" stroke="var(--clr-fore)" stroke-width="3"/>
+			<circle cx="48" cy="48" r="44" stroke="var(--clr-contrast)" stroke-width="6" fill="rgba(0,0,0,0)"/>
+			<circle cx="48" cy="48" r="4" fill="var(--clr-contrast)"/>
+			<line id="analog_clock_h" x1="48" y1="48" x2="48" y2="24" stroke="var(--clr-contrast)" stroke-width="5"/>
+			<line id="analog_clock_m" x1="48" y1="48" x2="48" y2="16" stroke="var(--clr-contrast)" stroke-width="3"/>
 		</svg>
 
 		<svg id="date_calendar" width="96" height="96" aria-hidden="true">
@@ -32,9 +32,9 @@
 					<text id="date_month" x="50%" y="18px" font-size="16" font-weight="bold" fill="#000" text-anchor="middle"></text>
 				</mask>
 			</defs>
-			<path fill="var(--clr-fore)" mask="url(#date_month_mask)" d="M93.5,0h-91C1.119,0,0,1.119,0,2.5v91C0,94.881,1.119,96,2.5,96h91c1.381,0,2.5-1.119,2.5-2.5v-91 C96,1.119,94.881,0,93.5,0z M91,88.5c0,1.381-1.117,2.5-2.495,2.5H7.495C6.117,91,5,89.881,5,88.5v-61C5,26.119,6.117,25,7.495,25 h81.01C89.883,25,91,26.119,91,27.5V88.5z"/>
-			<text fill="var(--clr-fore)" id="date_date" x="50%" y="64px" font-size="40" font-weight="bold" text-anchor="middle"></text>
-			<text fill="var(--clr-fore)" id="date_day" x="50%" y="80px" font-size="14" text-anchor="middle"></text>
+			<path fill="var(--clr-contrast)" mask="url(#date_month_mask)" d="M93.5,0h-91C1.119,0,0,1.119,0,2.5v91C0,94.881,1.119,96,2.5,96h91c1.381,0,2.5-1.119,2.5-2.5v-91 C96,1.119,94.881,0,93.5,0z M91,88.5c0,1.381-1.117,2.5-2.495,2.5H7.495C6.117,91,5,89.881,5,88.5v-61C5,26.119,6.117,25,7.495,25 h81.01C89.883,25,91,26.119,91,27.5V88.5z"/>
+			<text fill="var(--clr-contrast)" id="date_date" x="50%" y="64px" font-size="40" font-weight="bold" text-anchor="middle"></text>
+			<text fill="var(--clr-contrast)" id="date_day" x="50%" y="80px" font-size="14" text-anchor="middle"></text>
 		</svg>
 
 		<div id="menubox">
@@ -45,14 +45,15 @@
 			</div>
 
 			<div id="menufilter">
-				<div style="background-image: url(mono/infinit.svg?light)"></div>
-				<div style="background-image: url(mono/recent.svg?light)"></div>
-				<div style="background-image: url(mono/user.svg?light)"></div>
-				<div style="background-image: url(mono/gear.svg?light)"></div>
-				<div style="background-image: url(mono/database.svg?light)"></div>
-				<div style="background-image: url(mono/documentation.svg?light)"></div>
-				<div style="background-image: url(mono/hammer.svg?light)"></div>
+				<div onclick="MENU.Filter(0)" class="menufilter-option" style="left:0px; background-image:url(mono/infinite.svg?light)"></div>
+				<div onclick="MENU.Filter(1)" class="menufilter-option" style="left:40px; background-image:url(mono/recent.svg?light)"></div>
+				<div onclick="MENU.Filter(2)" class="menufilter-option" style="left:80px; background-image:url(mono/user.svg?light)"></div>
+				<div onclick="MENU.Filter(3)" class="menufilter-option" style="left:120px; background-image:url(mono/gear.svg?light)"></div>
+				<div onclick="MENU.Filter(4)" class="menufilter-option" style="left:160px; background-image:url(mono/database.svg?light)"></div>
+				<div onclick="MENU.Filter(5)" class="menufilter-option" style="left:200px; background-image:url(mono/documentation.svg?light)"></div>
+				<div onclick="MENU.Filter(6)" class="menufilter-option" style="left:240px; background-image:url(mono/hammer.svg?light)"></div>
 			</div>
+			<div id="menufilterdot"></div>
 
 			<div id="menulist"></div>
 

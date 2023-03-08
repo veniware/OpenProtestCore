@@ -59,7 +59,7 @@
 	position: absolute;
 	z-index: 16777265;
 	border-radius: 4px;
-	background-color: #202020;
+	background-color: var(--clr-dark);
 	width: var(--sidemenu-width);
 	overflow: hidden;
 	transition-duration: .2s;
@@ -99,7 +99,7 @@
 	width: calc(100% - 80px);
 	background-color: transparent;
 	font-size: 22px;
-	color: #c0c0c0;
+	color: var(--clr-light);
 
 	outline: 0;
 	border-width: initial;
@@ -143,29 +143,42 @@
 
 #menufilter {
 	position: absolute;
-	left: 40px;
-	right: 40px;
+	left: 100px;
 	top: 80px;
-	height: 36px;
-	text-align: center;
+	width: 280px;
+	height: 34px;
 }
 
-#menufilter > div {
-	display: inline-block;
+.menufilter-option {
+	position: absolute;
 	width: 32px;
 	height: 32px;
-	margin: 0 2px;
 	border: #404040 1px solid;
 	border-radius: 4px;
 	background-size: 26px 26px;
 	background-position: center;
 	background-repeat: no-repeat;
+	transition: .2s;
 }
-#menufilter > div:hover {
+.menufilter-option:hover {
 	background-color: rgba(128,128,128,.5);
 }
-#menufilter > div:active {
+.menufilter-option:active {
 	background-color: rgb(56,56,56);
+}
+
+#menufilterdot {
+	position: absolute;
+	left: 112px;
+	top: 116px;
+	background-color: var(--clr-accent);
+	width: 8px;
+	height: 8px;
+	border-radius: 8px;
+
+	transform: scale(0);
+	transition: transform .4s, left .8s, width .8s;
+	transition-timing-function:  cubic-bezier(.2,.8,.3,1.2);
 }
 
 #menulist {
@@ -185,7 +198,7 @@
 	bottom: 8px;
 	max-width: 200px;
 	height: 36px;
-	color: #c0c0c0;
+	color: var(--clr-light);
 	font-size: large;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -221,7 +234,7 @@
 	height: 36px;
 	bottom: 8px;
 
-	color: #c0c0c0;
+	color: var(--clr-light);
 	background-color: transparent;
 	background-repeat: no-repeat;
 	background-size: 32px 32px;
@@ -267,12 +280,12 @@
 	outline: 0;
 	background-color: var(--clr-pane);
 	border-radius: 4px;
-	box-shadow: #202020 0 0 4px;
+	box-shadow: var(--clr-dark) 0 0 4px;
 	animation: rise-in 1 .2s;
 }
 
 #contextmenu > div {
-	color: #202020;
+	color: var(--clr-dark);
 	padding: 4px 4px 4px 32px;
 	border-radius: 2px;
 

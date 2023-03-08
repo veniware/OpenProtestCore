@@ -218,7 +218,7 @@ class List extends Window {
 
 				if (added[i] === this.params.filter) {
 					newType.style.backgroundColor = "var(--clr-select)";
-					filterButton.style.borderBottom = "#c0c0c0 solid 3px";
+					filterButton.style.borderBottom = "var(--clr-light) solid 3px";
 				}
 
 				newType.onclick = () => {
@@ -229,7 +229,7 @@ class List extends Window {
 						filterButton.style.borderBottom = "";
 					} else {
 						this.params.filter = added[i];
-						filterButton.style.borderBottom = "#c0c0c0 solid 3px";
+						filterButton.style.borderBottom = "var(--clr-light) solid 3px";
 						newType.style.backgroundColor = "var(--clr-select)";
 					}
 
@@ -297,7 +297,7 @@ class List extends Window {
 		findTextbox.onchange = ()=> {
 			//findButton.style.backgroundColor = findTextbox.value.length === 0 ? "" : "rgb(72,72,72)";
 		
-			findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "#c0c0c0 solid 2px";
+			findTextbox.parentElement.style.borderBottom = findTextbox.value.length === 0 ? "none" : "var(--clr-light) solid 2px";
 			this.params.find = findTextbox.value;
 			this.RefreshList();
 		};
