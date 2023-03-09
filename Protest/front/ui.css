@@ -177,7 +177,7 @@
 	border-radius: 8px;
 
 	transform: scale(0);
-	transition: transform .4s, left .8s, width .8s;
+	transition: transform .4s, left .6s, width .8s;
 	transition-timing-function:  cubic-bezier(.2,.8,.3,1.2);
 }
 
@@ -441,6 +441,12 @@
 
 @media only screen and (max-height: 400px) {
 	#menufilter {
+		opacity: 0 !important;
+		visibility: hidden !important;
+		transition-duration: .2s;
+	}
+
+	#menufilterdot {
 		opacity: 0 !important;
 		visibility: hidden !important;
 		transition-duration: .2s;
