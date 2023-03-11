@@ -1,7 +1,7 @@
 using System.IO;
+using System.Threading;
 #if DEBUG
 using System.Runtime.CompilerServices;
-using System.Threading;
 #endif
 
 namespace Protest;

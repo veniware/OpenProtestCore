@@ -17,12 +17,14 @@ class Settings extends Tabs {
 		this.tabWarnings      = this.AddTab("Warnings", "mono/wrench.svg");
 		this.tabEmailProfiles = this.AddTab("E-mail profile", "mono/wrench.svg");
 		this.tabMessages      = this.AddTab("Messages", "mono/wrench.svg");
+		this.tabAddressBook   = this.AddTab("Address book", "mono/wrench.svg");
 
 		this.tabUsers.onclick         = () => this.ShowUsers();
 		this.tabZones.onclick         = () => this.ShowZones();
 		this.tabWarnings.onclick      = () => this.ShowWarnings();
 		this.tabEmailProfiles.onclick = () => this.ShowEmailProfiles();
 		this.tabMessages.onclick      = () => this.ShowMessages();
+		this.tabAddressBook.onclick   = () => this.ShowAddressBook();
 
 		switch (this.params) {
 			case "zones":
@@ -46,6 +48,11 @@ class Settings extends Tabs {
 				this.ShowMessages();
 				break;
 
+			case "addressbook":
+				this.tabMessages.className = "v-tab-selected";
+				this.ShowAddressBook();
+				break;
+
 			default:
 				this.tabUsers.className = "v-tab-selected";
 				this.ShowUsers();
@@ -57,5 +64,6 @@ class Settings extends Tabs {
 	ShowWarnings() {}
 	ShowEmailProfiles() {}
 	ShowMessages() {}
+	ShowAddressBook() {}
 
 }

@@ -137,6 +137,11 @@
 	background-color: rgb(64,64,64);
 }
 
+.win-toolbar > .win-toolbar-button:disabled {
+	opacity: .5;
+	background-color: transparent !important;
+}
+
 .win-toolbar > .win-toolbar-button > .win-toolbar-submenu {
 	position: relative;
 
@@ -325,8 +330,7 @@
 	z-index: 1;
 	bottom: 8px;
 	width: 200px;
-	min-height: 40px;
-	max-height: 80px;
+	min-height: 20px;
 	overflow: hidden;
 	outline: 0;
 	background-color: var(--clr-pane);

@@ -90,16 +90,18 @@ public sealed class Database {
         }
     }
 
-    private bool Write(Entry entry) {
+    private bool Write(Entry entry, long lastModTimestamp) {
         string filename = $"{location}{Strings.DIRECTORY_SEPARATOR}{entry.filename}";
 
-        try { //create timeline file
-            if (File.Exists(filename)) {
-                DirectoryInfo timelineDir = new DirectoryInfo($"{filename}_");
-                if (!timelineDir.Exists) timelineDir.Create();
-                File.Move(filename, $"{filename}_{Strings.DIRECTORY_SEPARATOR}{DateTime.UtcNow.Ticks}");
-            }
-        } catch {}
+        if (lastModTimestamp > 0) {
+            try { //create timeline file
+                if (File.Exists(filename)) {
+                    DirectoryInfo timelineDir = new DirectoryInfo($"{filename}_");
+                    if (!timelineDir.Exists) timelineDir.Create();
+                    File.Move(filename, $"{filename}_{Strings.DIRECTORY_SEPARATOR}{lastModTimestamp}");
+                }
+            } catch { }
+        }
 
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.Converters.Add(new AttributeListJsonConverter());
@@ -153,35 +155,48 @@ public sealed class Database {
 
         bool exist = dictionary.ContainsKey(filename);
         if (!exist) method = SaveMethod.createnew;
-        
-        return method switch {
-            SaveMethod.ignore    => true,
-            SaveMethod.createnew => SaveNew(filename, modifications, initiator),       //keep the old file, create new
-            SaveMethod.overwrite => SaveOverwrite(filename, modifications, initiator), //ignore previous attributes
-            SaveMethod.append    => SaveAppend(filename, modifications, initiator),    //append new attributes
-            SaveMethod.merge     => SaveMerge(filename, modifications, initiator),     //merged all attributes
-            _ => false,
+
+        dictionary.Remove(filename, out Entry oldEntry);
+
+        long lastModTimestamp = 0;
+        if (oldEntry is not null) {
+            foreach (Attribute attr in oldEntry.attributes.Values) {
+                lastModTimestamp = Math.Max(lastModTimestamp, attr.date);
+            }
+        }
+
+        Entry newEntry = method switch {
+            SaveMethod.ignore    => null,
+            SaveMethod.createnew => SaveNew(filename, modifications, initiator),                 //keep the old file, create new
+            SaveMethod.overwrite => SaveOverwrite(filename, modifications, oldEntry, initiator), //ignore previous attributes
+            SaveMethod.append    => SaveAppend(filename, modifications, oldEntry, initiator),    //append new attributes
+            SaveMethod.merge     => SaveMerge(filename, modifications, oldEntry, initiator),     //merged all attributes
+            _ => throw new NotImplementedException(),
         };
+
+        if (newEntry is null) return true;
+
+        dictionary.TryAdd(filename, newEntry);
+        version = DateTime.UtcNow.Ticks;
+
+        //new Thread(() => { Write(newEntry); }).Start();
+        //return true;
+
+        return Write(newEntry, lastModTimestamp);
     }
 
-    private bool SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
+    private Entry SaveNew(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
         Entry newEntry = new Entry() {
             filename = dictionary.ContainsKey(filename) ? GenerateFilename(1) : filename,
             attributes = modifications,
             syncWrite = new object()
         };
 
-        dictionary.TryAdd(filename, newEntry);
-        version = DateTime.UtcNow.Ticks;
-
-        //new Thread(() => { Write(newEntry); }).Start();
-        Write(newEntry);
-
         Logger.Action(initiator, $"Create a new entry on {this.name} database: {filename}");
-        return true;
+        return newEntry;
     }    
-    private bool SaveOverwrite(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
-        dictionary.Remove(filename, out Entry oldEntry);
+    private Entry SaveOverwrite(string filename, SynchronizedDictionary<string, Attribute> modifications, Entry oldEntry, string initiator) {
+        //dictionary.Remove(filename, out Entry oldEntry);
 
         //keep old initiator and date, if data didn't change
         foreach (KeyValuePair<string, Attribute> pair in modifications) {
@@ -193,17 +208,11 @@ public sealed class Database {
 
         oldEntry.attributes = modifications;
 
-        dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.UtcNow.Ticks;
-
-        //new Thread(() => { Write(oldEntry); }).Start();
-        Write(oldEntry);
-
         Logger.Action(initiator, $"Overwrite entry on {this.name} database: {filename}");
-        return true;
+        return oldEntry;
     }
-    private bool SaveAppend(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
-        dictionary.Remove(filename, out Entry oldEntry);
+    private Entry SaveAppend(string filename, SynchronizedDictionary<string, Attribute> modifications, Entry oldEntry, string initiator) {
+        //dictionary.Remove(filename, out Entry oldEntry);
 
         foreach (KeyValuePair<string, Attribute> pair in modifications) {
             if (!oldEntry.attributes.ContainsKey(pair.Key)) {
@@ -211,17 +220,11 @@ public sealed class Database {
             }
         }
 
-        dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.UtcNow.Ticks;
-
-        //new Thread(() => { Write(oldEntry); }).Start();
-        Write(oldEntry);
-
         Logger.Action(initiator, $"Append on entry {this.name} database: {filename}");
-        return true;
+        return oldEntry;
     }
-    private bool SaveMerge(string filename, SynchronizedDictionary<string, Attribute> modifications, string initiator) {
-        dictionary.Remove(filename, out Entry oldEntry);
+    private Entry SaveMerge(string filename, SynchronizedDictionary<string, Attribute> modifications, Entry oldEntry, string initiator) {
+        //dictionary.Remove(filename, out Entry oldEntry);
 
         foreach (KeyValuePair<string, Attribute> pair in oldEntry.attributes) {
             if (!modifications.ContainsKey(pair.Key)) {
@@ -231,14 +234,8 @@ public sealed class Database {
 
         oldEntry.attributes = modifications;
 
-        dictionary.TryAdd(filename, oldEntry);
-        version = DateTime.UtcNow.Ticks;
-
-        //new Thread(() => { Write(oldEntry); }).Start();
-        Write(oldEntry);
-
         Logger.Action(initiator, $"Marge with entry on {this.name} database: {filename}");        
-        return true;
+        return oldEntry;
     }
 
     public Entry GetEntry(string filename) {

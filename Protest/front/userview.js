@@ -1,27 +1,27 @@
-const USERS_GROUP_SCHEMA = [
-    "type", "title", "department", "division", "company",
-
-    ["mono/user.svg", "general"],
-    "first name", "middle name", "last name", "display name", "employee id",
-
-    ["mono/credential.svg", "authentication"],
-    "domain", "username", "password",
-
-    ["mono/contact.svg", "contact information"],
-    "e-mail", "secondary e-mail", "telephone number", "mobile number", "mobile extension", "fax",
-
-    ["mono/sim.svg", "sim information"],
-    "sim", "puk", "voicemail"
-];
-
 class UserView extends View {
+	static USERS_GROUP_SCHEMA = [
+		"type", "title", "department", "division", "company",
+	
+		["mono/user.svg", "general"],
+		"first name", "middle name", "last name", "display name", "employee id",
+	
+		["mono/credential.svg", "authentication"],
+		"domain", "username", "password",
+	
+		["mono/contact.svg", "contact information"],
+		"e-mail", "secondary e-mail", "telephone number", "mobile number", "mobile extension", "fax",
+	
+		["mono/sim.svg", "sim information"],
+		"sim", "puk", "voicemail"
+	];
+
 	constructor(params) {
 		super();
 		this.params = params ? params : { file: null };
 
 		this.link = LOADER.users.data[this.params.file];
 		this.order = "group";
-		this.groupSchema = USERS_GROUP_SCHEMA;
+		this.groupSchema = UserView.USERS_GROUP_SCHEMA;
 		this.timelineName = "users";
 
 		this.SetIcon("mono/user.svg");

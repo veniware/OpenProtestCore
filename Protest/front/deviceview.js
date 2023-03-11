@@ -1,49 +1,49 @@
-const DEVICES_GROUP_SCHEMA = [
-    "type", "name",
-
-    ["mono/portscan.svg", "network"],
-    "ip", "ipv6", "mask", "hostname", "mac address", "dhcp enabled", "ports", "network adapter speed",
-    "overwriteprotocol",
-
-    [".", "device"],
-    "manufacturer", "model", "serial number", "chasse type", "description",
-
-    ["mono/motherboard.svg", "motherboard"],
-    "motherboard", "motherboard manufacturer", "motherboard serial number", "bios",
-
-    ["mono/cpu.svg", "processor"],
-    "processor", "cpu cores", "cpu frequency", "cpu architecture", "cpu cache", "l1 cache", "l2 cache", "l3 cache",
-
-    ["mono/ram.svg", "memory"],
-    "memory", "total memory", "memory modules", "ram slot", "ram speed", "ram slot used", "ram type", "ram form factor",
-
-    ["mono/diskdrive.svg", "disk drive"],
-    "disk drive", "physical disk", "logical disk",
-
-    ["mono/videocard.svg", "video card"],
-    "video controller", "video driver",
-
-    ["mono/os.svg", "operating system"],
-    "operating system", "os architecture", "os version", "os build", "service pack", "os serial no", "os install date",
-
-    ["mono/user.svg", "owner"],
-    "owner", "owner full name", "location",
-
-    ["mono/directory.svg", "active directory"],
-    "distinguished name", "dns hostname", "created on dc",
-
-    ["mono/credential.svg", "credentials"],
-    "domain", "username", "password", "la password", "ssh username", "ssh password"
-];
-
 class DeviceView extends View {
+	static DEVICES_GROUP_SCHEMA = [
+		"type", "name",
+	
+		["mono/portscan.svg", "network"],
+		"ip", "ipv6", "mask", "hostname", "mac address", "dhcp enabled", "ports", "network adapter speed",
+		"overwriteprotocol",
+	
+		[".", "device"],
+		"manufacturer", "model", "serial number", "chasse type", "description",
+	
+		["mono/motherboard.svg", "motherboard"],
+		"motherboard", "motherboard manufacturer", "motherboard serial number", "bios",
+	
+		["mono/cpu.svg", "processor"],
+		"processor", "cpu cores", "cpu frequency", "cpu architecture", "cpu cache", "l1 cache", "l2 cache", "l3 cache",
+	
+		["mono/ram.svg", "memory"],
+		"memory", "total memory", "memory modules", "ram slot", "ram speed", "ram slot used", "ram type", "ram form factor",
+	
+		["mono/diskdrive.svg", "disk drive"],
+		"disk drive", "physical disk", "logical disk",
+	
+		["mono/videocard.svg", "video card"],
+		"video controller", "video driver",
+	
+		["mono/os.svg", "operating system"],
+		"operating system", "os architecture", "os version", "os build", "service pack", "os serial no", "os install date",
+	
+		["mono/user.svg", "owner"],
+		"owner", "owner full name", "location",
+	
+		["mono/directory.svg", "active directory"],
+		"distinguished name", "dns hostname", "created on dc",
+	
+		["mono/credential.svg", "credentials"],
+		"domain", "username", "password", "la password", "ssh username", "ssh password"
+	];
+
 	constructor(params) {
 		super();
 		this.params = params ? params : { file: null };
 
 		this.link = LOADER.users.data[this.params.file];
 		this.order = "group";
-		this.groupSchema = DEVICES_GROUP_SCHEMA;
+		this.groupSchema = DeviceView.DEVICES_GROUP_SCHEMA;
 		this.timelineName = "devices";
 
 		this.SetIcon("mono/gear.svg");

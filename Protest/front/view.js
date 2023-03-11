@@ -120,10 +120,10 @@ class View extends Window {
 
 	InitializePreview() {
 		this.SetTitle(this.link.title ? this.link.title.v : "");
-		this.InitializeAttributesList();
+		this.InitializeAttributesList(this.link);
 	}
 
-	InitializeAttributesList(editMode=false) {
+	InitializeAttributesList(hash, editMode=false) {
 		this.attributes.innerHTML = "";
 
 		if (this.order === "group") {
@@ -135,7 +135,7 @@ class View extends Window {
 						nextGroup = this.CreateGroupTitle(this.groupSchema[i][0], this.groupSchema[i][1]);
 					}
 				} else {
-					if (!this.link.hasOwnProperty(this.groupSchema[i])) continue;
+					if (!hash.hasOwnProperty(this.groupSchema[i])) continue;
 
 					if (nextGroup) {
 						this.attributes.appendChild(nextGroup);
@@ -145,9 +145,9 @@ class View extends Window {
 					this.attributes.appendChild(
 						this.CreateAttribute(
 							this.groupSchema[i],
-							this.link[this.groupSchema[i]].v,
-							this.link[this.groupSchema[i]].i,
-							this.link[this.groupSchema[i]].d
+							hash[this.groupSchema[i]].v,
+							hash[this.groupSchema[i]].i,
+							hash[this.groupSchema[i]].d
 						)
 					);
 
@@ -159,7 +159,7 @@ class View extends Window {
 				nextGroup = this.CreateGroupTitle("mono/other.svg", "other");
 			}
 
-			for (let key in this.link) {
+			for (let key in hash) {
 				if (!pushed.includes(key)) {
 
 					if (nextGroup) {
@@ -170,9 +170,9 @@ class View extends Window {
 					this.attributes.appendChild(
 						this.CreateAttribute(
 							key,
-							this.link[key].v,
-							this.link[key].i,
-							this.link[key].d
+							hash[key].v,
+							hash[key].i,
+							hash[key].d
 						)
 					);
 				}
@@ -180,7 +180,7 @@ class View extends Window {
 
 		} else {
 			let sorted = [];
-			for (let key in this.link) {
+			for (let key in hash) {
 				sorted.push(key);
 			}
 			sorted.sort((a,b)=> a.localeCompare(b));
@@ -189,9 +189,9 @@ class View extends Window {
 				this.attributes.appendChild(
 					this.CreateAttribute(
 						sorted[i],
-						this.link[sorted[i]].v,
-						this.link[sorted[i]].i,
-						this.link[sorted[i]].d
+						hash[sorted[i]].v,
+						hash[sorted[i]].i,
+						hash[sorted[i]].d
 					)
 				);
 			}
@@ -221,9 +221,11 @@ class View extends Window {
 
 	async Timeline() { //overridable
 		if (this.timeline.style.display !== "none") {
+			this.InitializeAttributesList(this.link);
 			this.timeline.style.display = "none";
 			this.scroll.style.top = "48px";
 			this.timelineButton.style.borderBottom = "none";
+			this.sortButton.removeAttribute("disabled");
 			return;
 		}
 
@@ -235,6 +237,7 @@ class View extends Window {
 		this.timeline.style.display = "initial";
 		this.scroll.style.top = "96px";
 		this.timelineButton.style.borderBottom = "var(--clr-light) solid 3px";
+		this.sortButton.setAttribute("disabled", "true");
 
 		let json;
 		try {
@@ -294,6 +297,8 @@ class View extends Window {
 			const dot = document.createElement("div");
 			dot.className = "timeline-dot";
 			con.appendChild(dot);
+
+			if (i === 0) dot.style.backgroundColor = "var(--clr-accent)";
 			
 			sorted[i].x = x;
 			sorted[i].con = con;
@@ -303,6 +308,7 @@ class View extends Window {
 			lastStamp = x;
 
 			con.onmouseenter = ()=> {
+				this.floating.innerHTML = "";
 				this.floating.style.visibility = "visible";
 				this.floating.style.opacity = "1";
 				
@@ -313,8 +319,86 @@ class View extends Window {
 				this.floating.style.top = `${this.content.offsetTop + this.timeline.offsetTop + 44}px`;
 
 				let date = new Date(sorted[i].time);
-				this.floating.textContent = `${date.toLocaleDateString(UI.regionalFormat, {})} ${date.toLocaleTimeString(UI.regionalFormat, {})}`;
+				let added = 0, modified = 0, unchanged = 0, removed = 0;
 
+				if (i === sorted.length - 1) {
+					for (let key in sorted[i].obj) {
+						added++;
+					}
+					
+				} else {
+					for (let key in sorted[i].obj) {
+						if (sorted[i+1].obj.hasOwnProperty(key)) {
+							if (sorted[i].obj[key].v === sorted[i+1].obj[key].v) {
+								unchanged++;
+							} else {
+								modified++;
+							}
+
+						} else {
+							added++;
+						}
+					}
+
+					for (let key in sorted[i+1].obj) {
+						if (!sorted[i].obj.hasOwnProperty(key)) {
+							removed++;
+						}
+					}
+				}
+			
+				const dateBox = document.createElement("div");
+				dateBox.style.textDecoration = "underline";
+				dateBox.style.fontWeight = "600";
+				dateBox.style.textAlign = "center";
+				dateBox.style.marginTop = "4px";
+				dateBox.style.marginBottom = "4px";
+				dateBox.textContent = `${date.toLocaleDateString(UI.regionalFormat, {})} ${date.toLocaleTimeString(UI.regionalFormat, {})}`;
+				this.floating.appendChild(dateBox);
+
+				let floatingHeight = 34;
+
+				if (added > 0) {
+					const addedBox = document.createElement("div");
+					addedBox.style.backgroundImage = "url(mono/add.svg)";
+					addedBox.style.backgroundSize = "16px 16px";
+					addedBox.style.backgroundPosition = "4px 50%";
+					addedBox.style.backgroundRepeat = "no-repeat";
+					addedBox.style.paddingLeft = "24px";
+					addedBox.textContent = `${added} added`;
+					this.floating.appendChild(addedBox);
+
+					floatingHeight += 20;
+				}
+
+				if (modified > 0) {
+					const modBox = document.createElement("div");
+					modBox.style.backgroundImage = "url(mono/edit.svg)";
+					modBox.style.backgroundSize = "16px 16px";
+					modBox.style.backgroundPosition = "4px 50%";
+					modBox.style.backgroundRepeat = "no-repeat";
+					modBox.style.paddingLeft = "24px";
+					modBox.textContent = `${modified} modified`;
+					this.floating.appendChild(modBox);
+
+					floatingHeight += 20;
+				}
+
+				if (removed > 0) {
+					const removedBox = document.createElement("div");
+					removedBox.style.backgroundImage = "url(mono/delete.svg)";
+					removedBox.style.backgroundSize = "16px 16px";
+					removedBox.style.backgroundPosition = "4px 50%";
+					removedBox.style.backgroundRepeat = "no-repeat";
+					removedBox.style.paddingLeft = "24px";
+					removedBox.textContent = `${removed} removed`;
+					this.floating.appendChild(removedBox);
+
+					floatingHeight += 20;
+				}
+
+				this.floating.style.height = `${floatingHeight}px`;
+				
 			};
 
 			con.onmouseleave = ()=> {
@@ -323,7 +407,32 @@ class View extends Window {
 			};
 
 			con.onclick = ()=> {
-				console.log(sorted[i].time);
+				innerTimeline.childNodes.forEach(o=>o.firstChild.style.backgroundColor = "unset");
+				innerTimeline.childNodes[i].firstChild.style.backgroundColor = "var(--clr-accent)";
+
+				this.InitializeAttributesList(sorted[i].obj);
+
+				if (i === sorted.length - 1) {
+					for (let j = 0; j < this.attributes.childNodes.length; j++) {
+						if (this.attributes.childNodes[j].childNodes.length < 2) continue;
+						this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/add.svg)";
+					}
+
+				} else {
+					for (let j = 0; j < this.attributes.childNodes.length; j++) {
+						if (this.attributes.childNodes[j].childNodes.length < 2) continue;
+
+						let key = this.attributes.childNodes[j].childNodes[0].value;
+						if (sorted[i+1].obj.hasOwnProperty(key)) {
+							if (this.attributes.childNodes[j].childNodes[1].value !== sorted[i+1].obj[key].v) {
+								this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/edit.svg)";
+							}
+						} else {
+							this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/add.svg)";
+						}
+					}
+				}
+
 			};
 		}
 
@@ -423,7 +532,7 @@ class View extends Window {
 		};
 
 		const Revert = editMode=> {
-			this.InitializeAttributesList(editMode);
+			this.InitializeAttributesList(this.link, editMode);
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 3) continue;
 				this.attributes.childNodes[i].childNodes[0].removeAttribute("readonly");
@@ -431,16 +540,16 @@ class View extends Window {
 			}
 		};
 
-		btnSave.onclick = () => {
+		btnSave.onclick = ()=> {
 			//TODO:
 			ExitEdit();
 		};
 
-		btnRevert.onclick = () => {
+		btnRevert.onclick = ()=> {
 			Revert(true);
 		};
 
-		btnCancel.onclick = () => {
+		btnCancel.onclick = ()=> {
 			if (isNew) {
 				this.Close();
 			} else {

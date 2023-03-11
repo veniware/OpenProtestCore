@@ -49,6 +49,8 @@
 	/*background-color: var(--clr-accent);*/
 	outline: 2px solid #404040;
 	border-radius: 10px;
+
+	transition: .4s;
 }
 
 .view-scroll {
@@ -112,9 +114,16 @@
 .view-attributes-list > div > input[type="text"]:nth-child(1) {
 	width: max(100px, 25%);
 }
+
 .view-attributes-list > div > input[type="text"]:nth-child(2) {
 	width: calc(100% - max(100px, 25%) - 44px);
+
+	background-position: calc(100% - 4px) center;
+	background-size: 16px 16px;
+	background-repeat: no-repeat;
+	animation: slide-background 1 .4s;
 }
+
 .view-attributes-list > div > input[type="button"]:nth-child(3) {
 	position: absolute;
 	right: 4px;
@@ -217,4 +226,9 @@
 	.view-scroll {
 		left: 200px;
 	}
+}
+
+@keyframes slide-background {
+	0%   { background-position: calc(100% + 24px) center; }
+	100% { background-position: calc(100% - 4px) center; }
 }

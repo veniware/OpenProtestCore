@@ -377,6 +377,7 @@
 
 
 .spinner {
+	margin: 32px auto;
 	width: 48px;
 	height: 48px;
 	perspective: 150px;
