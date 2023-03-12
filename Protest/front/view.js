@@ -457,7 +457,7 @@ class View extends Window {
 				if (i === sorted.length - 1) {
 					for (let j = 0; j < this.attributes.childNodes.length; j++) {
 						if (this.attributes.childNodes[j].childNodes.length < 2) continue;
-						this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/add.svg)";
+						this.attributes.childNodes[j].style.backgroundImage = "url(mono/add.svg)";
 					}
 
 				} else {
@@ -466,11 +466,11 @@ class View extends Window {
 
 						let key = this.attributes.childNodes[j].childNodes[0].value;
 						if (sorted[i+1].obj.hasOwnProperty(key)) {
-							if (this.attributes.childNodes[j].childNodes[1].value !== sorted[i+1].obj[key].v) {
-								this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/edit.svg)";
+							if (this.attributes.childNodes[j].childNodes[1].firstChild.value !== sorted[i+1].obj[key].v) {
+								this.attributes.childNodes[j].style.backgroundImage = "url(mono/edit.svg)";
 							}
 						} else {
-							this.attributes.childNodes[j].childNodes[1].style.backgroundImage = "url(mono/add.svg)";
+							this.attributes.childNodes[j].style.backgroundImage = "url(mono/add.svg)";
 						}
 					}
 				}

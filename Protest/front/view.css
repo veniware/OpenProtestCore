@@ -77,9 +77,13 @@
 }
 
 .view-attributes-list > div {
-	white-space: nowrap;
 	min-height: 33px;
 	transition: height .2s;
+
+	background-position: calc(100% - 4px) center;
+	background-size: 16px 16px;
+	background-repeat: no-repeat;
+	animation: zoom-in-background 1 .4s;
 }
 
 .view-attributes-list > div:first-child {
@@ -118,11 +122,6 @@
 .view-attributes-list > div > div:nth-child(2) { /*value container*/
 	display: inline-block;
 	width: calc(100% - max(100px, 25%) - 44px);
-
-	background-position: calc(100% - 4px) center;
-	background-size: 16px 16px;
-	background-repeat: no-repeat;
-	animation: zoom-in-background 1 .4s;
 }
 
 .view-attributes-list > div div:nth-child(2) > input[type="text"] { /*value text box*/
@@ -134,7 +133,7 @@
 	border: 1px var(--clr-dark) solid;
 	border-radius: 2px;
 	padding: 0 4px;
-	margin: 0 2px 0 2px;
+	margin: 2px;
 	user-select: text;
 }
 
@@ -200,6 +199,7 @@
 	background-size: 28px 28px;
 	background-position: 4px 50%;
 	background-color: #80808040 !important;
+	animation: none !important;
 
 	transition: .2s;
 }
