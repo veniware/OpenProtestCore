@@ -5,7 +5,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Net;
-using System.Drawing.Drawing2D;
 
 namespace Protest;
 

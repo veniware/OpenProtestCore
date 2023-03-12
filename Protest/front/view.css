@@ -34,7 +34,7 @@
 .view-timeline .timeline-con {
 	position: absolute;
 	top: 0;
-	width: min(1.5%, 10px);
+	width: min(1.5%, 12px);
 	height: 100%;
 }
 .view-timeline .timeline-con:hover {
@@ -43,14 +43,14 @@
 
 .view-timeline .timeline-dot {
 	position: absolute;
-	top: 15px;
+	top: 14px;
 	width: 100%;
-	height: 10px;
-	/*background-color: var(--clr-accent);*/
-	outline: 2px solid #404040;
-	border-radius: 10px;
+	height: 12px;
+	background-color: #404040;
+	border-radius: 6px;
+	box-sizing: border-box;
 
-	transition: .4s;
+	transition: background-color .4s;
 }
 
 .view-scroll {
@@ -78,7 +78,7 @@
 
 .view-attributes-list > div {
 	white-space: nowrap;
-	height: 33px;
+	min-height: 33px;
 	transition: height .2s;
 }
 
@@ -96,7 +96,7 @@
 	background-color: var(--clr-highlight);
 }
 
-.view-attributes-freeze > div > input[type="text"] {
+.view-attributes-freeze > div input[type="text"] {
 	all: unset;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -105,7 +105,7 @@
 	text-transform: capitalize;
 }
 
-.view-attributes-list > div > input[type="text"] {
+.view-attributes-list > div input[type="text"] {
 	box-sizing: border-box;
 	margin: 2px 0px 2px 4px;
 	padding: 4px 8px;
@@ -115,16 +115,30 @@
 	width: max(100px, 25%);
 }
 
-.view-attributes-list > div > input[type="text"]:nth-child(2) {
+.view-attributes-list > div > div:nth-child(2) { /*value container*/
+	display: inline-block;
 	width: calc(100% - max(100px, 25%) - 44px);
 
 	background-position: calc(100% - 4px) center;
 	background-size: 16px 16px;
 	background-repeat: no-repeat;
-	animation: slide-background 1 .4s;
+	animation: zoom-in-background 1 .4s;
 }
 
-.view-attributes-list > div > input[type="button"]:nth-child(3) {
+.view-attributes-list > div div:nth-child(2) > input[type="text"] { /*value text box*/
+	width: 100%;
+}
+
+.view-attributes-list > div div:nth-child(2) > div { /*value div*/
+	display: inline-block;
+	border: 1px var(--clr-dark) solid;
+	border-radius: 2px;
+	padding: 0 4px;
+	margin: 0 2px 0 2px;
+	user-select: text;
+}
+
+.view-attributes-list > div > input[type="button"]:nth-child(3) { /*remove button*/
 	position: absolute;
 	right: 4px;
 	
@@ -176,6 +190,7 @@
 }
 
 .view-attributes-list > .view-attributes-group {
+	min-height: 0 !important;
 	margin-top: 16px;
 	padding-left: 40px;
 	line-height: 32px;
@@ -189,7 +204,7 @@
 	transition: .2s;
 }
 
-.view-attributes-freeze > div > input[type="text"]:nth-child(2) {
+.view-attributes-freeze > div input[type="text"]:nth-child(2) {
 	width: calc(100% - max(100px, 25%) - 12px);
 }
 
@@ -228,7 +243,8 @@
 	}
 }
 
-@keyframes slide-background {
-	0%   { background-position: calc(100% + 24px) center; }
-	100% { background-position: calc(100% - 4px) center; }
+@keyframes zoom-in-background {
+	0%   { background-position: calc(100% - 12px) center; background-size: 0px 0px; }
+	80%  { background-position: calc(100% - 2px) center; background-size: 20px 20px; }
+	100% { background-position: calc(100% - 4px) center; background-size: 16px 16px; }
 }

@@ -51,6 +51,62 @@ const WIN = {
 		}
 	},
 
+	GridWindows: () => {
+		if (WIN.array.length === 0) return;
+
+		let visible = WIN.array.filter(o=> !o.isMinimized && !o.popOutWindow);
+
+		if (visible.length === 0) return;
+
+		if (visible.length === 1) {
+			if (!visible[0].isMaximized) visible[0].Toggle();
+			return;
+		}
+
+		let gridW = Math.ceil(Math.sqrt(visible.length));
+		let gridH = gridW;
+
+		while (gridW * gridH >= visible.length + gridW) {
+			gridH--;
+		}
+
+		for (let y = 0; y < gridH; y++) {
+			for (let x = 0; x < gridW; x++) {
+				let i = y*gridW + x;
+				if (i >= visible.length) break;
+
+				visible[i].win.style.transition = `${ANIME_DURATION/1000}s`;
+
+				if (visible[i].isMaximized) visible[i].Toggle();
+				visible[i].win.style.left   = gridW < 5 ? `calc(${100*x/gridW}% + 8px)` : `${100*x/gridW}%`;
+				visible[i].win.style.top    = gridW < 5 ? `calc(${100*y/gridH}% + 8px)` : `${100*y/gridH}%`;
+				visible[i].win.style.width  = gridW < 5 ? `calc(${100/gridW}% - 16px)`  : `${100/gridW}%`;
+				visible[i].win.style.height = gridW < 5 ? `calc(${100/gridH}% - 16px)`  : `${100/gridH}%`;
+
+				setTimeout(()=> {
+					visible[i].win.style.transition = "0s";
+				}, ANIME_DURATION/1000);
+
+				setTimeout(()=> {
+					visible[i].AfterResize();
+				}, ANIME_DURATION/1000 + 200);
+			}
+		}
+
+		//special treatment
+		if (visible.length === 3) {
+			visible[1].win.style.height = "calc(100% - 16px)";
+
+		} else if (visible.length === 5) {
+			visible[3].win.style.left  = "8px";
+			visible[3].win.style.width = "calc(50% - 16px)";
+			visible[4].win.style.left  = "calc(50% + 8px)";
+			visible[4].win.style.width = "calc(50% - 16px)";
+		}
+	},
+
+	CascadeWindows: () => {},
+
 	EscapeHtml: (html) => {
 		return html.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
@@ -859,6 +915,9 @@ class Window {
 		this.floating.className = "floating-menu";
 		this.floating.style.visibility = "hidden";
 		this.win.appendChild(this.floating);
+
+		this.floating.onmousedown = event => event.stopPropagation();
+
 		return this.floating;
 	}
 

@@ -125,6 +125,64 @@ const UI = {
 };
 
 const MENU = {
+
+	items: [
+		{ t:"Devices",           i:"mono/devices.svg?light",   g:"inventory", h:false, f:arg=>new DevicesList() },
+		{ t:"Users",             i:"mono/users.svg?light",     g:"inventory", h:false, f:arg=>new UsersList() },
+		{ t:"New device",        i:"mono/newdevice.svg?light", g:"inventory", h:true,  f:arg=>new DeviceView({}) },
+		{ t:"New user",          i:"mono/newuser.svg?light",   g:"inventory", h:true,  f:arg=>new UserView({}) },
+		{ t:"Fetch",             i:"mono/fetch.svg?light",     g:"inventory", h:false, f:arg=>{} },
+		{ t:"Fetch devices from IP range",         i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
+		{ t:"Fetch device from Domain Controller", i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
+		{ t:"Fetch users from Domain Controller",  i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
+		{ t:"Import from another Pro-test",        i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
+		{ t:"Password strength", i:"mono/strength.svg?light", g:"inventory", h:false, f:arg=>{} },
+		{ t:"Gandalf",           i:"mono/gandalf.svg?light",  g:"inventory", h:true,  f:arg=>{} },
+
+		{ t:"Documentation", i:"mono/documentation.svg?light", g:"documentation", h:false, f:arg=>{} },
+		{ t:"Debit notes",   i:"mono/notes.svg?light",         g:"documentation", h:false, f:arg=>{} },
+		{ t:"Watchdog",      i:"mono/watchdog.svg?light",      g:"documentation", h:false, f:arg=>{} },
+
+		{ t:"Ping",          i:"mono/ping.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"ARP ping",      i:"mono/ping.svg?light", g:"utilities", h:true,  f:arg=>{} },
+		{ t:"DNS lookup",    i:"mono/dns.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"Trace route",   i:"mono/traceroute.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"TCP port scan", i:"mono/portscan.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"Locate IP",     i:"mono/locate.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"MAC lookup",    i:"mono/maclookup.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"DHCP client",   i:"mono/dhcp.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"NTP client",    i:"mono/clock.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"Site check",    i:"mono/websitecheck.svg?light", g:"utilities", h:false, f:arg=>{} },
+		{ t:"Speed test",    i:"mono/speedtest.svg?light", g:"utilities", h:false, f:arg=>{} },
+
+		{ t:"Telnet",             i:"mono/telnet.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"Secure shell",       i:"mono/ssh.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"WMI console",        i:"mono/wmi.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"Scripts",            i:"mono/scripts.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"Script reports",     i:"mono/reportfile.svg?light", g:"tools", h:true,  f:arg=>{} },
+		{ t:"Ongoing scripts",    i:"mono/ongoingscript.svg?light", g:"tools", h:true,  f:arg=>{} },
+		{ t:"Encoder",            i:"mono/encoder.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"Network calculator", i:"mono/netcalc.svg?light", g:"tools", h:false, f:arg=>{} },
+		{ t:"Password generator", i:"mono/passgen.svg?light", g:"tools", h:false, f:arg=>{} },
+
+		{ t:"Personalize",    i:"mono/personalize.svg?light", g:"manage", h:false, f:arg=>new Personalize() },
+		{ t:"Appearance",     i:"mono/tv.svg?light",          g:"manage", h:true,  f:arg=>new Personalize("appearance") },
+		{ t:"Reginal format", i:"mono/earth.svg?light",       g:"manage", h:true,  f:arg=>new Personalize("region") },
+		{ t:"Session",        i:"mono/hourglass.svg?light",   g:"manage", h:true,  f:arg=>new Personalize("session") },
+		{ t:"Settings",       i:"mono/wrench.svg?light",      g:"manage", h:false, f:arg=>{} },
+		{ t:"ACL",            i:"mono/acl.svg?light",         g:"manage", h:false, f:arg=>{} },
+		{ t:"Backup",         i:"mono/backup.svg?light",      g:"manage", h:false, f:arg=>{} },
+		{ t:"Log",            i:"mono/log.svg?light",         g:"manage", h:false, f:arg=>{} },
+		{ t:"About",          i:"mono/logo.svg?light",        g:"manage", h:false, f:arg=>new About("about") },
+		{ t:"Legal",          i:"mono/gpl.svg?light",         g:"manage", h:true,  f:arg=>new About("legal") },
+		
+		{ t:"Logout",         i:"mono/logout.svg?light",      g:"manage", h:true,  f:arg=>btnLogout.onclick() },
+
+
+
+		//{ t:"", i:"", g:"", h:false, f:arg=>{} },
+	],
+	
 	isOpen       : false,
 	isDragging   : false,
 	isMoved      : false,
@@ -169,7 +227,65 @@ const MENU = {
 	},
 
 	Update: (filter)=> {
-		//TODO: 
+		menulist.innerHTML = "";
+		let lastGroup = null;
+		
+		for (let i = 0; i < MENU.items.length; i++) {
+			if (MENU.items[i].h) continue;
+
+			if (lastGroup !== MENU.items[i].g) {
+				const newGroup = document.createElement("div");
+				newGroup.className = "menu-group";
+				newGroup.textContent = MENU.items[i].g;
+				menulist.appendChild(newGroup);
+
+				lastGroup = MENU.items[i].g;
+			}
+
+			const newItem = document.createElement("div");
+			newItem.className = "menu-grid-item";
+			newItem.textContent = MENU.items[i].t;
+			newItem.style.backgroundImage = `url(${MENU.items[i].i})`;
+			menulist.appendChild(newItem);
+
+			MENU.ItemEvent(newItem, MENU.items[i].f);
+		}
+
+	},
+
+	ItemEvent: (element, func)=> {
+		element.onclick = event=> {
+			event.stopPropagation();
+			MENU.Close();
+			searchboxinput.value = "";
+			MENU.Update("");
+			func();
+		};
+
+		element.onmousedown = event=> {
+			if (event !== null && event.button !== 1) return;
+			if (event !== null) event.preventDefault();
+			func();
+			WIN.GridWindows();
+		};
+	},
+
+	Filter: (index)=> {
+		if (index === MENU.filterIndex) {
+			menufilterdot.style.transform = "scale(0)";
+			menufilterdot.style.width = "8px";
+			menufilterdot.style.height = "8px";
+			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 12 + 1}px`;
+			MENU.filterIndex = -1;
+
+		} else {
+			menufilterdot.style.transform = "scale(1)";
+			menufilterdot.style.width = "32px";
+			menufilterdot.style.height = "4px";
+			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 1}px`;
+			MENU.filterIndex = index;
+
+		}
 	},
 
 	UpdatePosition: ()=> {
@@ -220,24 +336,9 @@ const MENU = {
 		}));
 	},
 
-	Filter: (index)=> {
-		if (index === MENU.filterIndex) {
-			menufilterdot.style.transform = "scale(0)";
-			menufilterdot.style.width = "8px";
-			menufilterdot.style.height = "8px";
-			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 12 + 1}px`;
-			MENU.filterIndex = -1;
-
-		} else {
-			menufilterdot.style.transform = "scale(1)";
-			menufilterdot.style.width = "32px";
-			menufilterdot.style.height = "4px";
-			menufilterdot.style.left = `${menufilter.offsetLeft + index * 40 + 1}px`;
-			MENU.filterIndex = index;
-
-		}
-	}
 };
+
+MENU.Update();
 
 window.addEventListener("mousedown", () => {
 	UI.lastActivity = Date.now();
@@ -414,7 +515,7 @@ menubutton.onmousedown = event => {
 	event.stopPropagation();
 };
 
-searchbox.onclick = event => { searchboxinput.focus(); };
+searchbox.onclick = () => { searchboxinput.focus(); };
 
 searchboxinput.onclick = event => { event.stopPropagation(); };
 
@@ -500,59 +601,7 @@ taskbar.onmouseup = event=> {
 	contextmenu.innerHTML = "";
 
 	const grid = WIN.CreateContextMenuItem("Grid", "controls/grid.svg");
-	grid.onclick = ()=> {
-		if (WIN.array.length === 0) return;
-
-		let visible = WIN.array.filter(o=> !o.isMinimized && !o.popOutWindow);
-
-		if (visible.length === 0) return;
-
-		if (visible.length === 1) {
-			if (!visible[0].isMaximized) visible[0].Toggle();
-			return;
-		}
-
-		let gridW = Math.ceil(Math.sqrt(visible.length));
-		let gridH = gridW;
-
-		while (gridW * gridH >= visible.length + gridW) {
-			gridH--;
-		}
-
-		for (let y = 0; y < gridH; y++) {
-			for (let x = 0; x < gridW; x++) {
-				let i = y*gridW + x;
-				if (i >= visible.length) break;
-
-				visible[i].win.style.transition = `${ANIME_DURATION/1000}s`;
-
-				if (visible[i].isMaximized) visible[i].Toggle();
-				visible[i].win.style.left   = gridW < 5 ? `calc(${100*x/gridW}% + 8px)` : `${100*x/gridW}%`;
-				visible[i].win.style.top    = gridW < 5 ? `calc(${100*y/gridH}% + 8px)` : `${100*y/gridH}%`;
-				visible[i].win.style.width  = gridW < 5 ? `calc(${100/gridW}% - 16px)`  : `${100/gridW}%`;
-				visible[i].win.style.height = gridW < 5 ? `calc(${100/gridH}% - 16px)`  : `${100/gridH}%`;
-
-				setTimeout(()=> {
-					visible[i].win.style.transition = "0s";
-				}, ANIME_DURATION/1000);
-
-				setTimeout(()=> {
-					visible[i].AfterResize();
-				}, ANIME_DURATION/1000 + 200);
-			}
-		}
-
-		//special treatment
-		if (visible.length === 3) {
-			visible[1].win.style.height = "calc(100% - 16px)";
-
-		} else if (visible.length === 5) {
-			visible[3].win.style.left  = "8px";
-			visible[3].win.style.width = "calc(50% - 16px)";
-			visible[4].win.style.left  = "calc(50% + 8px)";
-			visible[4].win.style.width = "calc(50% - 16px)";
-		}
-	};
+	grid.onclick = ()=> WIN.GridWindows();
 	
 	const minimizeAll = WIN.CreateContextMenuItem("Minimize all", "controls/minimize.svg");
 	minimizeAll.onclick = ()=> {
@@ -609,4 +658,3 @@ contextmenu.onblur = ()=>{
 
 	setTimeout(() => minuteLoop(), 60000);
 })();
-

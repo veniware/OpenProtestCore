@@ -41,7 +41,7 @@ class DeviceView extends View {
 		super();
 		this.params = params ? params : { file: null };
 
-		this.link = LOADER.users.data[this.params.file];
+		this.link = LOADER.devices.data[this.params.file];
 		this.order = "group";
 		this.groupSchema = DeviceView.DEVICES_GROUP_SCHEMA;
 		this.timelineName = "devices";
@@ -80,7 +80,7 @@ class DeviceView extends View {
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 2) continue;
 				let name  = this.attributes.childNodes[i].childNodes[0].value;
-				let value = this.attributes.childNodes[i].childNodes[1].value;
+				let value = this.attributes.childNodes[i].childNodes[1].firstChild.value;
 				obj[name] = {v:value};
 			}
 
@@ -103,6 +103,8 @@ class DeviceView extends View {
 				this.link = obj;
 				LOADER.devices.data[json.filename] = obj;
 
+				this.InitializeAttributesList(obj, false);
+
 				for (let i = 0; i < WIN.array.length; i++) {
 					if (WIN.array[i] instanceof DevicesList) {
 						if (isNew && WIN.array[i].MatchFilters(obj)) {
@@ -122,7 +124,7 @@ class DeviceView extends View {
 	}
 
 	Fetch() { //override
-
+		this.DialogBox("400px");
 	}
 
 	Copy() { //override
@@ -132,7 +134,7 @@ class DeviceView extends View {
 			copy.attributes.appendChild(
 				copy.CreateAttribute(
 					this.attributes.childNodes[i].childNodes[0].value,
-					this.attributes.childNodes[i].childNodes[1].value,
+					this.attributes.childNodes[i].childNodes[1].firstChild.value,
 					null, null, true
 				)
 			);

@@ -58,7 +58,7 @@ class UserView extends View {
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 2) continue;
 				let name  = this.attributes.childNodes[i].childNodes[0].value;
-				let value = this.attributes.childNodes[i].childNodes[1].value;
+				let value = this.attributes.childNodes[i].childNodes[1].firstChild.value;
 				obj[name] = {v:value};
 			}
 
@@ -81,6 +81,8 @@ class UserView extends View {
 				this.link = obj;
 				LOADER.users.data[json.filename] = obj;
 
+				this.InitializeAttributesList(obj, false);
+
 				for (let i = 0; i < WIN.array.length; i++) {
 					if (WIN.array[i] instanceof UsersList) {
 						if (isNew && WIN.array[i].MatchFilters(obj)) {
@@ -100,7 +102,7 @@ class UserView extends View {
 	}
 
 	Fetch() { //override
-	
+		this.DialogBox("400px");
 	}
 
 	Copy() { //override
@@ -110,7 +112,7 @@ class UserView extends View {
 			copy.attributes.appendChild(
 				copy.CreateAttribute(
 					this.attributes.childNodes[i].childNodes[0].value,
-					this.attributes.childNodes[i].childNodes[1].value,
+					this.attributes.childNodes[i].childNodes[1].firstChild.value,
 					null, null, true
 				)
 			);

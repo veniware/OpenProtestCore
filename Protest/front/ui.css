@@ -59,6 +59,7 @@
 	position: absolute;
 	z-index: 16777265;
 	border-radius: 4px;
+	color: var(--clr-light);
 	background-color: var(--clr-dark);
 	width: var(--sidemenu-width);
 	overflow: hidden;
@@ -99,7 +100,6 @@
 	width: calc(100% - 80px);
 	background-color: transparent;
 	font-size: 22px;
-	color: var(--clr-light);
 
 	outline: 0;
 	border-width: initial;
@@ -144,7 +144,7 @@
 #menufilter {
 	position: absolute;
 	left: 100px;
-	top: 80px;
+	top: 76px;
 	width: 280px;
 	height: 34px;
 }
@@ -170,7 +170,7 @@
 #menufilterdot {
 	position: absolute;
 	left: 112px;
-	top: 116px;
+	top: 112px;
 	background-color: var(--clr-accent);
 	width: 8px;
 	height: 8px;
@@ -190,15 +190,91 @@
 
 	overflow-x: hidden;
 	overflow-y: scroll;
+	outline: 0;
+}
+
+.menu-group {
+	display: block;
+	text-transform: uppercase;
+	font-weight: 600;
+	/*background-color: #00000020;*/
+	padding: 12px 0 4px 8px;
+}
+
+.menu-grid-item {
+	display: inline-block;
+	width: 100px;
+	height: 96px;
+	padding: 2px 2px;
+	margin: 2px 4px;
+	border-radius: 2px;
+	
+	font-weight: 600;
+	text-align: center;
+	line-height: 168px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+
+	background-size: 64px 64px;
+	background-position: center 8px;
+	background-repeat: no-repeat;
+
+	background-color: #80808020;
+}
+
+.menu-list-item {
+	display: block;
+	font-weight: 600;
+}
+
+.menu-grid-item:hover, .menu-list-item:hover {
+	transition: .15s;
+	background-color: #80808040;
+}
+
+.menu-grid-item:active, .menu-list-item:active {
+	transition: .15s;
+	/*background-color: var(--clr-select);*/
+	filter: drop-shadow(var(--clr-select) 0 0 8px);
+}
+
+
+#btnPersonalize, #btnLogout {
+	position: absolute;
+	width: 40px;
+	height: 36px;
+
+	background-color: transparent;
+	background-repeat: no-repeat;
+	background-size: 32px 32px;
+	background-position: 4px 2px;
+	border: #808080 1px solid;
+	border-radius: 4px;
+
+	transition-duration: .2s;
+}
+
+#btnPersonalize {
+	position: absolute;
+	left: 8px;
+	bottom: 8px;
+	background-image: url("mono/personalize.svg?light");
+}
+
+#username {
+	position: absolute;
+	right: 8px;
+	bottom: 8px;
+	width: 300px;
+	height: 36px;
+	outline: 0;
 }
 
 #lblUsername {
 	position: absolute;
-	right: 8px;
-	bottom: 8px;
-	max-width: 200px;
-	height: 36px;
-	color: var(--clr-light);
+	right: 0px;
+
 	font-size: large;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -215,59 +291,36 @@
 	border: #808080 1px solid;
 	border-radius: 4px;
 
-	transition-duration: .1s;
-}
-
-#lblUsername:focus {
-	right: 56px;
-}
-
-#lblUsername:focus + div#btnLogout {
-	visibility: visible;
-	opacity: 1;
-	transform: translateX(0);
-}
-
-#btnPersonalize, #btnLogout {
-	position: absolute;
-	width: 40px;
-	height: 36px;
-	bottom: 8px;
-
-	color: var(--clr-light);
-	background-color: transparent;
-	background-repeat: no-repeat;
-	background-size: 32px 32px;
-	background-position: 4px 2px;
-	border: #808080 1px solid;
-	border-radius: 4px;
-
-	transition-duration: .1s;
-}
-
-#btnPersonalize {
-	left: 8px;
-	background-image: url("mono/personalize.svg?light");
+	transition-duration: .2s;
 }
 
 #btnLogout {
-	right: 8px;
+	position: absolute;
+	right: 0px;
 	background-image: url("mono/logoff.svg?light");
 	visibility: hidden;
 	opacity: 0;
 }
 
+
+#username:focus-within > #btnLogout {
+	visibility: visible;
+	opacity: 1;
+}
+#username:focus-within > #lblUsername {
+	right: 48px;
+}
+
 #lblUsername:focus {
 	background-color: rgba(128,128,128,.5);
 }
-
 #lblUsername:hover, #btnPersonalize:hover, #btnLogout:hover {
 	background-color: rgba(128,128,128,.5);
 }
-
 #lblUsername:active, #btnPersonalize:active #btnLogout:active {
 	background-color: rgb(56,56,56);
 }
+
 
 #contextmenu {
 	display: none;

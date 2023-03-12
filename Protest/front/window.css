@@ -328,9 +328,10 @@
 	left: 50%;
 	top: 100px;
 	z-index: 1;
-	bottom: 8px;
 	width: 200px;
+	height: auto;
 	min-height: 20px;
+	max-height: 100px;
 	overflow: hidden;
 	outline: 0;
 	background-color: var(--clr-pane);

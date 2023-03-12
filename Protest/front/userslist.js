@@ -33,6 +33,11 @@ class UsersList extends List {
 	}
 
 	InflateElement(element, entry, type) { //override
+		const icon = document.createElement("div");
+		icon.className = "list-element-icon";
+		icon.style.backgroundImage = "url(mono/user.svg)";
+		element.appendChild(icon);
+		
 		super.InflateElement(element, entry, type);
 
 		if (!element.ondblclick) {

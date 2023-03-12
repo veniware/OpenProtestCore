@@ -33,6 +33,11 @@ class DevicesList extends List {
 	}
 
 	InflateElement(element, entry, type) { //override
+		const icon = document.createElement("div");
+		icon.className = "list-element-icon";
+		icon.style.backgroundImage = "url(mono/gear.svg)";
+		element.appendChild(icon);
+
 		super.InflateElement(element, entry, type);
 
 		if (!element.ondblclick) {
@@ -41,12 +46,12 @@ class DevicesList extends List {
 				
 				const file = element.getAttribute("id");
 				for (let i = 0; i < WIN.array.length; i++)
-					if (WIN.array[i] instanceof EquipView && WIN.array[i].params.file === file) {
+					if (WIN.array[i] instanceof DeviceView && WIN.array[i].params.file === file) {
 						WIN.array[i].Minimize(); //minimize/restore
 						return;
 					}
 
-				new EquipView({ file: element.getAttribute("id") });
+				new DeviceView({ file: element.getAttribute("id") });
 			};
 		}
 	}

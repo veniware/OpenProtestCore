@@ -53,6 +53,10 @@
 	transform: translateY(-8px);
 }
 
+*[tip]:disabled::before, *[tip]:disabled:after {
+	visibility: hidden;
+}
+
 *[tip-below]::before, *[tip-below]::after {
 	position: absolute;
 	filter: opacity(0);
@@ -98,5 +102,9 @@
 }
 
 *[tip-below=""]:hover::before, *[tip-below=""]:hover::after {
+	visibility: hidden;
+}
+
+*[tip-below]:disabled::before, *[tip-below]:disabled:after {
 	visibility: hidden;
 }

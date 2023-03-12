@@ -72,12 +72,15 @@ class View extends Window {
 		if (!editMode) nameBox.setAttribute("readonly", "true");
 		newAttribute.appendChild(nameBox);
 
+		const valueContainer = document.createElement("div");
+		newAttribute.appendChild(valueContainer);
+
 		const valueBox = document.createElement("input");
 		valueBox.type = "text";
 		valueBox.value = value;
 		valueBox.setAttribute("aria-label", "Attribute value");
 		if (!editMode) valueBox.setAttribute("readonly", "true");
-		newAttribute.appendChild(valueBox);
+		valueContainer.appendChild(valueBox);
 
 		const removeButton = document.createElement("input");
 		removeButton.type = "button";
@@ -103,6 +106,48 @@ class View extends Window {
 			newAttribute.style.height = "0px";
 			setTimeout(() =>{ this.attributes.removeChild(newAttribute); }, 200);
 		};
+
+		if (value.indexOf(";") > -1) {
+			valueBox.style.display = "none";
+
+			let split = value.split(";");
+			for (let i = 0; i < split.length; i++) {
+				split[i] = split[i].trim();
+				if (split[i].length === 0) continue;
+
+				const newBox = document.createElement("div");
+				newBox.textContent = split[i];
+				valueContainer.appendChild(newBox);
+			}
+		}
+		
+		if (name.toLowerCase().indexOf("password") > -1) {
+			valueBox.value = "";
+			valueBox.style.display = "none";
+
+			const btnShow = document.createElement("input");
+			btnShow.type = "button";
+			btnShow.value = "Show";
+
+			const btnStamp = document.createElement("input");
+			btnStamp.type = "button";
+			btnStamp.style.minWidth = "40px";
+			btnStamp.style.height = "32px";
+			btnStamp.style.backgroundImage = "url(mono/stamp.svg?light)";
+			btnStamp.style.backgroundSize = "28px 28px";
+			btnStamp.style.backgroundPosition = "center center";
+			btnStamp.style.backgroundRepeat = "no-repeat";
+
+			valueContainer.append(btnShow, btnStamp);
+
+			btnShow.onclick = ()=> {
+				//TODO:
+			};
+
+			btnStamp.onclick = ()=> {
+				//TODO:
+			};
+		}
 
 		return newAttribute;
 	}
@@ -298,8 +343,11 @@ class View extends Window {
 			dot.className = "timeline-dot";
 			con.appendChild(dot);
 
-			if (i === 0) dot.style.backgroundColor = "var(--clr-accent)";
-			
+			if (i === 0) {
+				dot.style.backgroundColor = "var(--clr-accent)";
+				dot.style.border = "2px solid #404040";
+			}
+
 			sorted[i].x = x;
 			sorted[i].con = con;
 
@@ -356,19 +404,16 @@ class View extends Window {
 				dateBox.textContent = `${date.toLocaleDateString(UI.regionalFormat, {})} ${date.toLocaleTimeString(UI.regionalFormat, {})}`;
 				this.floating.appendChild(dateBox);
 
-				let floatingHeight = 34;
-
 				if (added > 0) {
 					const addedBox = document.createElement("div");
 					addedBox.style.backgroundImage = "url(mono/add.svg)";
 					addedBox.style.backgroundSize = "16px 16px";
 					addedBox.style.backgroundPosition = "4px 50%";
 					addedBox.style.backgroundRepeat = "no-repeat";
+					addedBox.style.margin = "2px";
 					addedBox.style.paddingLeft = "24px";
 					addedBox.textContent = `${added} added`;
 					this.floating.appendChild(addedBox);
-
-					floatingHeight += 20;
 				}
 
 				if (modified > 0) {
@@ -377,11 +422,10 @@ class View extends Window {
 					modBox.style.backgroundSize = "16px 16px";
 					modBox.style.backgroundPosition = "4px 50%";
 					modBox.style.backgroundRepeat = "no-repeat";
+					modBox.style.margin = "2px";
 					modBox.style.paddingLeft = "24px";
 					modBox.textContent = `${modified} modified`;
 					this.floating.appendChild(modBox);
-
-					floatingHeight += 20;
 				}
 
 				if (removed > 0) {
@@ -390,15 +434,11 @@ class View extends Window {
 					removedBox.style.backgroundSize = "16px 16px";
 					removedBox.style.backgroundPosition = "4px 50%";
 					removedBox.style.backgroundRepeat = "no-repeat";
+					removedBox.style.margin = "2px";
 					removedBox.style.paddingLeft = "24px";
 					removedBox.textContent = `${removed} removed`;
 					this.floating.appendChild(removedBox);
-
-					floatingHeight += 20;
 				}
-
-				this.floating.style.height = `${floatingHeight}px`;
-				
 			};
 
 			con.onmouseleave = ()=> {
@@ -407,8 +447,10 @@ class View extends Window {
 			};
 
 			con.onclick = ()=> {
-				innerTimeline.childNodes.forEach(o=>o.firstChild.style.backgroundColor = "unset");
+				innerTimeline.childNodes.forEach(o=>o.firstChild.style.backgroundColor = "#404040");
+				innerTimeline.childNodes.forEach(o=>o.firstChild.style.border = "none");
 				innerTimeline.childNodes[i].firstChild.style.backgroundColor = "var(--clr-accent)";
+				innerTimeline.childNodes[i].firstChild.style.border = "2px solid #404040";
 
 				this.InitializeAttributesList(sorted[i].obj);
 
@@ -464,6 +506,12 @@ class View extends Window {
 				this.attributes.childNodes[i].innerHTML = "";
 				this.attributes.childNodes[i].style.height = "0px";
 				this.attributes.childNodes[i].style.marginTop = "0px";
+			
+			} else {
+				while (this.attributes.childNodes[i].childNodes[1].childNodes.length > 1) {
+					this.attributes.childNodes[i].childNodes[1].removeChild(this.attributes.childNodes[i].childNodes[1].lastChild);
+				}
+				this.attributes.childNodes[i].childNodes[1].firstChild.style.display = "initial";
 			}
 		}
 
@@ -504,7 +552,7 @@ class View extends Window {
 		for (let i = 0; i < this.attributes.childNodes.length; i++) {
 			if (this.attributes.childNodes[i].childNodes.length < 3) continue;
 			this.attributes.childNodes[i].childNodes[0].removeAttribute("readonly");
-			this.attributes.childNodes[i].childNodes[1].removeAttribute("readonly");
+			this.attributes.childNodes[i].childNodes[1].firstChild.removeAttribute("readonly");
 		}
 
 		addAttributeButton.onclick = ()=> {
@@ -527,7 +575,7 @@ class View extends Window {
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 3) continue;
 				this.attributes.childNodes[i].childNodes[0].setAttribute("readonly", "true");
-				this.attributes.childNodes[i].childNodes[1].setAttribute("readonly", "true");
+				this.attributes.childNodes[i].childNodes[1].firstChild.setAttribute("readonly", "true");
 			}
 		};
 
@@ -536,7 +584,12 @@ class View extends Window {
 			for (let i = 0; i < this.attributes.childNodes.length; i++) {
 				if (this.attributes.childNodes[i].childNodes.length < 3) continue;
 				this.attributes.childNodes[i].childNodes[0].removeAttribute("readonly");
-				this.attributes.childNodes[i].childNodes[1].removeAttribute("readonly");
+				this.attributes.childNodes[i].childNodes[1].firstChild.removeAttribute("readonly");
+
+				while (this.attributes.childNodes[i].childNodes[1].childNodes.length > 1) {
+					this.attributes.childNodes[i].childNodes[1].removeChild(this.attributes.childNodes[i].childNodes[1].lastChild);
+				}
+				this.attributes.childNodes[i].childNodes[1].firstChild.style.display = "initial";
 			}
 		};
 
@@ -553,7 +606,7 @@ class View extends Window {
 			if (isNew) {
 				this.Close();
 			} else {
-				Revert(false);
+				this.InitializeAttributesList(this.link, false);
 				ExitEdit();
 			}
 		};

@@ -199,24 +199,24 @@ class List extends Window {
 		const ClearSelection = () => filtersList.childNodes.forEach(o=>o.style.backgroundColor = "");
 		
 		const Refresh = () => {
-			let added = [];
+			let types = [];
 			for (const key in this.link.data) {
 				if (!this.link.data[key].hasOwnProperty("type")) continue;
-				if (added.includes(this.array[key].type)) continue;
-				if (this.array[key].indexOf(findFilter.value) < 0) continue;
-				added.add(this.array[key].type);
+				if (types.includes(this.link.data[key].type.v)) continue;
+				if (this.link.data[key].type.v.indexOf(findFilter.value) < 0) continue;
+				types.push(this.link.data[key].type.v);
 			}
-			added = added.sort();
+			types = types.sort();
 			
 			filtersList.innerHTML = "";
-			filterMenu.style.height = `${32 + added.length * 26}px`;
+			filterMenu.style.height = `${32 + types.length * 26}px`;
 			
-			for (let i = 0; i < added.length; i++) {
+			for (let i = 0; i < types.length; i++) {
 				const newType = document.createElement("div");
-				newType.textContent = added[i];
+				newType.textContent = types[i];
 				filtersList.appendChild(newType);
 
-				if (added[i] === this.params.filter) {
+				if (types[i] === this.params.filter) {
 					newType.style.backgroundColor = "var(--clr-select)";
 					filterButton.style.borderBottom = "var(--clr-light) solid 3px";
 				}
@@ -224,11 +224,11 @@ class List extends Window {
 				newType.onclick = () => {
 					ClearSelection();
 
-					if (this.params.filter === added[i]) {
+					if (this.params.filter === types[i]) {
 						this.params.filter = "";
 						filterButton.style.borderBottom = "";
 					} else {
-						this.params.filter = added[i];
+						this.params.filter = types[i];
 						filterButton.style.borderBottom = "var(--clr-light) solid 3px";
 						newType.style.backgroundColor = "var(--clr-select)";
 					}
@@ -514,11 +514,6 @@ class List extends Window {
 	}
 
 	InflateElement(element, entry, c_type) { //overridable
-		const icon = document.createElement("div");
-		icon.className = "list-element-icon";
-		icon.style.backgroundImage = "url(mono/user.svg)";
-		element.appendChild(icon);
-		
 		for (let i = 0; i < this.columnsElements.length; i++) {
 			if (!entry.hasOwnProperty(this.columnsElements[i].textContent)) continue;
 			
@@ -535,7 +530,7 @@ class List extends Window {
 			}
 		}
 
-		element.onclick = () => {
+		element.onclick = ()=> {
 			if (this.selected)
 				this.selected.style.backgroundColor = "";
 

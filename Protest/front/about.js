@@ -13,7 +13,7 @@ class About extends Tabs {
 		this.tabsPanel.style.overflowY = "auto";
 
 		this.tabAbout   = this.AddTab("About", "mono/logo.svg");
-		this.tabLegal   = this.AddTab("License", "mono/gpl.svg");
+		this.tabLegal   = this.AddTab("Legal", "mono/gpl.svg");
 
 		this.tabAbout.onclick = () => this.ShowAbout();
 		this.tabLegal.onclick = () => this.ShowLegal();
@@ -105,7 +105,7 @@ class About extends Tabs {
 
 		const donate = document.createElement("a");
 		donate.style.display = "inline-block";
-		donate.style.border = "#var(--clr-dark) 1px solid";
+		donate.style.border = "var(--clr-dark) 1px solid";
 		donate.style.borderRadius = "4px";
 		donate.style.padding = "2px 4px";
 		donate.style.margin = "1px";
