@@ -236,7 +236,7 @@
 .menu-grid-item:active, .menu-list-item:active {
 	transition: .15s;
 	/*background-color: var(--clr-select);*/
-	filter: drop-shadow(var(--clr-select) 0 0 8px);
+	filter: drop-shadow(var(--clr-select) 0 0 4px);
 }
 
 

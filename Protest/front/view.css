@@ -34,7 +34,7 @@
 .view-timeline .timeline-con {
 	position: absolute;
 	top: 0;
-	width: min(1.5%, 12px);
+	width: min(1.6%, 12px);
 	height: 100%;
 }
 .view-timeline .timeline-con:hover {

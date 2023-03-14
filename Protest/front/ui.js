@@ -125,17 +125,16 @@ const UI = {
 };
 
 const MENU = {
-
 	items: [
 		{ t:"Devices",           i:"mono/devices.svg?light",   g:"inventory", h:false, f:arg=>new DevicesList() },
 		{ t:"Users",             i:"mono/users.svg?light",     g:"inventory", h:false, f:arg=>new UsersList() },
 		{ t:"New device",        i:"mono/newdevice.svg?light", g:"inventory", h:true,  f:arg=>new DeviceView({}) },
 		{ t:"New user",          i:"mono/newuser.svg?light",   g:"inventory", h:true,  f:arg=>new UserView({}) },
 		{ t:"Fetch",             i:"mono/fetch.svg?light",     g:"inventory", h:false, f:arg=>{} },
-		{ t:"Fetch devices from IP range",         i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
-		{ t:"Fetch device from Domain Controller", i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
-		{ t:"Fetch users from Domain Controller",  i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
-		{ t:"Import from another Pro-test",        i:"mono/fetch.svg?light",    g:"inventory", h:true, f:arg=>{} },
+		{ t:"Fetch devices from IP range",         i:"mono/fetch.svg?light", g:"inventory", h:true, f:arg=>{} },
+		{ t:"Fetch device from Domain Controller", i:"mono/fetch.svg?light", g:"inventory", h:true, f:arg=>{} },
+		{ t:"Fetch users from Domain Controller",  i:"mono/fetch.svg?light", g:"inventory", h:true, f:arg=>{} },
+		{ t:"Import from another Pro-test",        i:"mono/fetch.svg?light", g:"inventory", h:true, f:arg=>{} },
 		{ t:"Password strength", i:"mono/strength.svg?light", g:"inventory", h:false, f:arg=>{} },
 		{ t:"Gandalf",           i:"mono/gandalf.svg?light",  g:"inventory", h:true,  f:arg=>{} },
 
